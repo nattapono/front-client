@@ -6,7 +6,7 @@ export default {
         head: {
             charset: 'utf-8',
             viewport: 'width=device-width,initial-scale=1,user-scalable=0',
-            title: "สสส",
+            title: "madam clean ",
             meta: [
                 { name: "description" }
             ],
@@ -14,12 +14,16 @@ export default {
                 {
                     rel: 'icon',
                     type: 'image/png',
-                    href: "https://dr277ea24g9fk.cloudfront.net/_bubblebee/icon_1/icon_g_casino.webp"
+                    href: './assets/images/logomdc.png'
                 },
             ],
             script: [
                 {
                     src: "/ckeditor/ckeditor.js",
+                    type: "text/javascript",
+                },
+                {
+                    src: "assets/js/bootstrap.bundle.min.js",
                     type: "text/javascript",
                 },
             ]
@@ -28,7 +32,7 @@ export default {
             {
                 rel: 'icon',
                 type: 'image/png',
-                href: "https://dr277ea24g9fk.cloudfront.net/_bubblebee/icon_1/icon_g_casino.webp"
+                href: 'public/assets/images/logomdc.png'
             },
             {
                 rel: 'stylesheet',

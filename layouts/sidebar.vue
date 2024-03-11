@@ -1,139 +1,282 @@
 <template>
-    <div class="navigation list">
-      <ul>
-        <li>
-          <a href="#">
-            <span class="icon">
-              <ion-icon name="logo-apple"></ion-icon>
-            </span>
-            <span class="title">{{ brandName }}</span>
-          </a>
-        </li>
-  
-        <li v-for="(item, index) in listMenu" :key="index" class="cardBoxMenu">
-          <div :class="{'active':item.name==currentMenu}" @click="swichMenu(item.name )" class="card menu text-left d-flex" >
-            <span class="icon">
-              <ion-icon name="home-outline"></ion-icon>
-              <img :src="item.img" alt="item.name" height="50">
-            </span>
-            <div>
-                <span class="title">{{ item.name }}</span>
-                <p class="text-white">{{ item.subthai }}</p>
+  <nav class="navbar-vertical fixed-start navbar navbar-expand-md bg-danger text-white"
+    v-if="$route.name != 'maid-register' && $route.name != 'sign-in'">
+    <div class="container-fluid">
+      <button type="button" aria-label="Toggle navigation" class="navbar-toggler collapsed">
+        <span class="navbar-toggler-icon"></span></button>
+      <a class="navbar-brand text-white mt-4" href="/">
+        <img class="navbar-brand-img me-2" src="/assets/images/logomdc.png" alt="...">MadamClean
+      </a>
+
+      <div class="d-md-none dropdown">
+        <div class="avatar avatar-sm avatar-online dropdown-toggle" id="react-aria-1" aria-expanded="false"
+          role="button">
+
+        </div>
+      </div>
+      <div class="navbar-collapse collapse">
+        <form class="mt-4 mb-3 d-md-none">
+          <div class="input-group-merge input-group-reverse input-group-rounded input-group"><input placeholder="Search"
+              aria-label="Search" type="search" class="form-control"><span class="input-group-text"><svg width="15"
+                height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" class="feather feather-search ">
+                <g>
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </g>
+              </svg></span></div>
+        </form>
+        <div>
+          <div class="navbar-nav">
+            <div class="nav-item">
+              <a role="button" class="nav-link text-white" :class="{ 'active': $route.name === '/' }" href="/"><svg
+                  width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" class="feather feather-home ">
+                  <g>
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                  </g>
+                </svg>ภาพวม
+              </a>
+
+            </div>
+            <div class="nav-item">
+              <a role="button" :class="{ 'active': $route.name === '/package' }" class="nav-link text-white"
+                tabindex="0" href="package"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="feather feather-file ">
+                  <g>
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                  </g>
+                </svg>แพ็คเกจ</a>
+            </div>
+            <div class="nav-item">
+              <a role="button" :class="{ 'active': $route.name === '/promotion' }" class="nav-link text-white"
+                tabindex="0" href="promotion"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="feather feather-file ">
+                  <g>
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                  </g>
+                </svg>โปรโมชั่น</a>
+            </div>
+            <div class="nav-item">
+              <a :class="{ 'active': $route.name === 'maid' }" class="nav-link text-white" href="/maid">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor"
+                  class="bi bi-stars text-white me-3" viewBox="0 0 16 16">
+                  <path
+                    d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.73 1.73 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69A1.73 1.73 0 0 0 2.31 4.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.73 1.73 0 0 0 3.407 2.31zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z" />
+                </svg>แม่บ้าน</a>
+            </div>
+            <div class="nav-item">
+              <a role="button" class="nav-link text-white" tabindex="0" href="/booking">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-check me-3" viewBox="0 0 16 16">
+  <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+</svg>ข้อมลการจอง</a>
+            </div>
+            <div class="nav-item">
+              <a role="button" class="nav-link text-white" tabindex="0" href="/customer"><svg width="17" height="17"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" class="feather feather-user ">
+                  <g>
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </g>
+                </svg>ลูกค้า</a>
+            </div>
+            <div class="nav-item">
+              <a role="button" class="nav-link text-white" tabindex="0" href="/setting">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor"
+                  class="bi bi-wrench-adjustable-circle  me-3" viewBox="0 0 16 16">
+                  <path d="M12.496 8a4.5 4.5 0 0 1-1.703 3.526L9.497 8.5l2.959-1.11q.04.3.04.61" />
+                  <path
+                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-1 0a7 7 0 1 0-13.202 3.249l1.988-1.657a4.5 4.5 0 0 1 7.537-4.623L7.497 6.5l1 2.5 1.333 3.11c-.56.251-1.18.39-1.833.39a4.5 4.5 0 0 1-1.592-.29L4.747 14.2A7 7 0 0 0 15 8m-8.295.139a.25.25 0 0 0-.288-.376l-1.5.5.159.474.808-.27-.595.894a.25.25 0 0 0 .287.376l.808-.27-.595.894a.25.25 0 0 0 .287.376l1.5-.5-.159-.474-.808.27.596-.894a.25.25 0 0 0-.288-.376l-.808.27z" />
+                </svg> ตั้งค่า</a>
             </div>
           </div>
-        </li>
-  
-        <li>
-          <a href="#">
-            <span class="icon">
-              <ion-icon name="log-out-outline"></ion-icon>
-            </span>
-            <span class="title">Sign Out</span>
+        </div>
+        <div>
+          <hr class="navbar-divider">
+          <h6 class="navbar-heading">Documentation</h6>
+          <div class="navbar-nav d-none">
+            <div class="nav-item"><a role="button" class="nav-link" tabindex="0" href="#"><svg width="17" height="17"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" class="feather feather-clipboard ">
+                  <g>
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                  </g>
+                </svg>Basics<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="feather feather-chevron-down ms-auto nav-chevron false">
+                  <g>
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </g>
+                </svg></a>
+              <div class="collapse">
+                <div class="nav nav-sm flex-column">
+                  <div class="nav-item"><a data-rr-ui-event-key="/getting-started" class="nav-link"
+                      href="/getting-started">Getting Started</a></div>
+                  <div class="nav-item"><a data-rr-ui-event-key="/design-file" class="nav-link"
+                      href="/design-file">Design
+                      File</a></div>
+                </div>
+              </div>
+            </div>
+            <div class="nav-item"><a role="button" class="nav-link" tabindex="0" href="#"><svg width="17" height="17"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" class="feather feather-book-open ">
+                  <g>
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                  </g>
+                </svg>Components<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="feather feather-chevron-down ms-auto nav-chevron false">
+                  <g>
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </g>
+                </svg></a>
+
+            </div>
+            <div class="nav-item"><a data-rr-ui-event-key="/changelog" class="nav-link" href="/changelog"><svg
+                  width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" class="feather feather-git-branch ">
+                  <g>
+                    <line x1="6" y1="3" x2="6" y2="15"></line>
+                    <circle cx="18" cy="6" r="3"></circle>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <path d="M18 9a9 9 0 0 1-9 9"></path>
+                  </g>
+                </svg>Changelog</a></div>
+          </div>
+        </div>
+        <div class="mt-auto mb-md-4"></div>
+        <div class="navbar-user d-none d-md-flex"><a class="navbar-user-link" role="button">
+            <div class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell ">
+                <g>
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </g>
+              </svg></div>
           </a>
-        </li>
-      </ul>
+          <div class="dropup">
+            <div class="avatar avatar-sm avatar-online dropdown-toggle" id="react-aria-2" aria-expanded="false"
+              role="button">
+            </div>
+          </div><a class="navbar-user-link" role="button">
+            <div class="icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search ">
+                <g>
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </g>
+              </svg></div>
+          </a>
+        </div>
+      </div>
     </div>
-  </template>
-  <script>
-  import axios from "axios";
-  export default {
-    data() {
-      return {
-        authAdmin: "",
-        brandName: "OMG5",
-        currentMenu:'slot',
-        listMenu:[
-            {name:'hotgame',subthai:'เกมฮอต', img:'data:image/png;base64,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'},
-            {name:'slot',subthai:'สล๊อต', img:'https://dr277ea24g9fk.cloudfront.net/_bubblebee/icon_1/icon_g_slot.webp'},
-            {name:'casino',subthai:'คาสิโน', img:'https://dr277ea24g9fk.cloudfront.net/_bubblebee/icon_1/icon_g_hilo.webp'},
-            {name:'sport',subthai:'กีฬา', img:'https://dr277ea24g9fk.cloudfront.net/_bubblebee/icon_1/icon_g_sport.webp'},
-            {name:'fishing',subthai:'ยิงปลา', img:'https://dr277ea24g9fk.cloudfront.net/_bubblebee/icon_1/icon_g_fish.webp'},
-            {name:'pokdeng',subthai:'ป๊อกเด้ง "ไฮโล', img:'https://dr277ea24g9fk.cloudfront.net/_bubblebee/icon_1/icon_g_casino.webp'},
-            {name:'graph',subthai:'กราฟ', img:'https://dr277ea24g9fk.cloudfront.net/_bubblebee/icon_1/icon_g_graph.webp'},
-        ]
-      };
-    },
-    mounted() {
-        
-    },
-  
-    methods: {
-        swichMenu(name){
-            console.log(name);
-            this.currentMenu = name;
-        }
-    }
-  
-  };
-  </script>
-  
-  <style scope>
-    .navigation.list {
-        background: linear-gradient(to bottom, #000000, #333333, #666666, #999999, #cccccc);
-    }
+  </nav>
+</template>
+<script>
+import axios from "axios";
+export default {
+  data() {
+    return {
+      authAdmin: "",
+      brandName: "OMG5",
+      currentMenu: 'slot',
 
-    .sidebar {
-        width: 250px;
-        background-color: #333;
-        color: #fff;
-        padding: 20px;
-    }
+    };
+  },
+  mounted() {
 
-    .card {
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        background-color: #fff;
-        padding: 20px;
-    }
+  },
 
-    .card h2 {
-        color: #333;
-        margin-bottom: 10px;
+  methods: {
+    swichMenu(name) {
+      console.log(name);
+      this.currentMenu = name;
+      window.location = `../games/${name}`;
     }
+  }
+};
+</script>
 
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
+<style scope>
+.navigation.list {
+  background: linear-gradient(to bottom, #000000, #333333, #666666, #999999, #cccccc);
+}
 
-    li {
-        margin-bottom: 10px;
-    }
+.sidebar {
+  width: 250px;
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+}
 
-    a {
-        text-decoration: none;
-        color: #333;
-        font-weight: bold;
-    }
+.card {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 20px;
+}
 
-    a:hover {
-        color: #007BFF;
-    }
+.card h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
 
-    .content {
-        flex: 1;
-        padding: 20px;
-        background-color: #f4f4f4;
-    }
+ul {
+  list-style-type: none;
+  padding: 0;
+}
 
-    .active.card.menu{
-        border: 2px solid #a08a0f;
-        border-radius: 6px; 
-        display: flex;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-        color: red;
-        font-size:20px;
-        padding: 18px;
-    }
-    .card.menu{
-        width: 100%;
-        color: gold;
-    }
-    span.title{
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-    .d-flex{
-        display: flex;
-    }
-  </style>
+li {
+  margin-bottom: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+a:hover {
+  color: #007BFF;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.active.card.menu {
+  border: 2px solid #a08a0f;
+  border-radius: 6px;
+  display: flex;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: red;
+  font-size: 20px;
+  padding: 18px;
+}
+
+.card.menu {
+  width: 100%;
+  color: gold;
+}
+
+span.title {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.d-flex {
+  display: flex;
+}
+</style>
