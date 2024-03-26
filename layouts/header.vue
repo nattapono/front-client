@@ -295,11 +295,27 @@ export default {
           this.shotName = this.profile.fullname.charAt(0);
         }
 
+      this.routers =  this.$route.name;
+      }
+    }
+    this.admin = JSON.parse(localStorage.getItem("Admin-mdc"));
+    if (this.admin) {
+      this.auth = this.admin.token;
+      if (this.admin.user) {
+        this.shotName = this.admin.user.charAt(0);
         this.loading = true;
+        if(this.routers=='sign-in'){
+          window.location = '/';
+          this.loading = true;
+        }
       }
     } else {
       this.loading = true;
+      if(this.routers!='sign-in'){
+        window.location = 'sign-in';
+      }
     }
+  
     document.body.addEventListener('click', this.handleClick);
   },
   beforeDestroy() {
@@ -317,7 +333,6 @@ export default {
       this.isMadamDropdownOpen = !this.isMadamDropdownOpen;
     },
     linkTo(path) {
-      console.log('path',window.location.origin)
       window.location=window.location.origin+'/'+path;
     },
     packageSelect: async function (id) {
