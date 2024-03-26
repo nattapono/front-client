@@ -1,8 +1,11 @@
 <template>
-    <div class="container">
-        <AppSidebar />
-        <AppHeader />
-            <div class="container">
+    <div class="">
+        <AppHeader v-if="$route.name !== 'maid' || 
+        $route.name !=='maid-sign-in' || 
+        $route.name !=='maid-register' ||
+        $route.name !=='maid-profile'" />
+        <Sidebar v-if="$route.name === 'maid' || $route.name == 'maid-sign-in'|| $route.name =='maid-profile'" />
+            <div class="pt-5">
                 <slot />
             </div>
         <AppFooter />
@@ -10,11 +13,13 @@
 </template>
 <script setup>
     import AppHeader from "./header";
-    import AppSidebar from "./sidebar";
     import AppFooter from "./footer";
+    import Sidebar from "./sidebar";
 </script>
 <style>
- @import "../public/assets/css/style.css";
+@import "../public/assets/css/style.css";
+@import "../public/assets/css/bootstrap.min.css";
+
 
  @media (max-width: 768px) {
     .body-top{
