@@ -65,32 +65,32 @@ export default {
             const reader = new FileReader();
             let base64Image = ''; // เริ่มต้นด้วยค่าว่าง
             reader.onload = (e) => {
-        const img = new Image();
-        img.src = e.target.result;
+            const img = new Image();
+            img.src = e.target.result;
 
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
+            img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
 
-          const MAX_WIDTH = 300; // กำหนดความกว้างสูงสุด
-          const MAX_HEIGHT = MAX_WIDTH * (img.height / img.width);
+            const MAX_WIDTH = 300; // กำหนดความกว้างสูงสุด
+            const MAX_HEIGHT = MAX_WIDTH * (img.height / img.width);
 
-          canvas.width = MAX_WIDTH;
-          canvas.height = MAX_HEIGHT;
+            canvas.width = MAX_WIDTH;
+            canvas.height = MAX_HEIGHT;
 
-          // ปรับขนาดรูปภาพ
-          ctx.drawImage(img, 0, 0, MAX_WIDTH, MAX_HEIGHT);
+            // ปรับขนาดรูปภาพ
+            ctx.drawImage(img, 0, 0, MAX_WIDTH, MAX_HEIGHT);
 
-          // สร้าง base64 URL จาก Canvas
-          const base64Image = canvas.toDataURL('image/jpeg');
+            // สร้าง base64 URL จาก Canvas
+            const base64Image = canvas.toDataURL('image/jpeg');
 
-          // กำหนดค่าให้กับ imageData และ imageUrl
-          this.maidProfile.img = base64Image; 
-            if(base64Image){
-                    this.upImgProfile();
-                }
+            // กำหนดค่าให้กับ imageData และ imageUrl
+            this.maidProfile.img = base64Image; 
+                if(base64Image){
+                        this.upImgProfile();
+                    }
+            };
         };
-      };
             
             reader.readAsDataURL(file);
 

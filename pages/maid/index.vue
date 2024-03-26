@@ -740,7 +740,7 @@ export default {
         this.workList();
         setInterval(() => {
             this.workList();
-        }, 4200);
+        }, 300);
         this.getSetting();
         this.authMaid = JSON.parse(localStorage.getItem("Maid"));
     },
