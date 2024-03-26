@@ -13,7 +13,6 @@
                   <!-- <img :src="item.img" width="120" alt="maid"> -->
                   <div class="text-center border-bottom py-2 font-weight-bold numbers">{{ item.name }}
                   </div>
-                  
                 </div>
               </div>
             </div>

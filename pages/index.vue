@@ -38,3 +38,9 @@
     };
 
 </script>
+
+<style>
+.white-space {
+    white-space: nowrap;
+}
+</style>

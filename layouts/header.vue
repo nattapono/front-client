@@ -317,6 +317,7 @@ export default {
       this.isMadamDropdownOpen = !this.isMadamDropdownOpen;
     },
     linkTo(path) {
+      console.log('path',window.location.origin)
       window.location=window.location.origin+'/'+path;
     },
     packageSelect: async function (id) {
