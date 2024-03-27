@@ -187,21 +187,20 @@
                       </thead>
                       <tbody>
                         <tr v-for="week in weeks" :key="week">
-    <td v-for="(day, i) in week" :key="i"
-        class="text-center cursor-pointer d-calendar"
-        ref="dayRefs"
-        :class="{
-            'bg-info text-muted':new Date(year, month - 1, day) < new Date(),
-            'text-muted': day === -1,
-            'border-0 font-weight-bold text-primary': day === currentDate.getDate() && month === currentDate.getMonth() + 1 && year === currentDate.getFullYear(),
-            'd-calendar-active': thisDay === day,
-            'disabled': isDateInListWork(day) // เพิ่มคลาส disabled เมื่อวันที่อยู่ใน listWork
-        }"
-        @click="handleDayClick(day, i)">
-        {{ day > 0 ? day : '' }}
-    </td>
-</tr>
-
+                          <td v-for="(day, i) in week" :key="i"
+                              class="text-center cursor-pointer d-calendar"
+                              ref="dayRefs"
+                              :class="{
+                                  'bg-info text-muted': new Date(year, month - 1, day) < new Date(),
+                                  'text-muted': day === -1,
+                                  'border-0 font-weight-bold text-primary': day === currentDate.getDate() && month === currentDate.getMonth() + 1 && year === currentDate.getFullYear(),
+                                  'd-calendar-active': thisDay === day,
+                                  'disabled': isDateInListWork(day) || isDateSelect(day) // เพิ่มเงื่อนไขเช็คว่า day เท่ากับ dateSelect ใน listWorks หรือไม่
+                              }"
+                              @click="handleDayClick(day, i)">
+                              {{ day > 0 ? day : '' }}
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -1284,7 +1283,7 @@ export default {
       }
     },
     maidListWork: async function (id) {
-      this.openMaid = true;
+      // this.openMaid = true;
       try {
         let config = {
           method: "get",
@@ -1392,20 +1391,33 @@ export default {
 
     },
     isDateInListWork(day) {
-        const currentDate = new Date(this.year, this.month - 1, day);
-        const dateString = currentDate.toISOString().split('T')[0]; // สร้างรูปแบบของวันที่เพื่อเปรียบเทียบ
-        if (currentDate && Array.isArray(currentDate) && currentDate.some) {
-    // ดำเนินการต่อเมื่อ currentDate ไม่ใช่ undefined หรือ null
-    // และเป็นอาร์เรย์ที่มีเมธอด some()
-          if (currentDate.some(cell => cell.trim() !== '')) {
-            return this.listWork.some(work => {
-                  const workDate = new Date(work.dateSelect).toISOString().split('T')[0];
-                  return dateString === workDate;
-              });
-          }
+      const currentDate = new Date(this.year, this.month - 1, day);
+      const dateString = currentDate.toISOString().split('T')[0]; // สร้างรูปแบบของวันที่เพื่อเปรียบเทียบ
+      if (currentDate && Array.isArray(currentDate) && currentDate.some) {
+      // ดำเนินการต่อเมื่อ currentDate ไม่ใช่ undefined หรือ null
+      // และเป็นอาร์เรย์ที่มีเมธอด some()
+        if (currentDate.some(cell => cell.trim() !== '')) {
+          return this.listWork.some(work => {
+                const workDate = new Date(work.dateSelect).toISOString().split('T')[0];
+                return dateString === workDate;
+            });
+        }
       } else {
-          console.error('rowData is not defined or not an array');
+          console.error('Date In List Work is not defined or not an array');
       }
+    },
+    isDateSelect(day) {
+        // ตรวจสอบว่ามีข้อมูล listWorks หรือไม่
+        if (!this.listWorks || !this.listWorks.dateSelect) {
+            return false; // หากไม่มีข้อมูลให้คืนค่าเป็น false
+        }
+        
+        const formattedListWorks = this.listWorks.map(work => new Date(work.dateSelect).toISOString().split('T')[0]);
+        // แปลงวันที่ day เป็นรูปแบบ 'Y-m-d'
+        const formattedDay = new Date(this.year, this.month - 1, day).toISOString().split('T')[0];
+        
+        // เช็คว่าวันที่ใน formattedDay เป็นวันที่ใน listWorks หรือไม่
+        return formattedListWorks.includes(formattedDay);
     },
     handleDayClick(day, i) {
         if (day > 0 && !this.isDateInListWork(day)) {
