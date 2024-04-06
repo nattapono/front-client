@@ -1,11 +1,11 @@
 <template>
-  <div>
-    <div class="row mb-5 d-flex align-items-center justify-content-center" v-if="stepTwo == false">
+  <div class="bg-gray-300 bg-md-white" style="min-height:100vh">
+    <div class="row pb-5 d-flex align-items-center justify-content-center" v-if="stepTwo == false">
       <div class="col-12 my-4 pb-2"></div>
-      <div class="col-12 col-lg-10 col-md-10 px-4 px-md-0">
+      <div class="col-12 col-lg-8 col-md-8 px-4 px-md-0 d-none d-md-block">
         <h4>ประวัติการจอง</h4>
         <div class="table-responsive mt-2">
-          <table class="table" style="min-height: 350px;">
+          <table class="table rounded-4" style="min-height: 350px;">
             <thead>
               <tr>
                 <th></th>
@@ -18,17 +18,17 @@
                 <th>สถานะ</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody v-if="dataBook.length == 0" >
               <tr>
-                <td colspan="7" v-if="dataBook.length == 0" class="text-center py-5 text-muted">
+                <td colspan="8" class="text-center py-5 text-muted">
                   <div class="py-4 mb-5">
                     - No Data -
                   </div>
                 </td>
               </tr>
             </tbody>
-            <tbody v-for="(booking, i) in dataBook" :key="booking.bookId" >
-              <tr v-if="i>= start && i < (limit)">
+            <tbody v-for="(booking, i) in dataBook" :key="booking.bookId">
+              <tr v-if="i >= start && i < (limit)">
                 <td>{{ i + 1 }}</td>
                 <td>{{ booking.fname }} {{ booking.lname }}</td>
                 <td>{{ booking.hasClean }}</td>
@@ -54,7 +54,7 @@
                         d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z" />
                     </svg> รอชำระเงิน
                   </div>
-                  <div v-if="booking.isActive>2" class="text-success text-nowrap">
+                  <div v-if="booking.isActive > 2" class="text-success text-nowrap">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                       class="bi bi-check2-circle" viewBox="0 0 16 16">
                       <path
@@ -72,42 +72,134 @@
             </tbody>
           </table>
         </div>
-          <div class="text-right d-flex justify-content-between " id="slide-page">
-            <div class="text-left" id="str-lmt">
-              หน้า {{ dataStrLmt + 1 }}
-            </div>
-            <ul class="pagination pagination-rounded justify-content-end mb-2">
-              <li class="page-item" @click="fetchPageData((strlmt - 1))">
-                <a class="page-link" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-                </a>
-              </li>
-              <li class="page-item" :class="{ active: strlmt == 0 }" @click="fetchPageData(0)">
-                <a class="page-link">1</a>
-              </li>
-              <li class="page-item" :class="{ active: strlmt == 1 }" v-if="total" @click="fetchPageData(1)">
-                <a class="page-link">2</a>
-              </li>
-              <li class="page-item" :class="{ active: item == strlmt }" v-if="pagetotal > 1"
-                v-for="item in pagination(strlmt, pagetotal)" @click="fetchPageData(item)">
-                <a class="page-link" v-if="item > 0">{{ item + 1 }}</a>
-                <a class="page-link" v-else>{{ item }}</a>
-              </li>
-              <li class="page-item" @click="fetchPageData((strlmt + 1))">
-                <a class="page-link" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                </a>
-              </li>
-            </ul>
+        <div class="text-right d-flex justify-content-between " id="slide-page">
+          <div class="text-left" id="str-lmt">
+            หน้า {{ dataStrLmt + 1 }}
           </div>
+          <ul class="pagination pagination-rounded justify-content-end mb-2">
+            <li class="page-item" @click="fetchPageData((strlmt - 1))">
+              <a class="page-link" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item" :class="{ active: strlmt == 0 }" @click="fetchPageData(0)">
+              <a class="page-link">1</a>
+            </li>
+            <li class="page-item" :class="{ active: strlmt == 1 }" v-if="total" @click="fetchPageData(1)">
+              <a class="page-link">2</a>
+            </li>
+            <li class="page-item" :class="{ active: item == strlmt }" v-if="pagetotal > 1"
+              v-for="item in pagination(strlmt, pagetotal)" @click="fetchPageData(item)">
+              <a class="page-link" v-if="item > 0">{{ item + 1 }}</a>
+              <a class="page-link" v-else>{{ item }}</a>
+            </li>
+            <li class="page-item" @click="fetchPageData((strlmt + 1))">
+              <a class="page-link" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-12 col-lg-8 col-md-8 px-4 px-md-0 d-block d-md-none">
+        <h4>ประวัติการจอง</h4>
+        <div class="bborder rounded-3 bg-white box-shadow px-0 py-2 my-2"
+          v-for="(booking, i) in dataBook" :key="i" @click="openDetail(booking,i)">
+          <div class="d-flex align-items-center justify-content-between" v-if="i >= start && i < (limit)">
+            <div class="text-primary w-50 px-2">
+              <h5> วันที่:{{ formatDateThai(booking.dateSelect) }} <span class="text-muted">เวลา:</span>{{ booking.startTime }}</h5>
+            </div>
+            <div class="d-flex align-items-center justify-content-between w-50 px-2">
+              <div class="me-2">
+                <button class="btn btn-outline-info" @click="openSlip(booking)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                    class="bi bi-file-text-fill" viewBox="0 0 16 16">
+                    <path
+                      d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1m-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5M5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1m0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1" />
+                  </svg>
+                </button>
+              </div>
+
+              <div v-if="booking.isActive == 2" class="text-warning text-nowrap">
+                <h5><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-hourglass-split" viewBox="0 0 16 16">
+                    <path
+                      d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z" />
+                  </svg> รอชำระเงิน</h5>
+                <p v-if="booking.isActive == 2">
+                  <button class="btn btn-sm btn-outline-info py-0" @click="toPay">ชำระเงิน</button>
+                </p>
+              </div>
+              <div v-if="booking.isActive > 2" class="text-success text-nowrap">
+                <h5>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-check2-circle" viewBox="0 0 16 16">
+                    <path
+                      d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0" />
+                    <path
+                      d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
+                  </svg> ชำระแล้ว
+                </h5>
+              </div>
+            </div>
+          </div>
+          <div class="text-center w-100" :id="'icon1'+i">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+              class="bi bi-chevron-compact-down text-info" viewBox="0 0 16 16">
+              <path fill-rule="evenodd"
+                d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67" />
+            </svg>
+          </div>
+          <div class="text-left w-100 p-0 bg-gray-200 d-none" :id="'doo'+i">
+              <div class="text-muted p-3">
+                แม่บ้าน:{{ booking.fname }} {{ booking.lname }}<br />
+                {{ booking.hasClean }}
+                {{ booking.workBuilding }}<br />
+                <span class="text-small p-3">ที่อยู่: {{ booking.showAddress }}</span>
+              </div> 
+            <div class="text-center w-100 bg-white" :id="'icon2'+i">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-chevron-compact-up text-primary" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M7.776 5.553a.5.5 0 0 1 .448 0l6 3a.5.5 0 1 1-.448.894L8 6.56 2.224 9.447a.5.5 0 1 1-.448-.894z"/>
+              </svg>
+          </div>
+          </div>
+        </div>
+        <div class="text-right d-flex justify-content-between " id="slide-page" v-if="dataBook.length > 10">
+          <div class="text-left" id="str-lmt">
+            หน้า {{ dataStrLmt + 1 }}
+          </div>
+          <ul class="pagination pagination-rounded justify-content-end mb-2">
+            <li class="page-item" @click="fetchPageData((strlmt - 1))">
+              <a class="page-link" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item" :class="{ active: strlmt == 0 }" @click="fetchPageData(0)">
+              <a class="page-link">1</a>
+            </li>
+            <li class="page-item" :class="{ active: strlmt == 1 }" v-if="total" @click="fetchPageData(1)">
+              <a class="page-link">2</a>
+            </li>
+            <li class="page-item" :class="{ active: item == strlmt }" v-if="pagetotal > 1"
+              v-for="item in pagination(strlmt, pagetotal)" @click="fetchPageData(item)">
+              <a class="page-link" v-if="item > 0">{{ item + 1 }}</a>
+              <a class="page-link" v-else>{{ item }}</a>
+            </li>
+            <li class="page-item" @click="fetchPageData((strlmt + 1))">
+              <a class="page-link" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="row d-flex justify-content-center" v-if="stepTwo == true">
-      <div class="col-12 col-lg-8 col-sm-8 ">
+      <div class="col-12 col-lg-8 col-sm-8 col-md-10 ">
         <div class="row d-flex justify-content-center mt-4">
-          <div class="col-12 col-md-9 px-4 px-md-0  d-flex justify-content-between">
+          <div class="col-12 col-lg-8 col-sm-8 px-4 px-md-0  d-flex justify-content-between">
             <h4>รอชำระเงิน</h4>
-            <h4 @click="stepTwo = false" class="text-info cursor-pointer">
+            <h4 @click="stepTwo = false" class="text-info cursor-pointer bg-white rounded px-2">
               <b>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                   class="bi bi-arrow-left" viewBox="0 0 16 16">
@@ -118,8 +210,36 @@
               กลับ
             </h4>
           </div>
+          <div class="col-lg-8 col-sm-8 col-md-10 my-4 px-4 px-md-0 ">
+            <div class="">
+              กรุณากรอกข้อมูลผู้เสียภาษี
+            </div>
+              <div class="form-group mb-2 border p-4 bg-white">
+                <div class="form-group mb-2">
+                  <label for="registerInputEmail1">นามลูกค้า</label>
+                  <input type="text" v-model="payWait.nickname" class="form-control text-muted" id="registerInputPhone"
+                  oninput="this.value = this.value.replace(/[0-9_]/g, '');"
+                    aria-describedby="emailHelp" placeholder="ชื่อนามสกุล">
+                  <small id="emailHelp" class="form-text text-danger">{{ addressError }}</small>
+                </div>
+                <div class="form-group mb-2">
+                  <label for="registerInputEmail1">ที่อยู่</label>
+                  <textarea cols="30" rows="2" v-model="payWait.maddress" class="form-control text-muted" id="registerInputPhone"
 
-          <div class="col-12 col-lg-9 border px-4 mb-5 mx-lg-0">
+                    aria-describedby="emailHelp" placeholder="ที่อยู่"></textarea>
+                  <small id="emailHelp" class="form-text text-danger">{{ addressError }}</small>
+                </div>
+                <div class="form-group mb-2">
+                  <label for="registerInputEmail1">เลขที่ผู้เสียภาษี/เลขบัตรประชาชน</label>
+                  <input type="text" v-model="payWait.mppcard" class="form-control text-muted" id="registerInputPhone"
+                  oninput="this.value = this.value.replace(/[^0-9_]/g, '');"   maxlength="21"
+                    aria-describedby="emailHelp" placeholder="เลขที่ผู้เสียภาษี/เลขบัตรประชาชน">
+                  <small id="emailHelp" class="form-text text-danger">{{ ppcardError }}</small>
+                </div>
+                 <button class="btn  btn-warning my-2" @click="handleSave">บันทึก</button>
+              </div>
+          </div>
+          <div class="col-12 col-lg-8 col-sm-8 col-md-10 border p-4 mb-5 mx-lg-0 bg-white">
             <div class="row">
               <div class="col-4 text-left">
                 <img src="@/public/assets/images/messageImage_1710223947120.jpg" alt="logo" class="p-2 w-100">
@@ -129,17 +249,16 @@
                 <small class="text-muted" style="font-size:12px;" v-html="dataSetting.bname"></small>
                 <small class="text-muted" style="font-size:12px;" v-html="dataSetting.baddress"></small>
               </div>
-
             </div>
             <div class="border">
               <div class="border-bottom px-2 py-1">
-                นามลกค้า: <small class="text-muted">{{ payWait.mfname }} {{ payWait.mlname }}</small>
+                นามลกค้า: <small class="text-muted">{{ payWait.nickname }}</small>
               </div>
               <div class="border-bottom px-2 py-1">
-                ที่อยู่: <small class="text-muted small">{{ payWait.showAddress }}</small>
+                ที่อยู่: <small class="text-muted small">{{ payWait.maddress }}</small>
               </div>
               <div class=" px-2 py-1">
-                เลขประจำตัวผู้เสียภาษี :
+                เลขประจำตัวผู้เสียภาษี : <small class="text-muted small">{{ dataSlip.mppcard }}</small>
               </div>
             </div>
             <div class="row">
@@ -169,7 +288,7 @@
                         </td>
                         <td class="mx-0 px-0">
                           <div class="mx-0 px-2 text-nowrap">
-                            {{ fDateThai(payWait.create_at) }}
+                            {{ fDateThai(payWait.booking_create_at) }}
                           </div>
                         </td>
                         <td class="mx-0 px-0">
@@ -183,11 +302,12 @@
                           </div>
                         </td>
                       </tr>
-                      <tr v-if="payWait.hasTool == '1'">
+                      <tr v-if="payWait.hasTool === '1'">
                         <td></td>
                         <td>
                           <div class="mx-0 px-2 d-flex justify" style="font-size:0.rem;" v-if="payWait.hasClean">
-                            (+{{ dataSetting.hasTool }} บาท) ฉันไม่มีอุปกรณ์ทำความสะอาด</div>
+                            (+49 บาท) ฉันไม่มีอุปกรณ์ทำความสะอาด
+                          </div>
                         </td>
                         <td></td>
                         <td></td>
@@ -227,8 +347,27 @@
                         <td></td>
                         <td></td>
                         <td colspan="2">
-                          <div class="px-2 d-flex justify-content-between">ราคารวม: <b>{{ (payWait.amountPrice +
-      toolPirce).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}</b></div>
+                          <div class="px-2 d-flex justify-content-between">ราคารวม: <b>{{(payWait.amountPrice + toolPirce).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        }}</b></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td><div class="px-2 d-flex justify-content-between" v-if="dataRecept.promotion_name">{{ dataRecept.promotion_name }}</div></td>
+                        <td></td>
+                        <td colspan="2">
+                          <div class="px-2 d-flex justify-content-between">ส่วนลด: 
+                            <div v-if="dataRecept.promotion_amount">
+                              <b>
+                                {{dataRecept.promotion_amount}}
+                              </b>
+                              <span v-if="dataRecept.proType=='percent'">%</span>
+                              <span class="text-small" v-else>บาท</span>
+                            </div>
+                            <div v-else>
+                              0.00
+                            </div>
+                          </div>
                         </td>
                       </tr>
                       <tr>
@@ -236,25 +375,36 @@
                         <td></td>
                         <td></td>
                         <td colspan="2">
-                          <div class="px-2 d-flex justify-content-between">ส่วนลด: <b></b></div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td colspan="2">
-                          <div class="px-2 d-flex justify-content-between">ภาษีมูลค่าเพิ่ม / 7%:
-                            <b>{{ parseFloat((payWait.amountPrice + toolPirce) * 7 / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}</b>
+                          <div class="px-2 d-flex justify-content-between">ภาษีมูลค่าเพิ่ม 7%: 
+                            <div v-if="dataRecept.promotionId">
+                              <b v-if="dataRecept.proType=='percent'">
+                                {{ parseFloat(((parseInt(dataRecept.amount_price)-(parseInt(dataRecept.amount_price) * parseFloat(dataRecept.promotion_amount)/ 100))+dataRecept.tool_price)* (dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
+                              </b>
+                              <b v-else>
+                                {{ parseFloat((parseInt(dataRecept.amount_price)-parseInt(dataRecept.amount_price)+parseInt(dataRecept.tool_price))* parseFloat(dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
+                              </b>
+                            </div>
+                            <b v-else>
+                              {{ parseFloat((parseInt(dataRecept.amount_price)+parseInt(dataRecept.tool_price)) * parseFloat(dataSetting.eTax )/ 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
+                            </b>
                           </div>
                         </td>
                       </tr>
                       <tr>
                         <td colspan="3"></td>
                         <td colspan="2" class="bg-dark">
-                          <div class="px-2 d-flex justify-content-between text-white">ยอดเงินสุทธิ:
-                            <b>{{ parseFloat((((payWait.amountPrice + toolPirce) * 7) / 100) + (toolPirce +
-                              payWait.amountPrice)).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}</b>
+                          <div class="px-2 d-flex justify-content-between text-white" v-if="dataPromotion">ยอดเงินสุทธิ: 
+                            <b v-if="dataPromotion.unit=='percent'">
+                              {{parseFloat((((((parseInt(payWait.amountPrice)-(parseInt(payWait.amountPrice)*parseInt(dataPromotion.amount))/100)) + parseInt(toolPirce))+(parseInt(payWait.amountPrice)) * 7 / 100))).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1,") }}
+                            </b>
+                            <b v-else>
+                              {{parseFloat(((parseInt(payWait.amountPrice)-parseInt(dataPromotion.amount)))+ (parseInt(toolPirce) + parseInt(payWait.amountPrice))).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1,") }}
+                            </b>
+                          </div>
+                          <div class="px-2 d-flex justify-content-between text-white" v-else>ยอดเงินสุทธิ: 
+                            <b>
+                              {{parseFloat((((parseInt(payWait.amountPrice)) * 7 )/ 100) + (parseInt(toolPirce) + parseInt(payWait.amountPrice))).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1,") }}
+                            </b>
                           </div>
                         </td>
                       </tr>
@@ -264,7 +414,7 @@
               </div>
             </div>
           </div>
-          <div class="col-12 col-md-10 px-4">
+          <div class="col-12 col-lg-8 col-sm-8 col-md-10 bg-white px-4 mb-4">
             <div class="row">
               <h5 class="py-3">การชำระเงิน</h5>
               <div class="col-3 col-md-2 col-lg-2 mx-4">
@@ -338,149 +488,185 @@
                   </div>
                   <div class="col-7 col-md-5 text-lef py-3 px-0">
                     <div class="text-muted text-small p-0" style="font-size: 10px;" v-html="dataSetting.bname"></div>
-                    <div class="text-muted text-small p-0" style="font-size: .5rem;" v-html="dataSetting.baddress"></div>
+                    <div class="text-muted text-small p-0" style="font-size: .5rem;" v-html="dataSetting.baddress">
+                    </div>
                   </div>
                   <div class="col-12 col-md-4 text-lef py-md-3 pb-3 px-3 d-flex align-items-end  justify-content-end">
-                    <div class="border px-2 py-1 text-nowrap text-small text-center bg-gray-200"> ใบกำกับภาษี/ใบเสร็จรับเงิน
+                    <div class="border px-2 py-1 text-nowrap text-small text-center bg-gray-200">
+                      ใบกำกับภาษี/ใบเสร็จรับเงิน
                     </div>
                   </div>
 
                 </div>
                 <div class="border" style="font-size:12px;line-height: 1rem;">
                   <div class="border-bottom px-2 py-1">
-                    นามลกค้า: <small class="text-muted">{{ dataSlip.title }}{{ dataSlip.mfname }} {{ dataSlip.mlname }}</small>
+                    นามลูกค้า: <small class="text-muted">{{ dataSlip.nickname }}</small>
                   </div>
                   <div class="border-bottom px-2 py-0 d-flex align-items-center  justify-content-between">
                     <div style="width:78%" class="py-2">
-                      ที่อยู่: <small class="text-muted small">{{ dataSlip.showAddress }}</small>
+                      ที่อยู่: <small class="text-muted small">{{ dataSlip.maddress }}</small>
                     </div>
                     <div class="my-0 p-2 border-date">
-                      <div class="d-flex align-items-center justify-content-between"><span>วันที่:</span> <span>{{ fDateThai(dataSlip.create_at) }}</span></div>
-                      <div class="d-flex align-items-center justify-content-between"><span>เลขที่:</span><span>{{ dataSlip.bookId.toString().padStart(4, '0') }}</span></div> 
+                      <div class="d-flex align-items-center justify-content-between"><span>วันที่:</span> <span>{{
+      fDateThai(dataSlip.booking_create_at) }}</span></div>
+                      <div class="d-flex align-items-center justify-content-between"><span>เลขที่:</span><span>{{
+      dataSlip.bookId.toString().padStart(4, '0') }}</span>
+      </div>
                     </div>
                   </div>
                   <div class=" px-2 py-1">
-                    เลขประจำตัวผู้เสียภาษี :
+                    เลขประจำตัวผู้เสียภาษี :  <small class="text-muted small">{{ dataSlip.mppcard }}</small>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-12">
                     <div class="table-responsive">
                       <table class="table border" style="min-height:250px">
-                        <tbody>
-                          <tr>
-                            <th>ลำดับ</th>
-                            <th>รายละเอียด</th>
-                            <th>วันที่เอกสาร</th>
-                            <th>ครบกำหนด</th>
-                            <th>จำนวนเงิน</th>
-                          </tr>
-                        </tbody>
-                        <tbody>
-                          <tr>
-                            <td class="mx-0 px-0">
-                              <div class="mx-0 px-2" v-if="dataSlip.fname">
-                                1
-                              </div>
-                            </td>
-                            <td class="text-nowrap mx-0 px-0">
-                              <div class="mx-0 px-2 d-flex justify" style="font-size:0.rem;" v-if="dataSlip.fname">
-                                บริการแม่บ้าน {{ dataSlip.fname }} {{ dataSlip.lname }}
-                              </div>
-                            </td>
-                            <td class="mx-0 px-0">
-                              <div class="mx-0 px-2 text-nowrap">
-                                {{ fDateThai(dataSlip.create_at) }}
-                              </div>
-                            </td>
-                            <td class="mx-0 px-0">
-                              <div class="mx-0 px-2 text-nowrap">
-                                {{ fDateThai(dataSlip.dateSelect) }}
-                              </div>
-                            </td>
-                            <td class="mx-0 px-0">
-                              <div class="mx-0 px-2 text-nowrap">
-                                {{ dataSlip.amountPrice.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
-                              </div>
-                            </td>
-                          </tr>
-                          <tr v-if="dataSlip.hasTool == '1'">
-                            <td></td>
-                            <td class="text-nowrap mx-0 px-0">
-                              <div class="mx-0 px-2 d-flex justify" style="font-size:0.rem;" v-if="dataSlip.hasClean">
-                                (+{{ dataSetting.hasTool }} บาท) ฉันไม่มีอุปกรณ์ทำความสะอาด
-                              </div>
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td>{{ toolPirce.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}</td>
-                          </tr>
-                          <tr>
-                            <td></td>
-                            <td class="text-nowrap mx-0 px-0">
-                              <div class="mx-0 px-2 d-flex justify-content-start" style="font-size:0.rem;"
-                                v-if="dataSlip.hasClean">
-                                {{ dataSlip.hasClean }} {{ dataSlip.workBuilding }} {{ dataSlip.startTime }}
-                              </div>
-                            </td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                          </tr>
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                              <p></p>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                              <p></p>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td colspan="3">
-                              <div class="px-2 d-flex justify-content-between">ราคารวม: <b>{{ (dataSlip.amountPrice +toolPirce).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}</b></div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td colspan="3">
-                              <div class="px-2 d-flex justify-content-between">ส่วนลด: <b></b></div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td colspan="3">
-                              <div class="px-2 d-flex justify-content-between">ภาษีมูลค่าเพิ่ม / 7%:
-                                <b>{{ parseFloat((dataSlip.amountPrice + toolPirce) * 7 / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}</b>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td colspan="2" class="bg-gray-300">
-                              <img src="@/public/assets/images/paid-preview.png" alt="paid" class="paid-preview" v-if="dataSlip.isActive>2">
-                            </td>
-                            <td colspan="3" class="bg-dark">
-                              <div class="px-2 d-flex justify-content-between text-white">ยอดเงินสุทธิ:
-                                <b>{{ parseFloat((((dataSlip.amountPrice + toolPirce) * 7) / 100) + (toolPirce +
-                                  dataSlip.amountPrice)).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}</b>
-                              </div>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                    <tbody>
+                      <tr>
+                        <th>ลำดับ</th>
+                        <th>รายละเอียด</th>
+                        <th>วันที่เอกสาร</th>
+                        <th>ครบกำหนด</th>
+                        <th>จำนวนเงิน</th>
+                      </tr>
+                    </tbody>
+                    <tbody>
+                      <tr>
+                        <td class="mx-0 px-0">
+                          <div class="mx-0 px-2" v-if="dataSlip.fname">
+                            1
+                          </div>
+                        </td>
+                        <td class="text-nowrap mx-0 px-0">
+                          <div class="mx-0 px-2 d-flex justify" style="font-size:0.rem;" v-if="dataSlip.fname">
+                            บริการแม่บ้าน {{ dataSlip.fname }} {{ dataSlip.lname }}
+                          </div>
+                        </td>
+                        <td class="mx-0 px-0">
+                          <div class="mx-0 px-2 text-nowrap">
+                            {{ fDateThai(dataSlip.booking_create_at) }}
+                          </div>
+                        </td>
+                        <td class="mx-0 px-0">
+                          <div class="mx-0 px-2 text-nowrap">
+                            {{ fDateThai(dataSlip.dateSelect) }}
+                          </div>
+                        </td>
+                        <td class="mx-0 px-0">
+                          <div class="mx-0 px-2 text-nowrap">
+                            {{ dataSlip.amountPrice.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="dataSlip.hasTool === '1'">
+                        <td></td>
+                        <td>
+                          <div class="mx-0 px-2 d-flex justify" style="font-size:0.rem;" v-if="dataRecept.tool_price">
+                            (+{{ dataRecept.tool_price }} บาท) ฉันไม่มีอุปกรณ์ทำความสะอาด
+                          </div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ dataRecept.tool_price.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td>
+                          <div class="mx-0 px-2 d-flex justify" style="font-size:0.rem;" v-if="dataSlip.hasClean">
+                            {{ dataSlip.hasClean }} {{ dataSlip.workBuilding }} {{ dataSlip.startTime }}
+                          </div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                          <p></p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                          <p></p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td colspan="2">
+                          <div class="px-2 d-flex justify-content-between">ราคารวม: <b>{{(dataSlip.amountPrice + dataRecept.tool_price).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        }}</b></div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td><div class="px-2 d-flex justify-content-between" v-if="dataRecept.promotion_name">{{ dataRecept.promotion_name }}</div></td>
+                        <td></td>
+                        <td colspan="2">
+                          <div class="px-2 d-flex justify-content-between">ส่วนลด: 
+                            <div v-if="dataRecept.promotion_amount">
+                              <b>
+                                {{dataRecept.promotion_amount}}
+                              </b>
+                              <span v-if="dataRecept.proType=='percent'">%</span>
+                              <span class="text-small" v-else>บาท</span>
+                            </div>
+                            <div v-else>
+                              0.00
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td colspan="2">
+                          <div class="px-2 d-flex justify-content-between">ภาษีมูลค่าเพิ่ม {{dataRecept.vat}}%: 
+                            <div v-if="dataRecept.promotionId">
+                              <b v-if="dataRecept.proType=='percent'">
+                                {{ parseFloat(((parseInt(dataRecept.amount_price)-(parseInt(dataRecept.amount_price) * parseFloat(dataRecept.promotion_amount)/ 100))+dataRecept.tool_price)* (dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
+                              </b>
+                              <b v-else>
+                                {{ parseFloat((parseInt(dataRecept.amount_price)-parseInt(dataRecept.amount_price)+parseInt(dataRecept.tool_price))* parseFloat(dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
+                              </b>
+                            </div>
+                            <b v-else>
+                              {{ parseFloat((parseInt(dataRecept.amount_price)+parseInt(dataRecept.tool_price)) * parseFloat(dataSetting.eTax )/ 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
+                            </b>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="3"></td>
+                        <td colspan="2" class="bg-dark">
+                          <div class="px-2 d-flex justify-content-between text-white" v-if="dataPromotion">ยอดเงินสุทธิ: 
+                            <b v-if="dataPromotion.unit=='percent'">
+                              {{parseFloat((((((parseInt(payWait.amountPrice)-(parseInt(payWait.amountPrice)*parseInt(dataPromotion.amount))/100)) + parseInt(toolPirce))+(parseInt(payWait.amountPrice)) * 7 / 100))).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1,") }}
+                            </b>
+                            <b v-else>
+                              {{parseFloat(((parseInt(payWait.amountPrice)-parseInt(dataPromotion.amount)))+ (parseInt(toolPirce) + parseInt(payWait.amountPrice))).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1,") }}
+                            </b>
+                          </div>
+                          <div class="px-2 d-flex justify-content-between text-white" v-else>ยอดเงินสุทธิ: 
+                            <b>
+                              {{parseFloat((((parseInt(payWait.amountPrice)) * 7 )/ 100) + (parseInt(toolPirce) + parseInt(payWait.amountPrice))).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1,") }}
+                            </b>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                     </div>
                   </div>
                 </div>
@@ -491,14 +677,17 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" @click="downloadAsImage()">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
-  <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
-  <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
-</svg>
- ดาวน์โหลด</button>
+            <button type="button" class="btn btn-primary" @click="downloadAsImage()" v-if="dataSlip.isActive>2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download"
+                viewBox="0 0 16 16">
+                <path
+                  d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
+                <path
+                  d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z" />
+              </svg>
+              ดาวน์โหลด</button>
             <button type="button" class="btn btn-secondary" @click="opSm = false">ปิด</button>
-            
+
           </div>
         </div>
       </div>
@@ -520,20 +709,23 @@ export default {
       pagetotal: 0,
       total: 0,
       strlmt: 0,
-      start:0,
-      limit:5,
+      start: 0,
+      limit: 5,
       dataBook: '',
+      dataPromotion:'',
       dataBookForSearch: '',
       profile: '',
       opSm: false,
       stepTwo: false,
       copy: false,
+      isDetail: false,
       payWait: '',
       dataSlip: '',
-      toolPirce:0,
+      toolPirce: 0,
       myBankData: '',
       imageData: '',
-      dataSetting:'',
+      dataSetting: '',
+      dataRecept: '',
       apiBase: import.meta.env.VITE_AGENT_BASE_URL,
       bankData: [
         { "img": "https://www.logolynx.com/images/logolynx/ac/acc6db2f0532b74dff3f2525adbc56a3.jpeg", "id": "1", "shortname": "kbank", "name": "กสิกรไทย" },
@@ -587,30 +779,102 @@ export default {
         });
       });
     },
+    handleSave: async function () {
+      this.profile = JSON.parse(localStorage.getItem("Profile"));
+      try {
+        let config = {
+          method: "put",
+          url: this.apiBase + "/members/"+this.profile.member_id,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: {
+            mppcard:this.payWait.mppcard,
+            maddress:this.payWait.maddress,
+            nickname:this.payWait.nickname,
+          }
+        };
+
+        await axios
+          .request(config)
+          .then((response) => {
+            swal({
+                position: "top-center",
+                icon: "success",
+                title: response.data.message,
+                showConfirmButton: false,
+                timer: 1500
+              });
+             this.goPay();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    getPromotion: async function () {
+      try {
+        let config = {
+          method: "get",
+          url: this.apiBase + "/promotion",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+
+        await axios
+          .request(config)
+          .then((response) => {
+            this.dataPromotion = response.data[0];
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      } catch (error) {
+        console.error(error);
+      }
+    },
     getSetting: async function () {
-            try {
-                let config = {
-                    method: "get",
-                    url: this.apiBase + "/vat-for-maid",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": localStorage.getItem("Admin-mdc").token
-                    },
-                };
+      try {
+        let config = {
+          method: "get",
+          url: this.apiBase + "/vat-for-maid",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": localStorage.getItem("Admin-mdc").token
+          },
+        };
 
-                await axios
-                    .request(config)
-                    .then((response) => {
-                        this.dataSetting = response.data;
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+        await axios
+          .request(config)
+          .then((response) => {
+            this.dataSetting = response.data;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
 
-            } catch (error) {
-                console.error(error);
-            }
-        },
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    openDetail(date,i) {
+      if($('#doo'+i).hasClass('d-block')){
+        $('#doo'+i).addClass('d-none');
+        $('#doo'+i).removeClass('d-block');
+        $('#icon1'+i).addClass('d-block');
+        $('#icon1'+i).removeClass('d-none');
+      }else{
+        $('#doo'+i).addClass('d-block');
+        $('#doo'+i).removeClass('d-none');
+        $('#icon1'+i).addClass('d-none');
+        $('#icon1'+i).removeClass('d-block');
+      }
+    },
     reDateThai(date) {
       return format(new Date(date), 'd-MM-yyyy', { locale: th });
     },
@@ -619,15 +883,16 @@ export default {
     },
     openSlip(data) {
       this.fetchBank();
-      // this.fetchPayWait();
       
+
       this.opSm = true;
       this.dataSlip = data;
-      if(this.dataSlip.hasTool==='1'){
+      if (this.dataSlip.hasTool === '1') {
         this.toolPirce = this.dataSetting.hasTool;
-      }else{
+      } else {
         this.toolPirce = 0;
       }
+      this.fetchReceipt();
     },
     formatDateThai(date) {
       return format(new Date(date), 'd MMM yy', { locale: th });
@@ -665,9 +930,33 @@ export default {
       }
     },
     toPay() {
+      this.getPromotion();
       this.fetchBank();
       this.fetchPayWait();
       this.stepTwo = true;
+    },
+    fetchReceipt: async function () {
+      try {
+        let config = {
+          method: "get",
+          url: this.apiBase + "/fetchReceipt/" + this.dataSlip.bookId,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+
+        await axios
+          .request(config)
+          .then((response) => {
+            this.dataRecept = response.data;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      } catch (error) {
+        console.error(error);
+      }
     },
     fetchBank: async function () {
       const profile = JSON.parse(localStorage.getItem("Profile"));
@@ -710,15 +999,15 @@ export default {
         await axios
           .request(config)
           .then((response) => {
-            if(response.data){
+            if (response.data) {
               this.payWait = response.data;
               this.dataSlip = response.data;
               if (this.payWait.hasTool == '1' || this.dataSlip.hasTool == '1') {
                 this.toolPirce = this.dataSetting.hasTool;
-              }else{
+              } else {
                 this.toolPirce = 0;
               }
-            }else{
+            } else {
               this.payWait = '';
               this.dataSlip = '';
               this.toolPirce = 0;
@@ -793,6 +1082,7 @@ export default {
         await axios
           .request(config)
           .then((response) => {
+            this.getBooking();
             Swal.fire({
               position: "top-center",
               icon: "success",
@@ -800,6 +1090,7 @@ export default {
               showConfirmButton: true,
             }).then(() => {
               this.$router.push('/history');
+              this.stepTwo=false;
             });
           })
           .catch((error) => {
@@ -828,9 +1119,9 @@ export default {
       // var choices = document.getElementById("producttypesale").value;
       this.strlmt = str;
       this.dataStrLmt = str;
-      
 
-      if((str * 5)<this.dataBook.length ){
+
+      if ((str * 5) < this.dataBook.length) {
         this.start = str * 5;
         this.limit = str * 5 + 5;
       }
@@ -873,7 +1164,15 @@ export default {
 }
 </script>
 
-<style>
+<style scope>
+.w-60 {
+  width: 60%;
+}
+
+.w-40 {
+  width: 40%;
+}
+
 .vuejs-datepicker {
   font-family: 'Tahoma', sans-serif;
 }
@@ -892,11 +1191,17 @@ export default {
 
 .paid-preview {
   position: absolute;
-  width: 207px;
-  margin-top: -165px;
-  margin-left: -89px;
+  width: 144px;
+  margin-top: -117px;
+  margin-left: -39px;
   opacity: 0.8;
 }
 
-
+.unpaid-preview {
+  position: absolute;
+  width: 144px;
+  margin-top: -192px;
+  margin-left: -39px;
+  opacity: 0.8;
+}
 </style>

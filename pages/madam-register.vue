@@ -99,27 +99,27 @@
                                     <div class="form-check mx-4">
                                         <input type="radio" name="experience1Year" id="experience2Year"
                                             v-model="experience" class="form-check-input" value="2">
-                                        <label class="form-check-label" for="experience1Year">2 ปี</label>
+                                        <label class="form-check-label" for="experience2Year">2 ปี</label>
                                     </div>
                                     <div class="form-check mx-4">
                                         <input type="radio" id="experience3Years" v-model="experience"
                                             class="form-check-input" value="3">
-                                        <label class="form-check-label" for="experience2Years">3 ปี</label>
+                                        <label class="form-check-label" for="experience3Years">3 ปี</label>
                                     </div>
                                     <div class="form-check mx-4">
                                         <input type="radio" id="experience4Years" v-model="experience"
                                             class="form-check-input" value="4">
-                                        <label class="form-check-label" for="experience2Years">4 ปี</label>
+                                        <label class="form-check-label" for="experience4Years">4 ปี</label>
                                     </div>
                                     <div class="form-check mx-4">
                                         <input type="radio" id="experience5Years" v-model="experience"
                                             class="form-check-input" value="5">
-                                        <label class="form-check-label" for="experience2Years">5 ปี</label>
+                                        <label class="form-check-label" for="experience5Years">5 ปี</label>
                                     </div>
                                     <div class="form-check mx-4">
                                         <input type="radio" id="experience5Over" v-model="experience"
                                             class="form-check-input" value="6">
-                                        <label class="form-check-label" for="experience2Years">มากกว่า 5 ปี</label>
+                                        <label class="form-check-label" for="experience5Over">มากกว่า 5 ปี</label>
                                     </div>
                                 </div>
 
@@ -130,10 +130,10 @@
                                     <label for="">เดินทางได้ในรัศมี 10 - 15 กม. (กทม. นนทบุรี สมุทรปราการ หรือปทุมธานี)
                                         *</label>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="workIn" id="workIn" 
+                                        <input type="radio" name="workIny" id="workIny" 
                                         v-model="workIn"
                                             class="form-check-input" value="1">
-                                        <label class="form-check-label" for="experience1Year">ได้</label>
+                                        <label class="form-check-label" for="workIny">ได้</label>
                                     </div>
                                     <div class="form-check mx-4">
                                         <input type="radio" name="workIn" id="workIn"
@@ -146,44 +146,44 @@
                                 <div class="form-group">
                                     <label for="">ปัจจุบันทำงานกี่วัน/สัปดาห์ (กรณีมีงานทำ) *</label>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="experience1Year" id="experience1Year"
+                                        <input type="radio" name="hasWork0Year" id="hasWork0Year"
                                             class="form-check-input" v-model="workOn" value="0">
-                                        <label class="form-check-label" for="experience1Year">ไม่มีงานประจำ</label>
+                                        <label class="form-check-label" for="hasWork0Year">ไม่มีงานประจำ</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="experience1Year" id="experience1Year"
+                                        <input type="radio" name="hasWork1Year" id="hasWork1Year"
                                             class="form-check-input" v-model="workOn" value="1">
-                                        <label class="form-check-label" for="experience1Year">1 วัน</label>
+                                        <label class="form-check-label" for="hasWork1Year">1 วัน</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="experience2Years" id="experience2Years"
+                                        <input type="radio" name="hasWork2Years" id="hasWork2Years"
                                             class="form-check-input" v-model="workOn" value="2">
-                                        <label class="form-check-label" for="experience2Years">2 วัน</label>
+                                        <label class="form-check-label" for="hasWork2Years">2 วัน</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="experience3Years" id="experience3Years"
+                                        <input type="radio" name="hasWork3Years" id="hasWork3Years"
                                             class="form-check-input" v-model="workOn" value="3">
-                                        <label class="form-check-label" for="experience3Years">3 วัน</label>
+                                        <label class="form-check-label" for="hasWork3Years">3 วัน</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="experience4Years" id="experience4Years"
+                                        <input type="radio" name="hasWork4Years" id="hasWork4Years"
                                             class="form-check-input" v-model="workOn" value="4">
-                                        <label class="form-check-label" for="experience4Years">4 วัน</label>
+                                        <label class="form-check-label" for="hasWork4Years">4 วัน</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="experience5Years" id="experience5Years"
+                                        <input type="radio" name="hasWork5Years" id="hasWork5Years"
                                             class="form-check-input" v-model="workOn" value="5">
-                                        <label class="form-check-label" for="experience5Years">5 วัน</label>
+                                        <label class="form-check-label" for="hasWork5Years">5 วัน</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="experience6Years" id="experience6Years"
+                                        <input type="radio" name="hasWork6Years" id="hasWork6Years"
                                             class="form-check-input" v-model="workOn" value="6">
-                                        <label class="form-check-label" for="experience6Years">6 วัน</label>
+                                        <label class="form-check-label" for="hasWork6Years">6 วัน</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="experience7Years" id="experience7Years"
+                                        <input type="radio" name="hasWork7Years" id="hasWork7Years"
                                             class="form-check-input" v-model="workOn" value="7">
-                                        <label class="form-check-label" for="experience7Years">7 วัน</label>
+                                        <label class="form-check-label" for="hasWork7Years">7 วัน</label>
                                     </div>
                                 </div>
                             </div>
@@ -191,39 +191,39 @@
                                 <div class="form-group">
                                     <label for="">สามารถทำงานกับเราได้กี่วัน/สัปดาห์ *</label>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="" id="experience2Year" class="form-check-input"
+                                        <input type="radio" name="" id="cando1day" class="form-check-input"
                                             v-model="workDays" value="1">
-                                        <label class="form-check-label" for="experience1Year">1 วัน</label>
+                                        <label class="form-check-label" for="cando1day">1 วัน</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="" id="experience2Years" class="form-check-input"
+                                        <input type="radio" name="" id="cando2day" class="form-check-input"
                                             v-model="workDays" value="2">
-                                        <label class="form-check-label" for="experience2Years">2 วัน</label>
+                                        <label class="form-check-label" for="cando2day">2 วัน</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="" id="experience3Years" class="form-check-input"
+                                        <input type="radio" name="" id="cando3day" class="form-check-input"
                                             v-model="workDays" value="3">
-                                        <label class="form-check-label" for="experience3Years">3 วัน</label>
+                                        <label class="form-check-label" for="cando3day">3 วัน</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="" id="experience4Years" class="form-check-input"
+                                        <input type="radio" name="" id="cando4day" class="form-check-input"
                                             v-model="workDays" value="4">
-                                        <label class="form-check-label" for="experience4Years">4 วัน</label>
+                                        <label class="form-check-label" for="cando4day">4 วัน</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="" id="experience5Years" class="form-check-input"
+                                        <input type="radio" name="" id="cando5day" class="form-check-input"
                                             v-model="workDays" value="5">
-                                        <label class="form-check-label" for="experience5Years">5 วัน</label>
+                                        <label class="form-check-label" for="cando5day">5 วัน</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="" id="experience6Years" class="form-check-input"
+                                        <input type="radio" name="" id="cando6day" class="form-check-input"
                                             v-model="workDays" value="6">
-                                        <label class="form-check-label" for="experience6Years">6 วัน</label>
+                                        <label class="form-check-label" for="cando6day">6 วัน</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="" id="experience7Years" class="form-check-input"
+                                        <input type="radio" name="" id="cando7day" class="form-check-input"
                                             v-model="workDays" value="7">
-                                        <label class="form-check-label" for="experience7Years">7 วัน</label>
+                                        <label class="form-check-label" for="cando7day">7 วัน</label>
                                     </div>
                                 </div>
                             </div>
@@ -231,14 +231,14 @@
                                 <div class="form-group">
                                     <label for="">ยืนยันว่าไม่เคยมีประวัติอาชญากรรม *</label>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="concentYes" id="concentYes" class="form-check-input"
+                                        <input type="radio" name="concentYes" id="badHas" class="form-check-input"
                                             v-model="noCriminalHistory" value="1">
-                                        <label class="form-check-label" for="concentYes">มี</label>
+                                        <label class="form-check-label" for="badHas">มี</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="concentNo" id="concentNo" class="form-check-input"
+                                        <input type="radio" name="concentNo" id="badNo" class="form-check-input"
                                             v-model="noCriminalHistory" value="0">
-                                        <label class="form-check-label" for="concentNo">ไม่มี</label>
+                                        <label class="form-check-label" for="badNo">ไม่มี</label>
                                     </div>
                                 </div>
                             </div>
@@ -247,14 +247,14 @@
                                     <label
                                         for="">คุณยินยอมให้เปิดเผยข้อมูลส่วนบุคคลแก่บริษัทเพื่อใช้ประเมินการรับสมัครงาน *</label>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="lname" id="thaiNationalityYes"
+                                        <input type="radio" name="lname" id="concentYes"
                                             class="form-check-input" v-model="personalDataConsent" value="1">
-                                        <label class="form-check-label" for="thaiNationalityYes">ยินยิม</label>
+                                        <label class="form-check-label" for="concentYes">ยินยิม</label>
                                     </div>
                                     <div class="form-check mx-4">
-                                        <input type="radio" name="lname" id="thaiNationalityNo" class="form-check-input"
+                                        <input type="radio" name="lname" id="concentNo" class="form-check-input"
                                             v-model="personalDataConsent" value="0">
-                                        <label class="form-check-label" for="thaiNationalityNo">ไม่ยินยอม</label>
+                                        <label class="form-check-label" for="concentNo">ไม่ยินยอม</label>
                                     </div>
                                 </div>
                             </div>
@@ -286,7 +286,26 @@
                             </div>
                             <div class="coll-12">
                                 <button class="btn btn-danger w-100" disabled v-if="!latitude">รอสักครู่..</button>
-                                <button class="btn btn-danger w-100" v-else @click="addMaid">บันทึกข้อมูล</button>
+                                <button class="btn btn-danger w-100" v-else
+                                :disabled="
+                                this.title=='' ||
+                                this.fname=='' ||
+                                this.lname=='' ||
+                                this.email=='' ||
+                                this.password=='' ||
+                                this.phone=='' ||
+                                this.address=='' ||
+                                this.ppCard=='' ||
+                                this.birthDay=='' ||
+                                this.thaiNationality=='' ||
+                                this.experience=='' ||
+                                this.workIn=='' ||
+                                this.workOn=='' ||
+                                this.workDays=='' ||
+                                this.noCriminalHistory=='' ||
+                                this.personalDataConsent=='' ||
+                                this.showAddress =='' || this.markerPosition ==''"     
+                                 @click="addMaid">บันทึกข้อมูล</button>
                             </div>
                         </div>
                     </div>
@@ -439,6 +458,17 @@ export default {
         errorHandler(error) {
             console.error("Error getting geolocation:", error.message);
         },
+        validateEmail: function(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regular expression for valid email format
+            return emailRegex.test(email); // Return true if email is in valid format, false otherwise
+        },
+        validateEmail: function(email) {
+            return String(email)
+                .toLowerCase()
+                .match(
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                );
+        },
         addMaid: async function () {
             if(this.title=='' ||
             this.fname=='' ||
@@ -458,11 +488,11 @@ export default {
                  this.personalDataConsent=='' ||
                  this.showAddress =='' || this.markerPosition ==''){
                     swal({
-                            position: "top-center",
-                            icon: "error",
-                            title: 'กรุณากรอกข้อมูลให้ครบถ้วน',
-                            showConfirmButton: false,
-                        });
+                        position: "top-center",
+                        icon: "error",
+                        title: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+                        showConfirmButton: false,
+                    });
                     return false;
             }
             if(this.personalDataConsent==0){
@@ -473,6 +503,45 @@ export default {
                     showConfirmButton: false,
                 });
             return false;
+            }
+
+            let chkphone = String(this.phone.substring(2, 0));
+            const chkEmail = this.validateEmail(this.email);
+            if (!chkEmail) {
+                swal({
+                    position: "top-center",
+                    icon: "error",
+                    title: 'รูปแบบอีเมล์ไม่ถูกต้อง',
+                    showConfirmButton: false,
+                });
+                return false;
+            }
+             if (this.phone.length <10) {
+                swal({
+                    position: "top-center",
+                    icon: "error",
+                    title: 'กรุณากรอกเบอร์โทรให้ถูกต้อง',
+                    showConfirmButton: false,
+                });
+                return false;
+            } else if (chkphone != "02" && chkphone != "06" && chkphone != "08" && chkphone != "09") {
+                swal({
+                    position: "top-center",
+                    icon: "error",
+                    title: 'กรุณากรอกเบอร์โทรให้ถูกต้อง',
+                    showConfirmButton: false,
+                });
+                return false;
+            }
+            
+            if (this.ppCard.length<13) {
+                swal({
+                    position: "top-center",
+                    icon: "error",
+                    title: 'กรอกเลขบัตรประชาชนให้ถูกต้อง',
+                    showConfirmButton: false,
+                });
+                return false;
             }
             const data = {
                 maidTitle: this.title,
@@ -525,7 +594,7 @@ export default {
                         swal({
                             position: "top-center",
                             icon: "error",
-                            title: error,
+                            title: error.response.data.message,
                             showConfirmButton: false,
 
                         });

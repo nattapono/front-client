@@ -1,17 +1,15 @@
 <template>
-  <div class="topbar px-md-5 bg-danger d-flex justify-content-between" @click="handleBodyClick">
+  <div class="topbar px-md-5 bg-danger d-flex justify-content-between" :class="{'d-none':$route.name==maid}" @click="handleBodyClick">
     <div class="text-white text-1xl align-items-center d-flex justify-content-between">
       <img src="@/public/assets/images/logomdc.png" width="45" alt="">
       <span class="d-none d-md-block">Madam-Clean</span>
     </div>
     <div class="align-items-center d-none d-md-flex" v-if="loading">
-      <nuxt-link class="text-white" to="/" :class="{ 'active': $route.name === '' }">หน้าแรก</nuxt-link>
-      <nuxt-link class="text-white" to="/booking" @click="packageSelect(0)"
-        :class="{ 'active': $route.name === 'about' }">จองแม่บ้าน</nuxt-link>
-      <!-- <nuxt-link class="text-white" to="/madam" :class="{ 'active': $route.name === 'madam' }">แม่บ้าน</nuxt-link> -->
+      <nuxt-link class="text-white" :to="pathOrigin" :class="{ 'active': $route.name === '' }">หน้าแรก</nuxt-link>
+      <nuxt-link class="text-white" :to="pathOrigin+'/booking'" @click="packageSelect(0)" :class="{ 'active': $route.name === 'booking' }">จองแม่บ้าน</nuxt-link>
+      <!-- <nuxt-link class="text-white" to="madam" :class="{ 'active': $route.name === 'madam' }">แม่บ้าน</nuxt-link> -->
       <div>
-        <nuxt-link class=" text-white" to="/madam"
-          :class="{ 'active': $route.name === 'madam' || isMadamDropdownOpen }"
+        <nuxt-link class=" text-white" to="/madam" :class="{ 'active': $route.name === 'madam' || isMadamDropdownOpen }"
           @click="toggleMadamDropdown">แม่บ้าน</nuxt-link>
         <div v-if="isMadamDropdownOpen" class="text-center mx-2 mb-0" style="margin-top: 0px;z-index: 2;position: absolute;">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -28,13 +26,12 @@
           </div>
         </div>
       </div>
-      <nuxt-link class="text-white" to="/service" :class="{ 'active': $route.name === 'service' }">บริการ</nuxt-link>
-      <nuxt-link class="text-white" to="/promotion"
-        :class="{ 'active': $route.name === 'promotion' }">โปรโมชั่น</nuxt-link>
-      <nuxt-link class="text-white" to="/about" :class="{ 'active': $route.name === 'about' }">เกี่ยวกับเรา</nuxt-link>
+      <nuxt-link class="text-white" :to="pathOrigin+'/service'" :class="{ 'active': $route.name === 'service' }">บริการ</nuxt-link>
+      <nuxt-link class="text-white" :to="pathOrigin+'/promotion'" :class="{ 'active': $route.name === 'promotion' }">โปรโมชั่น</nuxt-link>
+      <nuxt-link class="text-white" :to="pathOrigin+'/about'" :class="{ 'active': $route.name === 'about' }">เกี่ยวกับเรา</nuxt-link>
 
       <div class="d-flex align-items-center justify-content-between btn btn-sm px-3 text-white ms-2"
-        style="background:rgba(0,0,0,0.2); border-radius:10px;" @click="openToggle" v-if="auth">
+        style="background:rgba(0,0,0,0.2); border-radius:10px;" @click="openToggle" v-if="profile">
         <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ profile.fullname }}</div>
         <div class="user ms-2 border text-center text-white bg-danger text-uppercase">{{ shotName }}</div>
       </div>
@@ -44,9 +41,18 @@
     </div>
     <div class="w-50 d-flex d-md-none align-items-center justify-content-between me-3" v-if="loading">
       <div class="d-flex d-md-none">
+        <button class="btn" @click="toggleMenu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
+            class="bi bi-list text-white" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+              d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
+          </svg>
+        </button>
+      </div>
+      <div class="d-flex d-md-none">
         <div class="">
           <div class="d-flex align-items-center justify-content-between btn btn-sm px-3 text-white ms-2"
-            style="background:rgba(0,0,0,0.2); border-radius:10px;" @click="openToggle" v-if="auth">
+            style="background:rgba(0,0,0,0.2); border-radius:10px;" @click="openToggle" v-if="profile">
             <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ profile.fullname }}</div>
             <div
               class=" ms-2 border justify-content-center text-white bg-danger text-uppercase d-flex align-items-center"
@@ -57,19 +63,11 @@
           </div>
         </div>
       </div>
-      <div class="d-flex d-md-none">
-        <button class="btn" @click="toggleMenu">
-          <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
-            class="bi bi-list text-white" viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-              d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
-          </svg>
-        </button>
-      </div>
+      
     </div>
     <div class="p-2 card-profile border bg-white small" v-if="toggle">
       <div>
-        <nuxt-link to="/history" class="text-muted" @click="toggle = false">
+        <nuxt-link :to="pathOrigin+'/history'" class="text-muted" @click="toggle = false">
           ประวัติบริการ
         </nuxt-link>
       </div>
@@ -79,10 +77,10 @@
     </div>
     <div v-if="showMenu" class="mobile-menu bg-danger px-2 pt-4"
       style="position:absolute; margin-top:326px;left: 0;right: 0;z-index:2;">
-      <p><nuxt-link @click="showMenu = false" class="text-white" to="/"
-          :class="{ 'active': $route.name === '' }">หน้าแรก</nuxt-link></p>
-      <p><nuxt-link class="text-white" to="" @click="packageSelect(0)"
-          :class="{ 'active': $route.name === 'booking' }">จองแม่บ้าน</nuxt-link></p>
+      <p><nuxt-link @click="showMenu = false" class="text-white" to=""
+          :class="{ 'active': $route.name === '/' }">หน้าแรก</nuxt-link></p>
+      <p>
+        <nuxt-link class="text-white"  :to="pathOrigin+'/booking'" :class="{ 'active': $route.name === 'booking' }">จองแม่บ้าน</nuxt-link></p>
       <p><div>
         <nuxt-link class="ho text-white" to="/madam"
           :class="{ 'active': $route.name === 'madam' || isMadamDropdownOpen }"
@@ -102,11 +100,11 @@
           </div>
         </div>
       </div></p>
-      <p><nuxt-link @click="showMenu = false" class="text-white" to="/service"
+      <p><nuxt-link @click="showMenu = false" class="text-white" :to="pathOrigin+'/service'"
           :class="{ 'active': $route.name === 'service' }">บริการ</nuxt-link></p>
-      <p><nuxt-link @click="showMenu = false" class="text-white" to="/promotion"
+      <p><nuxt-link @click="showMenu = false" class="text-white" :to="pathOrigin+'/promotion'"
           :class="{ 'active': $route.name === 'promotion' }">โปรโมชั่น</nuxt-link></p>
-      <p><nuxt-link @click="showMenu = false" class="text-white" to="/about"
+      <p><nuxt-link @click="showMenu = false" class="text-white" :to="pathOrigin+'/about'"
           :class="{ 'active': $route.name === 'about' }">เกี่ยวกับเรา</nuxt-link></p>
     </div>
     <!-- Modal -->
@@ -121,26 +119,101 @@
             </button>
           </div>
           <div class="modal-body">
-            <form v-if="isLogin">
+            <div v-if="isLogin">
               <div class="form-group">
                 <label for="exampleInputEmail1">อีเมล์</label>
                 <input type="email" v-model="dataLogin.email" class="form-control" id="exampleInputEmail1"
                   aria-describedby="emailHelp" placeholder="อีเมล์">
                 <small id="emailHelp" class="form-text text-danger">{{ emailError }}</small>
               </div>
-              <div class="form-group mt-3">
-                <label for="exampleInputPassword1">รหัสผ่าน</label>
-                <input type="password" v-model="dataLogin.password" class="form-control" id="exampleInputPassword1"
-                  placeholder="รหัสผ่าน">
-                <small id="emailHelp" class="form-text text-danger">{{ passError }}</small>
-              </div>
-             <div class="form-check">
-                  <!--  <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                  <label class="form-check-label" for="exampleCheck1">Check me out</label> -->
+              <div class="form-group my-3 text-muted">
+                  <label for="registerInputPassword">รหัสผ่าน</label>
+                  <input type="password" v-model="dataLogin.password" class="form-control text-muted"
+                    id="registerInputPassword" placeholder="รหัสผ่าน" v-if="!dooPassword">
+                    <input type="text" v-model="dataLogin.password" class="form-control text-muted"
+                    id="registerInputPassword" placeholder="รหัสผ่าน" v-else>
+                  <small id="emailHelp" class="form-text text-danger">{{ passError }}</small>
+                  <button class="btn btn-sm"  style="position: absolute;right: 28px;margin-top: -34px;" @click="seePassword">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash text-muted" viewBox="0 0 16 16"  v-if="!dooPass">
+                      <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z"/>
+                      <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829"/>
+                      <path d="M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye text-info" viewBox="0 0 16 16" v-else>
+                      <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                      <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                    </svg>
+                  </button>
                 </div>
-              <nuxt-link to="" @click="reGister()"
-                class="text-primary cursor-pointer small"><u>ลงทะเบียน</u></nuxt-link>
-            </form>
+              <div class="form-check">
+                <!--  <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                <label class="form-check-label" for="exampleCheck1">Check me out</label> -->
+                
+              </div>
+              <div class="d-grid">
+                <nuxt-link to="" @click="rePass()" class="cursor-pointer small">
+                  <u>ลืมรหัสผ่าน</u>
+                </nuxt-link>
+                <nuxt-link to="" @click="reGister()"
+                class="text-primary cursor-pointer small"><u>ลงทะเบียน</u>
+              </nuxt-link>
+              </div>
+              
+            </div>
+            <div v-if="isRepass">
+              <div class="border rounded px-2 mt-2">
+                <label class="bg-white px-2" style="position: absolute;margin-top: -14px;background: #fff;">ใช้เข้าระบบ</label>
+                <div class="form-group my-3 text-muted">
+                  <label for="registerInputEmail1">กรอกอีเมล์</label>
+                  <input type="email" v-model="dataRegister.email" class="form-control text-muted"
+                    id="registerInputEmail1" aria-describedby="emailHelp" placeholder="อีเมล์">
+                  <small id="emailHelp" class="form-text text-danger">{{ emailError }}</small>
+                </div>
+                <div class="form-group my-3 text-muted">
+                  <label for="registerInputPassword">รหัสผ่าน</label>
+                  <input type="password" v-model="dataRegister.pass" class="form-control text-muted"
+                    id="registerInputPassword" placeholder="รหัสผ่าน" v-if="!dooPass">
+                    <input type="text" v-model="dataRegister.pass" class="form-control text-muted"
+                    id="registerInputPassword" placeholder="รหัสผ่าน" v-else>
+                  <small id="emailHelp" class="form-text text-danger">{{ passError }}</small>
+                  <button class="btn btn-sm"  style="position: absolute;right: 28px;margin-top: -34px;" @click="seePass">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash text-muted" viewBox="0 0 16 16"  v-if="!dooPass">
+                      <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z"/>
+                      <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829"/>
+                      <path d="M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye text-info" viewBox="0 0 16 16" v-else>
+                      <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                      <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="form-group my-3 text-muted">
+                  <label for="registerInputPassword">ยืนยันรหัสผ่าน</label>
+                  <input type="password" v-model="dataRegister.cfpass" class="form-control text-muted"
+                    id="registerInputPassword" placeholder="รหัสผ่าน" v-if="!dooPass2">
+                    <input type="text" v-model="dataRegister.cfpass" class="form-control text-muted"
+                    id="registerInputPassword" placeholder="รหัสผ่าน" v-else>
+                  <small id="emailHelp" class="form-text text-danger">{{ passError }}</small>
+                  <button class="btn btn-sm"  style="position: absolute;right: 28px;margin-top: -34px;" @click="seePass2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash text-muted" viewBox="0 0 16 16"  v-if="!dooPass">
+                      <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z"/>
+                      <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829"/>
+                      <path d="M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye text-info" viewBox="0 0 16 16" v-else>
+                      <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                      <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="form-check">
+                <!-- <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                  <label class="form-check-label" for="exampleCheck1">Check me out</label> -->
+              </div>
+              <nuxt-link to="" @click="logIn()" class="text-primary cursor-pointer small"><u>เข้าสู่ระบบ</u></nuxt-link>
+            </div>
             <div v-if="isRegister">
               <div class="form-group py-0 my-0">
                 <div class="row">
@@ -187,9 +260,7 @@
                 <small id="emailHelp" class="form-text text-danger">{{ phoneError }}</small>
               </div>
               <div class="border rounded px-2 mt-2">
-                <label class="bg-white px-2" style="position: absolute;
-    margin-top: -14px;
-    background: #fff;">ใช้เข้าระบบ</label>
+                <label class="bg-white px-2" style="position: absolute;margin-top: -14px;background: #fff;">ใช้เข้าระบบ</label>
                 <div class="form-group my-3 text-muted">
                   <label for="registerInputEmail1">อีเมล์</label>
                   <input type="email" v-model="dataRegister.email" class="form-control text-muted"
@@ -205,17 +276,31 @@
                   <small id="emailHelp" class="form-text text-danger">{{ passError }}</small>
                   <button class="btn btn-sm"  style="position: absolute;right: 28px;margin-top: -34px;" @click="seePass">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash text-muted" viewBox="0 0 16 16"  v-if="!dooPass">
-  <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z"/>
-  <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829"/>
-  <path d="M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z"/>
-</svg>
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye text-info" viewBox="0 0 16 16" v-else>
-  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
-  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-</svg>
+                      <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z"/>
+                      <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829"/>
+                      <path d="M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z"/>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye text-info" viewBox="0 0 16 16" v-else>
+                      <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                      <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                    </svg>
                   </button>
                 </div>
               </div>
+              <div class="form-group mb-2">
+                  <label for="registerInputEmail1">ที่อยู่</label>
+                  <textarea cols="30" rows="2" v-model="dataRegister.maddress" class="form-control" id="registerInputPhone"
+
+                    aria-describedby="emailHelp" placeholder="ที่อยู่"></textarea>
+                  <small id="emailHelp" class="form-text text-danger">{{ addressError }}</small>
+                </div>
+                <div class="form-group mb-2">
+                  <label for="registerInputEmail1">เลขที่ผู้เสียภาษี/เลขบัตรประชาชน</label>
+                  <input type="text" v-model="dataRegister.mppcard" class="form-control" id="registerInputPhone"
+                  oninput="this.value = this.value.replace(/[^0-9_]/g, '');"   maxlength="13"
+                    aria-describedby="emailHelp" placeholder="เลขที่ผู้เสียภาษี/เลขบัตรประชาชน">
+                  <small id="emailHelp" class="form-text text-danger">{{ ppcardError }}</small>
+                </div>
               <div class="form-check">
                 <!-- <input type="checkbox" class="form-check-input" id="exampleCheck1">
                   <label class="form-check-label" for="exampleCheck1">Check me out</label> -->
@@ -244,10 +329,13 @@ export default {
       profile: '',
       auth: '',
       dooPass: false,
+      dooPass2: false,
+      dooPassword: false,
       isModalOpen: false,
       isLogin: true,
       toggle: false,
       isRegister: false,
+      isRepass: false,
       textTitle: 'เข้าสู่ระบบ',
       // dataRegister: {
       //   mfname: "ลออ",
@@ -262,14 +350,18 @@ export default {
         mlname:'',
         email:'',
         pass:'',
-        pass: "",
+        cfpass: "",
         mphone:'',
+        maddress:'',
+        mppcard:'',
         title:''
       },
       mfnameError: '',
       mlnameError: '',
       emailError: '',
       passError: '',
+      ppcardError: '',
+      addressError: '',
       dataLogin: {
         email: '',
         password: '',
@@ -280,10 +372,12 @@ export default {
       loading: false,
       showMenu: false,
       apiBase: import.meta.env.VITE_AGENT_BASE_URL,
-      isMadamDropdownOpen: false
+      isMadamDropdownOpen: false,
+      pathOrigin:''
     };
   },
   mounted() {
+    this.pathOrigin = window.location.origin;
     this.profile = JSON.parse(localStorage.getItem("Profile"));
     if (this.profile) {
       this.auth = this.profile.token;
@@ -294,27 +388,30 @@ export default {
         } else {
           this.shotName = this.profile.fullname.charAt(0);
         }
-
+        this.loading = true;
       this.routers =  this.$route.name;
       }
-    }
-    this.admin = JSON.parse(localStorage.getItem("Admin-mdc"));
-    if (this.admin) {
-      this.auth = this.admin.token;
-      if (this.admin.user) {
-        this.shotName = this.admin.user.charAt(0);
-        this.loading = true;
-        if(this.routers=='sign-in'){
-          window.location = '/';
-          this.loading = true;
-        }
-      }
-    } else {
+    }else{
       this.loading = true;
-      if(this.routers!='sign-in'){
-        window.location = 'sign-in';
-      }
     }
+    
+    // this.admin = JSON.parse(localStorage.getItem("Maid"));
+    // if (this.admin) {
+    //   this.auth = this.admin.token;
+    //   if (this.admin.user) {
+    //     this.shotName = this.admin.user.charAt(0);
+    //     this.loading = true;
+    //     // if(this.routers=='sign-in'){
+    //     //   window.location = '/';
+    //     //   this.loading = true;
+    //     // }
+    //   }
+    // } else {
+    //   this.loading = true;
+    //   if(this.routers=='maid'){
+    //     window.location = 'sign-in';
+    //   }
+    // }
   
     document.body.addEventListener('click', this.handleClick);
   },
@@ -358,6 +455,7 @@ export default {
       this.isModalOpen = true;
       this.isLogin = true;
       this.isRegister = false;
+      this.isRepass = false;
       this.textTitle = 'เข้าสู่ระบบ';
     },
     logOut() {
@@ -365,10 +463,17 @@ export default {
       this.isModalOpen = false;
       this.isLogin = false;
       this.isRegister = false;
+      this.isRepass = false;
       this.textTitle = 'เข้าสู่ระบบ';
-
-      localStorage.removeItem('Profile');
       this.auth = '';
+      this.profile = '';
+      localStorage.removeItem('Profile');
+      
+    },
+    rePass() {
+      this.isLogin = false;
+      this.isRepass = true;
+      this.textTitle = 'รีเซ็ตรหัสผ่าน';
     },
     reGister() {
       this.isLogin = false;
@@ -394,6 +499,7 @@ export default {
                 /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             );
     },
+    
     handleRegister: async function () {
       let chkphone = String(this.dataRegister.mphone.substring(2, 0));
       const chkEmail = this.validateEmail(this.dataRegister.email);
@@ -486,11 +592,36 @@ export default {
         this.mlnameError = '';
         this.emailError = '';
           return false;
-      } else{
+      }
+      if (this.dataRegister.maddress == '') {
+        this.addressError = '-';
+        setTimeout(() => {
+          this.addressError = 'กรุณากรอกทีอยู่';
+        }, 20);
+        this.passError = '';
         this.mfnameError = '';
         this.mlnameError = '';
         this.emailError = '';
+        return false;
+      }
+        if (this.dataRegister.mppcard == '') {
+        this.ppcardError = '-';
+        setTimeout(() => {
+          this.ppcardError = 'กรุณากรอกทีอยู่';
+        }, 20);
         this.passError = '';
+        this.mfnameError = '';
+        this.mlnameError = '';
+        this.emailError = '';
+        this.addressError = '';
+        return false;
+      } else{
+        this.mfnameError = '';
+        this.addressError = '';
+        this.mlnameError = '';
+        this.emailError = '';
+        this.passError = '';
+        this.ppcardError = '';
         this.phoneError = '';
         try {
           let config = {
@@ -531,10 +662,22 @@ export default {
         }
       }
     },
+    seePassword(){
+      this.dooPassword=true;
+      setTimeout(() => {
+        this.dooPassword=false;
+      }, 1500);
+    },
     seePass(){
       this.dooPass=true;
       setTimeout(() => {
         this.dooPass=false;
+      }, 1500);
+    },
+    seePass2(){
+      this.dooPass2=true;
+      setTimeout(() => {
+        this.dooPass2=false;
       }, 1500);
     },
     handleLogin: async function () {

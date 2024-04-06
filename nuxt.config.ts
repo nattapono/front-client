@@ -23,7 +23,11 @@ export default {
                     type: "text/javascript",
                 },
                 {
-                    src: "assets/js/bootstrap.bundle.min.js",
+                    src:"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js",
+                    type: "text/javascript",
+                },
+                {
+                    src: "./assets/js/bootstrap.bundle.min.js",
                     type: "text/javascript",
                 },
             ]
@@ -68,10 +72,10 @@ export default {
                 integrity: "sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct",
                 crossorigin: "anonymous"
             },
-            // {
-            //     src: "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js",
-            //     type: "text/javascript",
-            // },
+            {
+                 src:"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js",
+                 type: "text/javascript",
+            },
             // fontawesome Pro front-dashboard
             { src: 'https://kit.fontawesome.com/d45e7e578e.js', crossorigin: 'anonymous' },
         ],

@@ -1,6 +1,21 @@
 <template>
     <div class="row d-flex justify-content-center">
-        <div class="col-12 col-md-10">
+            {{ maidProfile.status }}
+        <div class="col-12 my-2 py-2 bg-warning d-flex align-items-center justify-content-center"
+            v-if="loading && maidProfile.status == 2" style="position: fixed;top: 52px;">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-exclamation-circle text-danger me-2" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                <path
+                    d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
+            </svg>
+            ลงเวลาเพื่อเปิดรับคิวงาน
+            <button class="btn btn-sm  bg-white ms-2" @click="checkIn()">
+
+                ลงเวลา</button>
+        </div>
+        <div class="col-12 col-md-10" :class="{ 'mt-5': maidProfile.status == 2 }">
             <div class="cardBox mt-2">
                 <div class="card bg-warning" v-if="newQCount > 0">
                     <div>
@@ -43,7 +58,8 @@
                 </div>
                 <div class="card ">
                     <div>
-                        <div class="numbers">{{ parseFloat(amountSum).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }} <span class="cardName text-mall">฿</span></div>
+                        <div class="numbers">{{ parseFloat(amountSum).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g,
+                "$1,") }} <span class="cardName text-mall">฿</span></div>
                         <div class="cardName">รายได้</div>
                     </div>
 
@@ -54,7 +70,7 @@
             </div>
             <div class="px-0 mx-4">
                 <div class="bg-warning rounded w-50 px-4">
-                     <!-- {{ dataSetting.vat }} -->
+                    <!-- {{ dataSetting.vat }} -->
                 </div>
             </div>
             <div class="details">
@@ -73,7 +89,7 @@
                             <div class="hover" @click="filterStatus(5, 'กำลังทำ')">กำลังทำ</div>
                         </div>
                     </div>
-                    <table >
+                    <table>
                         <thead>
                             <tr>
                                 <td class="px-0">ชื่อลูกค้า</td>
@@ -82,12 +98,12 @@
                                 <td class="d-none d-md-block d-lg-block">สถานะ</td>
                             </tr>
                         </thead>
-                        <tbody v-if="!dataWork || dataWork==null || dataWork.length<1">
+                        <tbody v-if="!dataWork.data || dataWork.data == null || dataWork.data.length < 1">
                             <tr>
                                 <td colspan="4" class="text-center p-3 border-top"> - ไม่มีรายการ -</td>
                             </tr>
                         </tbody>
-                        <tbody v-for="(item, i) in dataWork" :key="i"> <!-- รอรับงาน -->
+                        <tbody v-for="(item, i) in dataWork.data" :key="i"> <!-- รอรับงาน -->
                             <tr v-if="item.isActive == 3" class="border-bottom bg-gray-300">
                                 <td class="px-0 px-md-2">
                                     <div class="pin-map">
@@ -95,15 +111,18 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="text-small" style="text-align: left;">{{ item.hasClean }} 
-                                        <b class="text-primary text-xl"> เริ่มงาน {{ formatDateThai(item.dateSelect) }} {{ item.startTime }}น.</b><br />
+                                    <div class="text-small" style="text-align: left;">{{ item.hasClean }}
+                                        <b class="text-primary text-xl"> เริ่มงาน {{ formatDateThai(item.dateSelect) }}
+                                            {{ item.startTime }}น.</b><br />
                                         <span v-if="item.hasTool == '1'"><u>สถานที่ไม่มีอุปกรณ์ทำความสะอาด</u></span>
                                         <span v-if="item.has_pet"> {{ item.has_pet }}</span>
                                     </div>
-                                    <div class="d-md-none d-lg-none d-flex align-content-center justify-content-between w-100 border-top mt-2 pt-2">
+                                    <div
+                                        class="d-md-none d-lg-none d-flex align-content-center justify-content-between w-100 border-top mt-2 pt-2">
                                         <div class="d-flex align-content-center justify-content-start">
                                             <div v-if="item.imgWorkStart && item.isActive != 3" class="avatar">
-                                                <img width="60" :src="item.imgWorkStart" class="avatar-sm rounded" alt="">
+                                                <img width="60" :src="item.imgWorkStart" class="avatar-sm rounded"
+                                                    alt="">
                                             </div>
                                             <div v-else-if="item.isActive != 3">
                                                 <div class="avatar-sm rounded bg-gray-300 p-2"></div>
@@ -119,8 +138,8 @@
 
                                         <div class="mt-2 mt-md-0 text-nowrap ms-4">
                                             <span class="status delivered px-2" v-if="item.isActive == 1">เสร็จแล้ว {{
-                    0.00
-                }}</span>
+                0.00
+            }}</span>
                                             <span class="status pending px-2" v-if="item.isActive == 3"
                                                 @click="cfWork(item)">งานใหม่</span>
                                             <span class="status inProgress px-2 text-nowrap"
@@ -147,19 +166,20 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td >
+                                <td>
                                     <div class="d-flex align-items-top pin-map">
-                                        <button class="btn btn-sm btn-outline-danger border" @click="openLLocation(item)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                                            <path
-                                                d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
-                                            <path
-                                                d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                                        </svg>
-                                    </button>
+                                        <button class="btn btn-sm btn-outline-danger border"
+                                            @click="openLLocation(item)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
+                                                <path
+                                                    d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                            </svg>
+                                        </button>
                                     </div>
-                                    
+
                                 </td>
                                 <td class="d-none d-md-flex d-lg-flex align-content-center justify-content-between">
                                     <div class="d-flex align-content-center justify-content-start">
@@ -208,20 +228,23 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <tbody v-for="(items, i) in dataWork" :key="i"> <!-- รับแล้ว -->
-                            <tr v-if="items.isActive === 5 && items.imgWorkStart && !items.imgWorkEnd" class="border-bottom">
+                        <tbody v-for="(items, i) in dataWork.data" :key="i"> <!-- รับแล้ว -->
+                            <tr v-if="items.isActive === 5 && items.imgWorkStart && !items.imgWorkEnd"
+                                class="border-bottom">
                                 <td class="px-0">
                                     <div class="pin-map">
-                                       {{ items.mfname }} {{ items.mlname }}
+                                        {{ items.mfname }} {{ items.mlname }}
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="text-small" style="text-align: left;">{{ items.hasClean }} 
-                                        <b class="text-primary text-xl"> เริ่มงาน {{ formatDateThai(items.dateSelect) }} {{ items.startTime }}น.</b><br />
+                                    <div class="text-small" style="text-align: left;">{{ items.hasClean }}
+                                        <b class="text-primary text-xl"> เริ่มงาน {{ formatDateThai(items.dateSelect) }}
+                                            {{ items.startTime }}น.</b><br />
                                         <span v-if="items.hasTool == '1'"><u>สถานที่ไม่มีอุปกรณ์ทำความสะอาด</u></span>
                                         <span v-if="items.has_pet"> {{ items.has_pet }}</span>
                                     </div>
-                                    <div class="d-md-none d-lg-none d-flex align-content-center justify-content-between w-100 border-top mt-2 pt-2">
+                                    <div
+                                        class="d-md-none d-lg-none d-flex align-content-center justify-content-between w-100 border-top mt-2 pt-2">
                                         <div class="d-flex align-content-center justify-content-start">
                                             <div v-if="items.imgWorkStart && items.isActive != 3" class="avatar">
                                                 <img width="60" :src="items.imgWorkStart" class="avatar-sm rounded"
@@ -240,7 +263,8 @@
                                         </div>
 
                                         <div class="mt-2 mt-md-0 text-nowrap ms-4">
-                                            <span class="status delivered px-2" v-if="items.isActive == 1">เสร็จแล้ว {{0.00}}</span>
+                                            <span class="status delivered px-2" v-if="items.isActive == 1">เสร็จแล้ว
+                                                {{ 0.00 }}</span>
                                             <span class="status pending px-2" v-if="items.isActive == 3"
                                                 @click="cfWork(items)">งานใหม่</span>
                                             <span class="status inProgress px-2 text-nowrap"
@@ -267,19 +291,20 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td >
+                                <td>
                                     <div class="d-flex align-items-top pin-map">
-                                        <button class="btn btn-sm btn-outline-danger border" @click="openLLocation(items)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                                            <path
-                                                d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
-                                            <path
-                                                d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                                        </svg>
-                                    </button>
+                                        <button class="btn btn-sm btn-outline-danger border"
+                                            @click="openLLocation(items)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
+                                                <path
+                                                    d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                            </svg>
+                                        </button>
                                     </div>
-                                    
+
                                 </td>
                                 <td class="d-none d-md-flex d-lg-flex align-content-center justify-content-between">
                                     <div class="d-flex align-content-center justify-content-start">
@@ -328,20 +353,23 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <tbody v-for="(item, i) in dataWork" :key="i"> <!-- กำลังทำ -->
-                            <tr v-if="item.isActive === 5 && !item.imgWorkStart && !item.imgWorkEnd" class="border-bottom">
+                        <tbody v-for="(item, i) in dataWork.data" :key="i"> <!-- กำลังทำ -->
+                            <tr v-if="item.isActive === 5 && !item.imgWorkStart && !item.imgWorkEnd"
+                                class="border-bottom">
                                 <td class="px-0">
                                     <div class="pin-map">
-                                       {{ item.mfname }} {{ item.mlname }}
+                                        {{ item.mfname }} {{ item.mlname }}
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="text-small" style="text-align: left;">{{ item.hasClean }} 
-                                        <b class="text-primary text-xl"> เริ่มงาน {{ formatDateThai(item.dateSelect) }} {{ item.startTime }}น.</b><br />
+                                    <div class="text-small" style="text-align: left;">{{ item.hasClean }}
+                                        <b class="text-primary text-xl"> เริ่มงาน {{ formatDateThai(item.dateSelect) }}
+                                            {{ item.startTime }}น.</b><br />
                                         <span v-if="item.hasTool == '1'"><u>สถานที่ไม่มีอุปกรณ์ทำความสะอาด</u></span>
                                         <span v-if="item.has_pet"> {{ item.has_pet }}</span>
                                     </div>
-                                    <div class="d-md-none d-lg-none d-flex align-content-center justify-content-between w-100 border-top mt-2 pt-2">
+                                    <div
+                                        class="d-md-none d-lg-none d-flex align-content-center justify-content-between w-100 border-top mt-2 pt-2">
                                         <div class="d-flex align-content-center justify-content-start">
                                             <div v-if="item.imgWorkStart && item.isActive != 3" class="avatar">
                                                 <img width="60" :src="item.imgWorkStart" class="avatar-sm rounded"
@@ -361,8 +389,8 @@
 
                                         <div class="mt-2 mt-md-0 text-nowrap ms-4">
                                             <span class="status delivered px-2" v-if="item.isActive == 1">เสร็จแล้ว {{
-                    0.00
-                }}</span>
+                0.00
+            }}</span>
                                             <span class="status pending px-2" v-if="item.isActive == 3"
                                                 @click="cfWork(item)">งานใหม่</span>
                                             <span class="status inProgress px-2 text-nowrap"
@@ -389,19 +417,20 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td >
+                                <td>
                                     <div class="d-flex align-items-top pin-map">
-                                        <button class="btn btn-sm btn-outline-danger border" @click="openLLocation(item)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                                            <path
-                                                d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
-                                            <path
-                                                d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                                        </svg>
-                                    </button>
+                                        <button class="btn btn-sm btn-outline-danger border"
+                                            @click="openLLocation(item)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
+                                                <path
+                                                    d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                            </svg>
+                                        </button>
                                     </div>
-                                    
+
                                 </td>
                                 <td class="d-none d-md-flex d-lg-flex align-content-center justify-content-between">
                                     <div class="d-flex align-content-center justify-content-start">
@@ -450,19 +479,21 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <tbody v-for="(item, i) in dataWork" :key="i"> <!-- ทำเส็จแล้ว -->
-                            <tr v-if="item.isActive ==4 " class="border-bottom">
+                        <tbody v-for="(item, i) in dataWork.data" :key="i"> <!-- ทำเส็จแล้ว -->
+                            <tr v-if="item.isActive == 4" class="border-bottom">
                                 <td class="px-0">
                                     <div class="pin-map">
-                                       {{ item.mfname }} {{ item.mlname }}
+                                        {{ item.mfname }} {{ item.mlname }}
                                     </div>
                                 </td>
                                 <td>
                                     <div class="text-small" style="text-align: left;">{{ item.hasClean }} <br />
-                                        <b class="text-primary text-xl"> เริ่มงาน  {{ formatDateThai(item.dateSelect) }} {{ item.startTime }}น.</b> <b>{{ item.unitHour }}</b>ชม.<br />
+                                        <b class="text-primary text-xl"> เริ่มงาน {{ formatDateThai(item.dateSelect) }}
+                                            {{ item.startTime }}น.</b> <b>{{ item.unitHour }}</b>ชม.<br />
                                     </div>
-                            
-                                    <div class="d-md-none d-lg-none d-flex align-content-center justify-content-between w-100 border-top mt-2 pt-2">
+
+                                    <div
+                                        class="d-md-none d-lg-none d-flex align-content-center justify-content-between w-100 border-top mt-2 pt-2">
                                         <div class="d-flex align-content-center justify-content-start">
                                             <div v-if="item.imgWorkStart" class="avatar">
                                                 <img width="60" :src="item.imgWorkStart" class="avatar-sm rounded"
@@ -488,19 +519,20 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td >
+                                <td>
                                     <div class="d-flex align-items-top pin-map">
-                                        <button class="btn btn-sm btn-outline-danger border" @click="openLLocation(item)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                                            <path
-                                                d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
-                                            <path
-                                                d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                                        </svg>
-                                    </button>
+                                        <button class="btn btn-sm btn-outline-danger border"
+                                            @click="openLLocation(item)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
+                                                <path
+                                                    d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                                            </svg>
+                                        </button>
                                     </div>
-                                    
+
                                 </td>
                                 <td class="d-none d-md-flex d-lg-flex align-content-center justify-content-between">
                                     <div class="d-flex align-content-center justify-content-start">
@@ -518,7 +550,8 @@
                                             <div class="avatar-sm rounded bg-gray-300 p-2 mx-1"></div>
                                         </div>
                                     </div>
-                                    <div class="mt-2 mt-md-0 text-nowrap d-flex align-content-center justify-content-end">
+                                    <div
+                                        class="mt-2 mt-md-0 text-nowrap d-flex align-content-center justify-content-end">
                                         <span class="status delivered px-2 pt-2"
                                             v-if="item.imgWorkEnd && item.imgWorkStart" @click="cfWork(item)">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -542,20 +575,24 @@
                     <div class="cardHeader">
                         <h2>คะแนนจากลูกค้า</h2>
                     </div>
-
                     <table>
-                        <tr v-for="(item, i) in dataWork" :key="i">
-                            <td width="60px">
+                        <tr v-for="(item, i) in dataWork.comment" :key="i">
+                            <td class="px-0" width="60px">
                                 <div
                                     class="imgBx bg-danger d-flex align-content-center justify-content-center text-white">
                                     <h3>{{ cutName(item.mfname) }}</h3>
                                 </div>
                             </td>
-                            <td>
+                            <td class="px-0">
                                 <span>{{ item.mfname }}{{ item.mlname }}</span>
                             </td>
-                            <td>
-                                รอคะแนน..
+                            <td class="px-0 d-flex align-content-center justify-content-end">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    v-for="index in item.stars" :key="index" class="bi bi-star-fill text-warning ms-1"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                </svg>
                             </td>
                         </tr>
                     </table>
@@ -733,7 +770,10 @@ export default {
             bookId: '',
             workData: '',
             authMaid: '',
-            dataSetting:''
+            maidProfile: '',
+            dataSetting: '',
+            timeStatus: 2,
+            loading: false
         };
     },
     mounted() {
@@ -741,8 +781,30 @@ export default {
         setInterval(() => {
             this.workList();
         }, 4800);
+
         this.getSetting();
         this.authMaid = JSON.parse(localStorage.getItem("Maid"));
+        if (this.authMaid === undefined) {
+            localStorage.removeItem('Maid');
+        }
+        if (!this.authMaid) {
+            localStorage.removeItem('Maid');
+            this.timeStatus = 2;
+            this.loading = true;
+        }else{
+            this.getProfile();
+        }
+        let chkIn = JSON.parse(localStorage.getItem("checkIn"));
+       
+        if (!chkIn) {
+            this.timeStatus = 2;
+            this.loading = true;
+        } else {
+            // const dateObject = new Date(chkIn.time_in);
+            // const hours = dateObject.getHours();
+            this.timeStatus = 1;
+            this.loading = true;
+        }
     },
     methods: {
 
@@ -752,9 +814,36 @@ export default {
             this.showAddress = data.showAddress;
             this.markerPosition = { lat: parseFloat(data.lat), lng: parseFloat(data.lng) };
             console.log('-', this.markerPosition);
-
         },
+        checkIn: async function () {
 
+            try {
+                let config = {
+                    method: "post",
+                    url: this.apiBase + "/check-in/",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    data: {
+                        maid_id: this.authMaid.maid_id
+                    }
+                };
+
+                await axios
+                    .request(config)
+                    .then((response) => {
+                        localStorage.setItem("checkIn", JSON.stringify(response.data));
+                        this.timeStatus = 1;
+                        this.getProfile();
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+
+            } catch (error) {
+                console.error(error);
+            }
+        },
         openStatusFilter() {
             this.openStatus = true;
         },
@@ -869,7 +958,7 @@ export default {
                     .request(config)
                     .then((response) => {
                         response;
-                        this.dataWork = Object.assign({}, response.data.data);
+                        this.dataWork = Object.assign({}, response.data);
                         this.newQCount = response.data.newQCount;
                         this.hasQCount = response.data.hasQCount;
                         this.sumQCount = response.data.sumQCount;
@@ -894,7 +983,6 @@ export default {
                     url: this.apiBase + "/vat-for-maid",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": localStorage.getItem("Admin-mdc").token
                     },
                 };
 
@@ -902,6 +990,31 @@ export default {
                     .request(config)
                     .then((response) => {
                         this.dataSetting = response.data;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        getProfile: async function () {
+            try {
+                let config = {
+                    method: "get",
+                    url: this.apiBase + "/maid-profile/" + this.authMaid.maid_id,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                };
+
+                await axios
+                    .request(config)
+                    .then((response) => {
+
+                        // localStorage.setItem("Maid", JSON.stringify(response.data.dataMaid));
+                        this.maidProfile = response.data;
                     })
                     .catch((error) => {
                         console.log(error);
@@ -1053,27 +1166,30 @@ export default {
 .bg-gray-300 {
     background-color: #dee2e6;
 }
+
 .bg-gray-300:hover {
     background-color: #2a2185;
 }
 
 @media (max-width: 768px) {
-    .pin-map{
+    .pin-map {
         position: relative;
         margin-top: 0px;
     }
 }
 
 @media (max-width: 480px) {
-    .pin-map{
+    .pin-map {
         position: relative;
         margin-top: -50px;
     }
 }
-.hover{
+
+.hover {
     padding: 2px 16px;
 }
-.hover:hover{
+
+.hover:hover {
     background-color: #dee2e6;
 }
 </style>

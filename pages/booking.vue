@@ -1,6 +1,14 @@
 <template>
   <div>
-    <div class="row mb-5 d-flex align-items-center justify-content-center">
+    <div class="row mb-5 d-flex align-items-center justify-content-center"  v-if="!checkBooking && loading">
+      <div class="col-12 my-2 py-2 d-flex align-items-center justify-content-center  vh-80">
+        <div class="border rounded mt-5 m-2 p-4 w-50 text-center d-flex align-items-center justify-content-center" style="height:200px">
+          ยังไม่ถึงเวลาทำการ<br />
+         เปิดเวลา: {{ timeIn(dataSetting.timeIn)}}น.
+        </div>
+      </div>
+    </div>
+    <div class="row mb-5 d-flex align-items-center justify-content-center" v-else-if="loading">
       <div class="col-12 my-2 py-2 bg-warning d-flex align-items-center justify-content-center"
         style="position: fixed;top: 52px;" v-if="payWait">
         มีรายการรอชำระเงิน
@@ -15,11 +23,9 @@
       </div>
       <div class="col-12 my-5 py-2" v-if="payWait"></div>
       <div class="col-12 my-3 py-2" v-else></div>
-      <div class="col-12 col-lg-8 col-sm-8" v-if="stepOne == true">
-
+      <div class="col-12 col-lg-8 col-sm-8 col-md-10" v-if="stepOne == true">
         <h4 class="ms-2">จองแบบครั้งเดียว</h4>
         <div class="row  mt-2">
-
           <div class="col-1 ms-2 text-right font-weight-bold" style="border-right:solid 4px #ccc;">
             1
           </div>
@@ -57,26 +63,22 @@
           <div class="col-10">
             <p>วิธีการเลือกแม่บ้าน</p>
             <div>
-              <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+              <ul class="nav nav-pills mb-3">
                 <li class="nav-item">
-                  <a class="nav-link px-5" :class="{ 'active': showActive }" id="pills-home-tab" data-toggle="pill"
-                    href="#" role="tab" @click="showActive = true" aria-controls="pills-home"
-                    aria-selected="true">เลือกแม่บ้านอัตโนมัติ</a>
+                  <button class="nav-link px-5" :class="{ 'active': showActive }" 
+                     @click="maidAuto">เลือกแม่บ้านอัตโนมัติ</button>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link px-5" :class="{ 'active': !showActive }" id="pills-profile-tab" data-toggle="pill"
-                    href="#" role="tab" @click="showActive = false" aria-controls="pills-profile"
-                    aria-selected="false">เลือกแม่บ้านด้วยตัวเอง</a>
+                  <button class="nav-link px-5" :class="{ 'active': !showActive }"
+                     @click="showActive = false">เลือกแม่บ้านด้วยตัวเอง</button>
                 </li>
               </ul>
-              <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane text-muted fade show active" v-if="showActive" id="pills-home" role="tabpanel"
-                  aria-labelledby="pills-home-tab">
+              <div class="tab-content" >
+                <div class="tab-pane text-muted fade show active" v-if="showActive">
                   เลือกแม่บ้านด้วยระบบอัตโนมัติ : สำหรับทางเลือกนี้เราจะแนะนำแม่บ้านที่อยู่บริเวณใกล้เคียงให้คุณ
                   เราขอแนะนำทางเลือกนี้สำหรับผู้ใช้ใหม่
                 </div>
-                <div class="tab-pane text-muted fade show active" v-else id="pills-profile" role="tabpanel"
-                  aria-labelledby="pills-profile-tab">
+                <div class="tab-pane text-muted fade show active" v-else>
                   <p>
                     เลือกแม่บ้านด้วยตัวคุณเอง :
                     สำหรับทางเลือกนี้คุณสามารถเลือกแม่บ้านได้ด้วยตัวคุณเองโดยการดูข้อมูลเกี่ยวกับแม่บ้าน
@@ -84,7 +86,7 @@
                   <div class="d-flex align-items-center">
                     <img v-if="dataBookMaids.img"
                       :src="dataBookMaids.img"
-                      width="50" class="rounded-circle mx-4" alt="avatar">
+                      width="50" height="50" class="rounded-circle mx-4" alt="avatar">
                     <img v-else src="@/public/assets/images/maid.png" width="50" class="rounded-circle mx-4"
                       alt="avatar">
                     <div>
@@ -121,13 +123,20 @@
                               <img v-else src="@/public/assets/images/maid.png" width="40" :alt="item.fname">
                               {{ item.fname + ' ' + item.lname }}
                             </div>
-                            <div>
+                            <div class="d-flex align-items-center justify-content-between">
+                              <div v-if="markerPosition" class="text-small">
+                                <b class="text-danger">{{ parseFloat(getDistance(markerPosition.lat,markerPosition.lng,item.latitude,item.longitude)).toFixed(1).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }} </b><small class="text-muted">กม.</small> 
+                              </div>
+                           
                               <nuxt-link to="" class="text-primary cursor-pointer" @click="overView(item)">
                                 พรีวิว
                               </nuxt-link>
                               <button class="btn btn-sm btn-outline-primary" @click="bookMaid(item)">เลือกจอง</button>
                             </div>
                           </p>
+                        </div>
+                        <div v-if="dataMaids.length<1" class="text-center">
+                          แม่บ้านคิวเต็มกรุณา<span class="text-primary cursor-pointer" @click="maidAuto">เลือกอัตโนมัติ</span>
                         </div>
                       </div>
                     </div>
@@ -186,8 +195,8 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="week in weeks" :key="week">
-                          <td v-for="(day, i) in week" :key="i"
+                        <tr  v-for="week in weeks" :key="week">
+                          <!-- <td v-for="(thisWork, j) in listWorks" :key="j"
                               class="text-center cursor-pointer d-calendar"
                               ref="dayRefs"
                               :class="{
@@ -198,8 +207,38 @@
                                   'disabled': isDateInListWork(day) || isDateSelect(day) // เพิ่มเงื่อนไขเช็คว่า day เท่ากับ dateSelect ใน listWorks หรือไม่
                               }"
                               @click="handleDayClick(day, i)">
-                              {{ day > 0 ? day : '' }}
-                          </td>
+                              {{ day > 0 ? day : '' }}  
+                          </td> -->
+                          <td v-for="(day, i) in week" :key="i" 
+                                  class="text-center cursor-pointer d-calendar p-2"
+                                  ref="dayRefs"
+                                  :class="{
+                                      'bg-secondary text-muted': new Date(year, month - 1, day) < new Date(),
+                                      'bg-gray-200 p-2': day === -1,
+                                      'border-0 font-weight-bold text-primary': day === currentDate.getDate() && month === currentDate.getMonth() + 1 && year === currentDate.getFullYear(),
+                                      'd-calendar-active': thisDay === day,
+                                      'disabled': isDateSelected(day),
+                                      'bg-info': day === currentDate.getDate() && month === currentDate.getMonth() + 1 && year === currentDate.getFullYear() // เพิ่มคลาส bg-info เมื่อคลิกที่วันปัจจุบัน
+                                  }"
+                                  @click="handleDayClick(day, i)"
+                              >
+                                  <div v-if="isDateSelected(day)">
+                                      <div v-for="(inDay, x) in listWorks" :key="x">
+                                          <div v-if="inDay.dateSelect && new Date(inDay.dateSelect).getDate() === day && new Date(inDay.dateSelect).getMonth() === month - 1" 
+                                              :class="{'text-white text-small bg-secondary rounded py-1': thisDay != day , 'text-white text-small': thisDay === day,}"
+                                          >
+                                              ไม่ว่าง 
+                                              <!-- {{ inDay.startTime }} -  {{(new Date(inDay.startTime).getHours()+inDay.unitHour+2)+':00'}} -->
+                                          </div>
+                                      </div>
+                                      <div v-if="dateSelect.length==0 && new Date(year, month - 1, day).getMonth() === month - 1">
+                                          {{ day > 0 ? day : '' }}
+                                      </div>
+                                  </div>
+                                  <div v-else>
+                                      {{ day > 0 ? day : '' }}
+                                  </div>
+                              </td>
                         </tr>
                       </tbody>
                     </table>
@@ -316,14 +355,43 @@
           </div>
         </div>
       </div>
-      <div class="col-12 col-lg-8 col-sm-8" v-if="stepTwo == true">
+      <div class="col-12 col-lg-8 col-sm-8 col-md-10" v-if="stepTwo == true">
         <div class="row d-flex align-items-center justify-content-center">
-          <div class="col-12 col-md-9 px-4 px-md-0">
+          <div class="col-12 col-lg-8 col-sm-8 px-4 px-md-0">
             <h4>จองแบบครั้งเดียว</h4>
             <h5>รอชำระเงิน</h5>
           </div>
+          <div class="col-lg-8 col-sm-8 col-md-10 my-4 px-4 px-md-0">
+            <div class="form-co">
+              กรุณากรอกข้อมูลผู้เสียภาษี
+            </div>
+              <div class="form-group mb-2 border p-4">
+                <div class="form-group mb-2">
+                  <label for="registerInputEmail1">นามลูกค้า</label>
+                  <input type="text" v-model="payWait.nickname" class="form-control text-muted" id="registerInputPhone"
+                  oninput="this.value = this.value.replace(/[0-9_]/g, '');"
+                    aria-describedby="emailHelp" placeholder="ชื่อนามสกุล">
+                  <small id="emailHelp" class="form-text text-danger">{{ addressError }}</small>
+                </div>
+                <div class="form-group mb-2">
+                  <label for="registerInputEmail1">ที่อยู่</label>
+                  <textarea cols="30" rows="2" v-model="payWait.maddress" class="form-control text-muted" id="registerInputPhone"
 
-          <div class="col-12 col-lg-9 border px-4 my-4 mx-lg-0">
+                    aria-describedby="emailHelp" placeholder="ที่อยู่"></textarea>
+                  <small id="emailHelp" class="form-text text-danger">{{ addressError }}</small>
+                </div>
+                <div class="form-group mb-2">
+                  <label for="registerInputEmail1">เลขที่ผู้เสียภาษี/เลขบัตรประชาชน</label>
+                  <input type="text" v-model="payWait.mppcard" class="form-control text-muted" id="registerInputPhone"
+                  oninput="this.value = this.value.replace(/[^0-9_]/g, '');"   maxlength="21"
+                    aria-describedby="emailHelp" placeholder="เลขที่ผู้เสียภาษี/เลขบัตรประชาชน">
+                  <small id="emailHelp" class="form-text text-danger">{{ ppcardError }}</small>
+                </div>
+                 <button class="btn  btn-warning my-2" @click="handleSave">บันทึก</button>
+              </div>
+               
+          </div>
+          <div class="col-12 col-lg-8 col-sm-8 col-md-10 border px-4 my-4 mx-lg-0">
             <div class="row">
               <div class="col-4 text-left">
                 <img src="@/public/assets/images/messageImage_1710223947120.jpg" alt="logo" class="p-2 w-100">
@@ -342,13 +410,13 @@
             </div>
             <div class="border">
               <div class="border-bottom px-2 py-1">
-                นามลกค้า: <small class="text-muted">{{ payWait.mfname }} {{ payWait.mlname }}</small>
+                นามลูกค้า: <small class="text-muted">{{ payWait.nickname }}</small>
               </div>
               <div class="border-bottom px-2 py-1">
-                ที่อยู่: <small class="text-muted small">{{ payWait.showAddress }}</small>
+                ที่อยู่: <small class="text-muted small">{{ payWait.maddress }}</small>
               </div>
               <div class=" px-2 py-1">
-                เลขประจำตัวผู้เสียภาษี :
+                เลขประจำตัวผู้เสียภาษี : <small class="text-muted small">{{ payWait.mppcard }}</small>
               </div>
             </div>
             <div class="row">
@@ -378,7 +446,7 @@
                         </td>
                         <td class="mx-0 px-0">
                           <div class="mx-0 px-2 text-nowrap">
-                            {{ fDateThai(payWait.create_at) }}
+                            {{ fDateThai(payWait.booking_create_at) }}
                           </div>
                         </td>
                         <td class="mx-0 px-0">
@@ -396,7 +464,7 @@
                         <td></td>
                         <td>
                           <div class="mx-0 px-2 d-flex justify" style="font-size:0.rem;" v-if="payWait.hasClean">
-                            (+49 บาท) ฉันไม่มีอุปกรณ์ทำความสะอาด
+                            (+{{dataSetting.hasTool}} บาท) ฉันไม่มีอุปกรณ์ทำความสะอาด
                           </div>
                         </td>
                         <td></td>
@@ -437,16 +505,30 @@
                         <td></td>
                         <td></td>
                         <td colspan="2">
-                          <div class="px-2 d-flex justify-content-between">ราคารวม: <b>{{(payWait.amountPrice + toolPirce).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+                          <div class="border-0 px-2 d-flex justify-content-between">ราคารวม: <b>{{(payWait.amountPrice + toolPirce).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
         }}</b></div>
                         </td>
                       </tr>
                       <tr>
                         <td></td>
-                        <td></td>
+                        <td class="px-2 d-flex justify-content-between border-0">
+                          <div v-if="dataPromotion">{{ dataPromotion.name }}</div>
+                        </td>
                         <td></td>
                         <td colspan="2">
-                          <div class="px-2 d-flex justify-content-between">ส่วนลด: <b></b></div>
+                          <div class="px-2 d-flex justify-content-between">ส่วนลด: 
+                            <div class="text-right" v-if="dataPromotion">
+                              <b>
+                                {{dataPromotion.amount}}
+                              </b>
+                              <span v-if="dataPromotion.unit=='percent'">%</span>
+                              <span class="text-small" v-else>บาท</span>
+                              <p class="text-small mb-0 text-muted">ส่วนลด = {{parseFloat((payWait.amountPrice * dataPromotion.amount) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }} บาท</p>
+                            </div>
+                            <div v-else>
+                              0.00
+                            </div>
+                          </div>
                         </td>
                       </tr>
                       <tr>
@@ -454,14 +536,37 @@
                         <td></td>
                         <td></td>
                         <td colspan="2">
-                          <div class="px-2 d-flex justify-content-between">ภาษีมูลค่าเพิ่ม / 7%: <b>{{
-            parseFloat((payWait.amountPrice + toolPirce) * 7 / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}</b></div>
+                          <div class="px-2 d-flex justify-content-between">ภาษีมูลค่าเพิ่ม {{dataSetting.eTax}}%: 
+                            <div v-if="dataPromotion">
+                              <b v-if="dataPromotion.unit=='percent'">
+                                {{ parseFloat((payWait.amountPrice-(payWait.amountPrice * dataPromotion.amount / 100)+toolPirce)* (dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
+                              </b>
+                              <b v-else>
+                                {{ parseFloat((payWait.amountPrice-payWait.amountPrice+toolPirce)* (dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
+                              </b>
+                            </div>
+                            <b v-else>
+                              {{ parseFloat(((payWait.amountPrice+toolPirce) * dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
+                            </b>
+                          </div>
                         </td>
                       </tr>
                       <tr>
                         <td colspan="3"></td>
                         <td colspan="2" class="bg-dark">
-                          <div class="px-2 d-flex justify-content-between text-white">ยอดเงินสุทธิ: <b>{{parseFloat((((payWait.amountPrice + toolPirce) * 7 )/ 100) + (toolPirce + payWait.amountPrice)).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1,") }}</b></div>
+                          <div class="px-2 d-flex justify-content-between text-white" v-if="dataPromotion">ยอดเงินสุทธิ: 
+                            <b v-if="dataPromotion.unit=='percent'">
+                              {{ parseFloat((payWait.amountPrice)-((payWait.amountPrice * dataPromotion.amount) / 100)+toolPirce+(payWait.amountPrice-(payWait.amountPrice * dataPromotion.amount / 100)+toolPirce)* (dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
+                            </b>
+                            <b v-else>
+                              {{ parseFloat(((payWait.amountPrice-dataPromotion.amount))+ (toolPirce + payWait.amountPrice)).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1,") }}
+                            </b>
+                          </div>
+                          <div class="px-2 d-flex justify-content-between text-white" v-else>ยอดเงินสุทธิ: 
+                            <b>
+                              {{ parseFloat((toolPirce + payWait.amountPrice)+((payWait.amountPrice+toolPirce) * dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1,") }}
+                            </b>
+                          </div>
                         </td>
                       </tr>
                     </tbody>
@@ -470,7 +575,7 @@
               </div>
             </div>
           </div>
-          <div class="col-12 col-md-10 px-4">
+          <div class="col-12 col-lg-8 col-sm-8 col-md-10 px-4">
             <div class="row">
               <h5 class="py-3">การชำระเงิน</h5>
               <div class="col-3 col-md-2 col-lg-2 mx-4">
@@ -524,7 +629,9 @@
         </div>
       </div>
     </div>
+    <div v-else class="vh-100">
 
+    </div>
     <!-- modal -->
     <div v-if="openLocation" class="modal fade show d-block bg-modal">
       <div class="modal-dialog modal-dialog-centered" role="document">
@@ -633,6 +740,10 @@
                     </svg>
                     ภาษา: <span class="text-primary">TH</span>
                   </p>
+                  <div v-if="markerPosition" class="">
+                    <img src="/assets/images/pin.png" class="mx-1" height="20" alt="">
+                    ห่างจากคุณ <b class="text-danger">{{ parseFloat(getDistance(markerPosition.lat,markerPosition.lng,dataMaidShow.latitude,dataMaidShow.longitude)).toFixed(1).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }} </b><small class="text-muted">กม.</small> 
+                  </div>
                 </div>
                 <div class="col-6 text-center">
                   <img v-if="dataMaidShow.img" :src="dataMaidShow.img" class="w-100" alt="maid">
@@ -702,34 +813,24 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-12 bg-light my-2">
-                <div class="d-flex justify-content-between my-2">
-                  <div>
-                    <img src="@/public/assets/images/customer01.jpg" class="avatar avatar-sm me-2" alt="customer">
-                    ความคิเห็นของลูกค้า
+              <div class="col-12 bg-light my-2  px-0">
+                <div class="justify-content-between my-2 px-2" v-for="(item,i) in dataMaidShow.dataCommet" :key="i" :class="{ 'bg-light': i % 2 !== 0, 'bg-white': i % 2 === 0 ,'d-none':i>3,'d-flex': i<4}">
+                  <div class="d-flex justify-content-start align-items-center">
+                    <div v-if="item.member_fname">
+                      <div class="user ms-2 border text-center text-white bg-danger text-uppercase me-2 d-flex align-items-center justify-content-center" 
+                      style="width: 40px;height: 40px;">
+                      {{ shotName(item.member_fname) }}
+                      </div>
+                    </div>
+                    <div v-else>
+                      <img src="@/public/assets/images/customer01.jpg" class="avatar avatar-sm me-2" alt="customer">
+                    </div>
+                    <div style="min-width:240px">
+                      {{item.message}}
+                    </div>
                   </div>
                   <p>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      class="bi bi-star-fill text-warning mx-1" viewBox="0 0 16 16">
-                      <path
-                        d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      class="bi bi-star-fill text-warning mx-1" viewBox="0 0 16 16">
-                      <path
-                        d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      class="bi bi-star-fill text-warning mx-1" viewBox="0 0 16 16">
-                      <path
-                        d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      class="bi bi-star-fill text-warning mx-1" viewBox="0 0 16 16">
-                      <path
-                        d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" v-for="index in item.stars" :key="index"
                       class="bi bi-star-fill text-warning mx-1" viewBox="0 0 16 16">
                       <path
                         d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
@@ -846,12 +947,16 @@ export default {
       times: [],
       hours: [],
       selectStartHour: '',
+      dataPromotion: '',
       toolPirce: 0,
       selectStartAmount: 0,
       openDivHour: false,
       copy: false,
       dataSetting:'',
-      listWorks:''
+      listWorks:'',
+      checkBooking:false,
+      loading:false
+      
     }
   },
   computed: {
@@ -882,6 +987,9 @@ export default {
   mounted() {
     this.getSetting();
     this.fetchPayWait();
+   
+    // เช็คว่าเวลาปัจจุบันเป็น 00:00:00 หรือไม่
+    
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
     this.currentMonth = currentMonth;
@@ -898,11 +1006,54 @@ export default {
 
   },
   created() {
-    this.generateTimes(); // เรียกฟังก์ชัน generateTimes() เมื่อ component ถูกสร้าง
+    // this.generateTimes(); // เรียกฟังก์ชัน generateTimes() เมื่อ component ถูกสร้าง
   },
   methods: {
+    isDateSelected(day) {
+        // ตรวจสอบว่า this.dateSelect เป็น array และมีค่าใน array หรือไม่
+        // console.log('return',Array.isArray(this.dateSelect) && this.dateSelect.some(item => new Date(item.dateSelect).getHours() === day));
+
+        return Array.isArray(this.listWorks) && this.listWorks.some(item => new Date(item.dateSelect).getDate() === day);
+    },
     selectHour(){
       this.openDivHour = true;
+    },
+    handleSave: async function () {
+      this.profile = JSON.parse(localStorage.getItem("Profile"));
+      try {
+        let config = {
+          method: "put",
+          url: this.apiBase + "/members/"+this.profile.member_id,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: {
+            mppcard:this.payWait.mppcard,
+            maddress:this.payWait.maddress,
+            nickname:this.payWait.nickname,
+          }
+        };
+
+        await axios
+          .request(config)
+          .then((response) => {
+            swal({
+                position: "top-center",
+                icon: "success",
+                title: response.data.message,
+                showConfirmButton: false,
+                timer: 1500
+              });
+             this.goPay();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      } catch (error) {
+        console.error(error);
+      }
+
     },
     getPackage: async function () {
       try {
@@ -936,16 +1087,29 @@ export default {
       const formattedDate = format(newDate, ' d MMM yy', { locale: th });
       return formattedDate;
     },
-    generateTimes() {
+    generateTimes(selectedDate) {
       const startTime = 6; // เวลาเริ่มต้นที่ 6:00 เช้า
       const endTime = 19; // เวลาสิ้นสุดที่ 19:00
+      const currentHour = new Date().getHours(); // เวลาปัจจุบัน (ชั่วโมง)
+      const currentDay = new Date().getDate(); // วันที่ปัจจุบัน
+      this.times=[];
       for (let hour = startTime; hour <= endTime; hour++) {
-        this.times.push(`${this.pad(hour)}:00`); // เพิ่มเวลาทุกๆชั่วโมง
-        this.times.push(`${this.pad(hour)}:30`); // เพิ่มเวลาทุกๆ 30 นาที
+        if (new Date(selectedDate).getDate() === currentDay && (hour <= currentHour + 2 || hour <= currentHour)) {
+          //this.times.push('--:--'); // ถ้าเป็นเวลาหลังจากตอนนี้ไปสองชั่วโมง หรือก่อนตอนนี้
+        } else {
+          this.times.push(`${this.pad(hour)}:00`); // เพิ่มเวลาทุกๆชั่วโมง
+          this.times.push(`${this.pad(hour)}:30`); // เพิ่มเวลาทุกๆ 30 นาที
+        }
       }
     },
+
     pad(number) {
       return number.toString().padStart(2, '0'); // เพิ่มเลข 0 ด้านหน้าถ้าไม่ครบ 2 หลัก
+    },
+    maidAuto(time) {
+      this.showActive = true;
+      this.openMaid = false;
+      this.dataBookMaids ='';
     },
     setTime(time) {
       this.selectStartTime = time;
@@ -1077,23 +1241,24 @@ export default {
       this.openLocation = false;
     },
     deg2rad(deg) {
-      return deg * (Math.PI / 180);
-    },
-    formatDateThai(date) {
-      return format(new Date(date), 'EEEE d MMM yyyy', { locale: th });
+        return parseFloat(deg) * (Math.PI / 180);
     },
     getDistance(lat1, lon1, lat2, lon2) {
-      const R = 6371; // Radius of the earth in km
-      const dLat = deg2rad(lat2 - lat1);  // deg2rad below
-      const dLon = deg2rad(lon2 - lon1);
-      const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2)
-        ;
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      const distance = R * c; // Distance in km
-      return distance;
+        const R = 6371; // Radius of the earth in km
+        // แปลงค่าละติจูดและลองจิจูดเป็นตัวเลขก่อนคำนวณ
+        const parsedLat1 = parseFloat(lat1);
+        const parsedLon1 = parseFloat(lon1);
+        const parsedLat2 = parseFloat(lat2);
+        const parsedLon2 = parseFloat(lon2);
+        const dLat = this.deg2rad(parsedLat2 - parsedLat1);  
+        const dLon = this.deg2rad(parsedLon2 - parsedLon1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(this.deg2rad(parsedLat1)) * Math.cos(this.deg2rad(parsedLat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c; // Distance in km
+        return distance;
     },
     pinLocation() {
       const auth = JSON.parse(localStorage.getItem("Profile"));
@@ -1109,6 +1274,28 @@ export default {
         this.openLocation = true;
       }
 
+    },
+
+    timeIn(date) {
+      const dateObject = new Date(`2000-01-01T${date}`);
+      const hours = dateObject.getHours();
+      const minutes = dateObject.getMinutes();
+
+      const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+      return formattedTime;
+    },
+    timeCheckInBooking() {
+      const dateObject = new Date();
+      const hours = dateObject.getHours();
+      const minutes = dateObject.getMinutes();
+
+      const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+      return formattedTime;
+    },
+    formatDateThai(date) {
+      return format(new Date(date), 'EEEE d MMM yyyy', { locale: th });
     },
     overView: async function (data) {
       this.dataMaidShow = data;
@@ -1217,7 +1404,7 @@ export default {
         member_id: auth.member_id,
         lat: this.markerPosition.lat.toString(),
         lng: this.markerPosition.lng.toString(),
-        package_id: parseInt(this.selectPackage),
+        pId: parseInt(this.selectPackage),
         startTime: this.selectStartTime,
         unitHour: this.selectStartHour,
         price: this.selectStartAmount,
@@ -1244,11 +1431,13 @@ export default {
               html: 'ทำการจองบริการแม่บ้านเรียบร้อย<br><br>โปรดทำรายการชำระเงินขั้นตอนต่อไป',
               showConfirmButton: false,
             });
+            this.getPromotion();
             this.fetchBank();
             this.fetchPayWait();
             this.stepOne = false;
             this.stepTwo = true;
             // localStorage.removeItem('bookingId');
+            
           })
           .catch((error) => {
             console.log(error);
@@ -1263,7 +1452,7 @@ export default {
       try {
         let config = {
           method: "get",
-          url: this.apiBase + "/maid",
+          url: this.apiBase + "/maids/0",
           headers: {
             "Content-Type": "application/json",
           },
@@ -1281,6 +1470,15 @@ export default {
       } catch (error) {
         console.error(error);
       }
+    },
+    shotName(name){
+      let nn = name.charAt(0);
+
+        if (nn == 'เ' || nn == 'โ' || nn == 'ไ' || nn == 'ใ') {
+          return name.charAt(1);
+        } else {
+          return name.charAt(0);
+        }
     },
     maidListWork: async function (id) {
       // this.openMaid = true;
@@ -1307,29 +1505,47 @@ export default {
       }
     },
     getSetting: async function () {
-            try {
-                let config = {
-                    method: "get",
-                    url: this.apiBase + "/vat-for-maid",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": localStorage.getItem("Admin-mdc").token
-                    },
-                };
+        try {
+            let config = {
+                method: "get",
+                url: this.apiBase + "/vat-for-maid",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            };
 
-                await axios
-                    .request(config)
-                    .then((response) => {
-                        this.dataSetting = response.data;
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+            await axios
+                .request(config)
+                .then((response) => {
+                    this.dataSetting = response.data;
+                    if(this.dataSetting){
+                      const currentTime = new Date();
+                      const dateObject = new Date(`2000-01-01T${this.dataSetting.timeIn}`);
+                      const hours = dateObject.getHours();
+                      if (currentTime.getHours() === 0 || currentTime.getHours()< hours) {
+                        // กระทำเมื่อเวลาปัจจุบันเป็น 00:00:00 หรือมากกว่า
+                        this.checkBooking=false;
+                        this.loading=true;
+                        localStorage.removeItem('checkIn');
+                        // console.log('เวลาปัจจุบันคือ 00:00:00 หรือมากกว่า');
+                      } else {
+                        // กระทำเมื่อเวลาปัจจุบันไม่ได้เป็น 00:00:00
+                        this.checkBooking=true;
+                        this.loading=true;
+                        // console.log('getHours',currentTime.getHours('H'));
+                        // console.log('getMinutes',currentTime.getMinutes());
+                        // console.log('getSeconds',currentTime.getSeconds());
+                      }
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
 
-            } catch (error) {
-                console.error(error);
-            }
-        },
+        } catch (error) {
+            console.error(error);
+        }
+    },
     fetchPayWait: async function () {
       const profile = JSON.parse(localStorage.getItem("Profile"));
       try {
@@ -1349,6 +1565,48 @@ export default {
             if (this.payWait.hasTool == '1') {
               this.toolPirce = this.dataSetting.hasTool;
             }
+            if(this.payWait){
+              if(this.dataPromotion){
+                this.total_promotion_amount =parseFloat((this.payWait.amountPrice * this.dataPromotion.amount) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                // <!-- ราคารวมส่วนลดแล้ว -->
+                if(this.dataPromotion.unit=='percent'){
+                  this._amount  = parseFloat((this.payWait.amountPrice)-((this.payWait.amountPrice * this.dataPromotion.amount) / 100)+this.toolPirce).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                  this.total_vat = parseFloat((this.payWait.amountPrice-(this.payWait.amountPrice * this.dataPromotion.amount / 100)+this.toolPirce)* (this.dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                }else{
+                  this._amount  = parseFloat((this.payWait.amountPrice)-this.dataPromotion.amount+this.toolPirce).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                  this.total_vat = parseFloat((this.payWait.amountPrice-this.dataPromotion.amount+this.toolPirce)* (this.dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                }
+                this.amount_total = parseFloat(this.total_vat)+parseFloat(this._amount);
+                const dataReceipt = {
+                  bookId:this.payWait.bookId,
+                  promotionId:this.dataPromotion.id,
+                  total_vat:this.total_vat,
+                  total_promotion_amount:parseFloat(this.total_promotion_amount),
+                  vat:this.dataSetting.eTax,
+                  tool_price:this.toolPirce,
+                  amount_price:this.payWait.amountPrice,
+                  amount_total:parseFloat(this.total_vat)+parseFloat(this._amount),
+                  promotion_amount:this.dataPromotion.amount,
+                  proType:this.dataPromotion.unit
+                };
+              }else{
+                this._amount  =  parseFloat((this.payWait.amountPrice)+this.toolPirce).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                this.total_vat = parseFloat((this.payWait.amountPrice+this.toolPirce)* (this.dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                const dataReceipt = {
+                  bookId:this.payWait.bookId,
+                  promotionId:'',
+                  total_vat:this.total_vat,
+                  total_promotion_amount:0,
+                  vat:this.dataSetting.eTax,
+                  tool_price:this.toolPirce,
+                  amount_price:this.payWait.amountPrice,
+                  amount_total:parseFloat(this.total_vat)+parseFloat(this._amount),
+                  promotion_amount:0,
+                  proType:''
+                }
+                this.saveReceipt(dataReceipt);
+              }
+            }
           })
           .catch((error) => {
             console.log(error);
@@ -1362,7 +1620,54 @@ export default {
       this.fetchBank();
       this.stepOne = false;
       this.stepTwo = true;
+      this.getPromotion();
+    },
+    getPromotion: async function () {
+      try {
+        let config = {
+          method: "get",
+          url: this.apiBase + "/promotion",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
 
+        await axios
+          .request(config)
+          .then((response) => {
+            this.dataPromotion = response.data[0];
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    saveReceipt: async function (data) {
+      try {
+        let config = {
+          method: "post",
+          url: this.apiBase + "/receipt",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data:data
+        };
+
+        await axios
+          .request(config)
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      } catch (error) {
+        console.error(error);
+      }
     },
     fetchBank: async function () {
       const profile = JSON.parse(localStorage.getItem("Profile"));
@@ -1426,8 +1731,11 @@ export default {
     },
     selectDay(day, i) {
       if (day > 0) {
-        let chkDate = new Date(this.year, this.month - 1, day);
-        if(chkDate < new Date()){
+        let selectedDate = new Date(this.year, this.month - 1, day);
+        let today = new Date();
+        today.setHours(0, 0, 0, 0); // เซ็ตเวลาเป็น 00:00:00 เพื่อเปรียบเทียบกับวันปัจจุบัน
+        
+        if (selectedDate < today) {
           swal({
               position: "top-center",
               icon: "error",
@@ -1436,11 +1744,12 @@ export default {
             });
             return false;
         }
-        this.dateSelect = new Date(this.year, this.month - 1, day);
+        this.dateSelect = selectedDate;
         this.thisDay = day;
         this.$refs.dayRefs.forEach(ref => {
           ref.classList.remove('d-calendar-active');
         });
+        this.generateTimes(selectedDate);
         // เพิ่มคลาส d-calendar-active ให้กับ <td> ที่ถูกคลิก
         // this.$refs.dayRefs[i].classList.add('d-calendar-active');
       }
@@ -1503,6 +1812,9 @@ export default {
 
 }
 
+.text-danger.text-small{
+  color: #fff;
+}
 .d-calendar.d-calendar-active {
   background-color: #ff0202;
   color: #fff;

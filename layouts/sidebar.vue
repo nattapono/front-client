@@ -1,12 +1,11 @@
 <template>
   <div>
-
     <div class="topbar px-md-5 bg-danger d-flex justify-content-between">
       <div class="text-white text-1xl align-items-center d-flex justify-content-between">
         <img src="@/public/assets/images/logomdc.png" width="45" alt="">
         <span class="d-none d-md-block">MadamClean</span>
       </div>
-      <div class="align-items-center d-flex" v-if="loading">
+      <div class="align-items-center d-flex">
         <div v-if="token">
         <nuxt-link to="/maid/" class="text-white" :class="{ 'active': $route.name === 'maid' }">หน้าหลัก</nuxt-link>
         <nuxt-link to="/maid/profile" class="text-white mx-0"
@@ -34,8 +33,8 @@
           </svg>
         </button>
       </div>
-
     </div>
+
   </div>
 </template>
 <script>
@@ -49,12 +48,14 @@ export default {
       loading: false,
       brandName: "madam-clean",
       currentMenu: 'slot',
+      apiBase: import.meta.env.VITE_AGENT_BASE_URL,
     };
   },
   mounted() {
     this.authMaid = JSON.parse(localStorage.getItem("Maid"));
 
     if (this.authMaid) {
+      this.updateAuth();
       this.token = this.authMaid.token;
       let nn = this.authMaid.fullname.charAt(0);
       if (this.authMaid.fullname) {
@@ -73,6 +74,28 @@ export default {
   },
 
   methods: {
+    updateAuth: async function () {
+      try {
+                let config = {
+                    method: "get",
+                    url: this.apiBase + "/maid-auth/"+this.authMaid.maid_id,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                };
+                await axios
+                    .request(config)
+                    .then((response) => {
+                        localStorage.setItem("Maid", JSON.stringify(response.data.dataMaid));
+                    })
+                    .catch((error) => {
+                        console.log('error',error)
+                    });
+
+            } catch (error) {
+                console.error(error);
+            }
+    },
     swichMenu(name) {
       console.log(name);
       this.currentMenu = name;

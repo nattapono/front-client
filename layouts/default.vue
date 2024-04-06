@@ -18,18 +18,17 @@
 </script>
 <style>
 @import "../public/assets/css/style.css";
-@import "../public/assets/css/bootstrap.min.css";
+@import "@/public/assets/css/bootstrap.min.css";
 
 
-
-@media (max-width: 768px) {
-    .body-top {
+ @media (max-width: 768px) {
+    .body-top{
         margin-top: 66px;
     }
 }
 
 @media (min-width: 769px) {
-    .body-top {
+    .body-top{
         margin-top: 100px;
     }
 }
