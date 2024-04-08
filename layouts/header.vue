@@ -165,17 +165,17 @@
                 <label class="bg-white px-2" style="position: absolute;margin-top: -14px;background: #fff;">ใช้เข้าระบบ</label>
                 <div class="form-group my-3 text-muted">
                   <label for="registerInputEmail1">กรอกอีเมล์</label>
-                  <input type="email" v-model="dataRegister.email" class="form-control text-muted"
-                    id="registerInputEmail1" aria-describedby="emailHelp" placeholder="อีเมล์">
-                  <small id="emailHelp" class="form-text text-danger">{{ emailError }}</small>
+                  <input type="email" v-model="memail" class="form-control text-muted"
+                    re="memail" aria-describedby="emailHelp" placeholder="อีเมล์">
+                  <small id="emailHelp" class="form-text text-danger">{{ memailError }}</small>
                 </div>
                 <div class="form-group my-3 text-muted">
                   <label for="registerInputPassword">รหัสผ่าน</label>
-                  <input type="password" v-model="dataRegister.pass" class="form-control text-muted"
-                    id="registerInputPassword" placeholder="รหัสผ่าน" v-if="!dooPass">
-                    <input type="text" v-model="dataRegister.pass" class="form-control text-muted"
-                    id="registerInputPassword" placeholder="รหัสผ่าน" v-else>
-                  <small id="emailHelp" class="form-text text-danger">{{ passError }}</small>
+                  <input type="password" v-model="mpass" class="form-control text-muted"
+                    ref="mpass" placeholder="รหัสผ่าน" v-if="!dooPass">
+                    <input type="text" v-model="mpass" class="form-control text-muted"
+                    ref="mpass" placeholder="รหัสผ่าน" v-else>
+                  <small id="emailHelp" class="form-text text-danger">{{ mpassError }}</small>
                   <button class="btn btn-sm"  style="position: absolute;right: 28px;margin-top: -34px;" @click="seePass">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash text-muted" viewBox="0 0 16 16"  v-if="!dooPass">
                       <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z"/>
@@ -190,11 +190,11 @@
                 </div>
                 <div class="form-group my-3 text-muted">
                   <label for="registerInputPassword">ยืนยันรหัสผ่าน</label>
-                  <input type="password" v-model="dataRegister.cfpass" class="form-control text-muted"
-                    id="registerInputPassword" placeholder="รหัสผ่าน" v-if="!dooPass2">
-                    <input type="text" v-model="dataRegister.cfpass" class="form-control text-muted"
-                    id="registerInputPassword" placeholder="รหัสผ่าน" v-else>
-                  <small id="emailHelp" class="form-text text-danger">{{ passError }}</small>
+                  <input type="password" v-model="mcfpass" class="form-control text-muted"
+                    ref="mcfpass" placeholder="รหัสผ่าน" v-if="!dooPass2">
+                    <input type="text" v-model="mcfpass" class="form-control text-muted"
+                    ref="mcfpass" placeholder="รหัสผ่าน" v-else>
+                  <small id="emailHelp" class="form-text text-danger">{{ mcfpassError }}</small>
                   <button class="btn btn-sm"  style="position: absolute;right: 28px;margin-top: -34px;" @click="seePass2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash text-muted" viewBox="0 0 16 16"  v-if="!dooPass">
                       <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z"/>
@@ -312,6 +312,7 @@
             <button type="button" class="btn btn-secondary" @click="isModalOpen = false">ปิด</button>
             <button type="button" class="btn btn-primary" v-if="isRegister" @click="handleRegister()">{{ textTitle
               }}</button>
+            <button type="button" class="btn btn-primary" v-else-if="isRepass" @click="handleRepass()">{{ textTitle }}</button>
             <button type="button" class="btn btn-primary" v-else @click="handleLogin()">{{ textTitle }}</button>
           </div>
         </div>
@@ -337,14 +338,14 @@ export default {
       isRegister: false,
       isRepass: false,
       textTitle: 'เข้าสู่ระบบ',
-      // dataRegister: {
-      //   mfname: "ลออ",
-      //   mlname: "สีไสว",
-      //   email: "sisawai@online.com",
-      //   pass: "1111",
-      //   mphone: '0941325432',
-      //   title: ''
-      // },
+      memail: '',
+      mpass: '',
+      mcfpass: '',
+      memailError: '',
+      mpassError: '',
+      mcfpassError: '',
+      muserErr: '',
+      mpassErr: '',
       dataRegister:{
         mfname:'',
         mlname:'',
@@ -499,7 +500,104 @@ export default {
                 /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             );
     },
-    
+    handleRepass: async function(){
+            if (this.memail == '') {
+                this.memailError = '';
+                setTimeout(() => {
+                    this.memailError = 'กรุณากรอกอีเมลเข้าใช้งาน';
+                }, 20);
+                this.$refs.memail.focus();
+                return false;
+            } else if (this.mpass == '') {
+                this.mpassError = '';
+                setTimeout(() => {
+                    this.mpassError = 'กรุณากรอกรหัสผ่าน';
+                }, 20);
+                
+                this.memailError = '';
+                this.$refs.mpass.focus();
+                return false;
+            } else if (this.cfpass == '') {
+                this.mcfpassError = '';
+                setTimeout(() => {
+                    this.mcfpassError = 'กรุณากรอกรหัสผ่าน';
+                }, 20);
+                
+                this.mpassError = '';
+                this.memailError = '';
+                this.$refs.mcfpass.focus();
+            } else if (this.mcfpass != this.mpass) {
+                this.mcfpassError = '';
+                setTimeout(() => {
+                    this.mcfpassError = 'ยืนยันรหัสผ่านไม่ถูกต้อง';
+                }, 20);
+                
+                this.mpassError = '';
+                this.memailError = '';
+                this.$refs.mcfpass.focus();
+            } else {
+                this.muserError = '';
+                this.mpassError = '';
+                this.mcfpassError = '';
+                this.proGress = 10;
+                setTimeout(() => {
+                    this.proGress = 100;
+                }, 1000);
+                try {
+                    let config = {
+                        method: "post",
+                        url: this.apiBase + "/member-repass",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        data: {
+                            email: this.memail,
+                            pass: this.mcfpass
+                        }
+                    };
+
+                    await axios
+                        .request(config)
+                        .then((response) => {
+                            if (response.data.success) {
+                              localStorage.setItem("Profile", JSON.stringify(response.data.member));
+                              swal({
+                                position: "top-center",
+                                icon: "success",
+                                title: response.data.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                              });
+                              setTimeout(() => {
+                                window.location.reload();
+                              }, 1500);
+                            } else {
+                                swal({
+                                    position: "top-center",
+                                    icon: "error",
+                                    title: response.data.message,
+                                    showConfirmButton: true,
+                                });
+                                
+                                this.passError = '-';
+                                setTimeout(() => {
+                                    this.passError = response.data.message;
+                                }, 20);
+                                setTimeout(() => {
+                                    this.proGress= 0;
+                                }, 1400);
+                                return false;
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        },
     handleRegister: async function () {
       let chkphone = String(this.dataRegister.mphone.substring(2, 0));
       const chkEmail = this.validateEmail(this.dataRegister.email);

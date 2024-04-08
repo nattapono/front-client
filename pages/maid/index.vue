@@ -76,7 +76,7 @@
             <div class="details">
                 <div class="recentOrders px-2 px-md-4">
                     <div class="cardHeader">
-                        <h2>ตารางงานท้งหมด</h2>
+                        <h2>ตารางงานทั้งหมด</h2>
                         <button class="btn border" @click="openStatusFilter()">
                             {{ textStatus }}
                         </button>
@@ -137,9 +137,7 @@
                                         </div>
 
                                         <div class="mt-2 mt-md-0 text-nowrap ms-4">
-                                            <span class="status delivered px-2" v-if="item.isActive == 1">เสร็จแล้ว {{
-                0.00
-            }}</span>
+                                            <span class="status delivered px-2" v-if="item.isActive == 1">เสร็จแล้ว {{0.00}}</span>
                                             <span class="status pending px-2" v-if="item.isActive == 3"
                                                 @click="cfWork(item)">งานใหม่</span>
                                             <span class="status inProgress px-2 text-nowrap"
@@ -151,7 +149,6 @@
                                                 <img src="@/public/assets/images/work-loading.webp" width="25" alt="">
                                                 กำลังทำ..
                                             </span>
-
                                             <span class="status delivered px-2 pt-2"
                                                 v-if="item.imgWorkEnd && item.imgWorkStart">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -179,7 +176,6 @@
                                             </svg>
                                         </button>
                                     </div>
-
                                 </td>
                                 <td class="d-none d-md-flex d-lg-flex align-content-center justify-content-between">
                                     <div class="d-flex align-content-center justify-content-start">
@@ -214,7 +210,7 @@
                                         </span>
 
                                         <span class="status delivered px-2 pt-2"
-                                            v-if="item.imgWorkEnd && item.imgWorkStart" @click="cfWork(item)">
+                                            v-if="item.imgWorkEnd && item.imgWorkStart && item.asActive==4" @click="cfWork(item)">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                 fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
                                                 <path
@@ -871,6 +867,8 @@ export default {
             this.uploadStatus = false;
         },
         cfWork: async function (data) {
+            this.dataMaid = JSON.parse(localStorage.getItem("Maid"));
+            
             Swal.fire({
                 position: "top-center",
                 icon: 'question',
@@ -883,7 +881,10 @@ export default {
                         let config = {
                             method: "put",
                             url: this.apiBase + "/book-status/" + data.bookId,
-                            data: { isActive: 6 },
+                            data: { 
+                                isActive: 6,
+                                isNotYet:this.dataMaid.maid_id
+                            },
                             headers: {
                                 "Content-Type": "application/json",
                             },
@@ -914,7 +915,7 @@ export default {
                         let config = {
                             method: "put",
                             url: this.apiBase + "/book-status/" + data.bookId,
-                            data: { isActive: 5 },
+                            data: { isActive: 5,isNotYet:this.dataMaid.maid_id },
                             headers: {
                                 "Content-Type": "application/json",
                             },
@@ -944,7 +945,7 @@ export default {
         },
         workList: async function () {
             this.dataMaid = JSON.parse(localStorage.getItem("Maid"));
-
+            this.dataMaid.maid_id
             try {
                 let config = {
                     method: "get",

@@ -20,9 +20,9 @@
                             อัพโหลดสำเร็จ
                         </span>
                     </div>
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-8">
                         <!-- ชื่อ : {{ maidProfile.fname }} {{ maidProfile.lname }} -->
-                        <div v-if="edit">
+                        <div v-if="edit" class="row">
                             <label for="">ธนาคาร</label>
                             <button class="btn border form-control" @click="listSt = true">
                                 <div v-if="!maidProfile.bank_type" class="d-flex justify-content-start">
@@ -67,47 +67,54 @@
                                         v-model="maidProfile.bank_number">
                                 </div>
                             </div>
-                        </div>
-                        <div v-else>
-                            <div v-if="!maidProfile.bank_type">
-                                <p class="text-danger">กรุณาเพิ่มข้อมูลธนาคาร</p>
-                            </div>
-                            <div v-for="(item, i) in bankData" :key="i">
-                                <div v-if="maidProfile.bank_type == item.id">
-                                    <img :src="item.img" :alt="item.shortname" class="around"
-                                        width="85">
-                                    <p class="text-dark">ธนาคาร: {{ item.name }}</p>
+                            <div class="col-12 col-md-6 p-3">
+                                <div class="border p-2 rounded-2">
+                                    <label for="">เปลี่ยนรหัสผ่าน</label>
+                                    <input type="text" v-model="pass" class="form-control">
                                 </div>
                             </div>
-
-
-                            ชื่อบัญชี: {{ maidProfile.fname }} {{ maidProfile.lname }}
-
-                            <p>เลขที่บัญชี: {{ maidProfile.bank_number }}</p>
                         </div>
-                        <div class="col-8"  v-if="!edit"> 
-                            <button class="btn btn-primary" v-if="!maidProfile.bank_type" @click="editBank">เพิ่มข้อมูล</button>
-                            <button class="btn btn-primary" v-else @click="editBank">แก้ไข</button>
+                        <div v-else  class="row">
+                            <div class="col-6">
+                                <div v-if="!maidProfile.bank_type">
+                                    <p class="text-danger">กรุณาเพิ่มข้อมูลธนาคาร</p>
+                                </div>
+                                <div v-for="(item, i) in bankData" :key="i">
+                                    <div v-if="maidProfile.bank_type == item.id">
+                                        <img :src="item.img" :alt="item.shortname" class="around"
+                                            width="85">
+                                        <p class="text-dark">ธนาคาร: {{ item.name }}</p>
+                                    </div>
+                                </div>
+                                ชื่อบัญชี: {{ maidProfile.fname }} {{ maidProfile.lname }}
+                                <p>เลขที่บัญชี: {{ maidProfile.bank_number }}</p>
+                            </div>
+                            <div class="col-12 col-md-6 p-3">
+                                <div class="border p-2 rounded-2">
+                                    <label for="">เปลี่ยนรหัสผ่าน</label>
+                                    <input readonly type="text" v-model="pass" class="form-control">
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-8" v-else>
-                            <button class="btn btn-danger me-2" @click="edit=false">ปิด</button>
-                            <button class="btn btn-success" @click="saveEdit">แก้ไข</button>
-                        </div>
+                        <div class="col-12">
+                                <div class="col-8"  v-if="!edit"> 
+                                    <button class="btn btn-primary" v-if="!maidProfile.bank_type" @click="editBank">เพิ่มข้อมูล</button>
+                                    <button class="btn btn-primary" v-else @click="editBank">แก้ไข</button>
+                                </div>
+
+                                <div class="col-8" v-else>
+                                    <button class="btn btn-danger me-2" @click="edit=false">ปิด</button>
+                                    <button class="btn btn-success" @click="saveEdit">แก้ไข</button>
+                                </div>
+                            </div>
                     </div>
-                    <div class="col-12 col-md-4 p-3">
-                        <div class="border p-2 rounded-2">
-                            <label for="">เปลี่ยนรหัสผ่าน</label>
-                            <input readonly type="text" v-model="pass" class="form-control"   v-if="!edit">
-                            <input type="text" v-model="pass" class="form-control"   v-else>
-                        </div>
-                        
-                    </div>
+                    
                 </div>
             </div>
             <div class="card mx-3 my-3 ">
                 <div class="row pb-5 d-flex align-items-center justify-content-center">
                     <div class="col-12 col-lg-10 col-md-10 px-4 px-md-0 d-none d-md-block">
-                        <h4>ประวัติการจอง</h4>
+                        <h4>ประวัติการทำงาน</h4>
                         <div class="table-responsive mt-2">
                         <table class="table rounded-4" style="min-height: 350px;">
                             <thead>

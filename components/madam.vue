@@ -1,12 +1,18 @@
 <template>
-  <div class="py-5 m-4">
+    <div class="py-5 m-4" v-if="dataMaids.length == 0 || !dataMaids">
+      <div class="col-12 text-center my-5">
+            <nuxt-link to="madam" class="btn border px-5 rounded-2">ข้อมูลแมบ้าน</nuxt-link>
+          </div>
+  </div>
+  <div class="py-5 m-4" v-else>
+
     <div class="row d-flex justify-content-center">
       <div class="col-12 text-center">
         <h4 class="font-weight-bold mb-4">แม่บ้าน</h4>
       </div>
     </div>
     <div class="container">
-      <div class="row d-flex justify-content-center">
+      <div class="row d-flex justify-content-start">
           <div class="col-12 col-md-3 col-lg-3 my-2" v-for="(item, index) in dataMaids" :key="index">
             <div class="card shadow py-4 px-2">
               <div class="text-center h-200" style="cursor:pointer;" @click="openMaid(item)">
@@ -227,6 +233,9 @@
         </div>
       </div>
     </div>
+
+    <!-- ||||  --> 
+    
   </div>
 </template>
   
@@ -235,6 +244,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import { th } from 'date-fns/locale';
 import Swal from 'sweetalert2';
+
 export default {
   data() {
     return {
@@ -252,6 +262,7 @@ export default {
     this.profile = JSON.parse(localStorage.getItem("Profile"));
     this.getMaid();
   },
+
   methods: {
     openMaid(item) {
       this.isModal = true;
@@ -343,7 +354,7 @@ export default {
       try {
         let config = {
           method: "get",
-          url: this.apiBase + "/maids/8",
+          url: this.apiBase + "/maids/4",
           headers: {
             "Content-Type": "application/json",
           },

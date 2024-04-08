@@ -2,6 +2,7 @@
     <div>
         <Branner />
         <Package />
+        <slideCourse />
         <Madam />
     </div>
 </template>
@@ -9,6 +10,7 @@
     import Branner from "../components/branner.vue";
     import Package from "../components/package.vue";
     import Madam from "../components/madam.vue";
+    import slideCourse from "../components/slideCourse.vue";
     import axios from 'axios';
     import swal from 'sweetalert';
     useHead({

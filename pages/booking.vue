@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="hideDiv">
     <div class="row mb-5 d-flex align-items-center justify-content-center"  v-if="!checkBooking && loading">
       <div class="col-12 my-2 py-2 d-flex align-items-center justify-content-center  vh-80">
         <div class="border rounded mt-5 m-2 p-4 w-50 text-center d-flex align-items-center justify-content-center" style="height:200px">
@@ -225,12 +225,29 @@
                                   <div v-if="isDateSelected(day)">
                                       <div v-for="(inDay, x) in listWorks" :key="x">
                                           <div v-if="inDay.dateSelect && new Date(inDay.dateSelect).getDate() === day && new Date(inDay.dateSelect).getMonth() === month - 1" 
-                                              :class="{'text-white text-small bg-secondary rounded py-1': thisDay != day , 'text-white text-small': thisDay === day,}"
+                                             
                                           >
-                                              ไม่ว่าง 
-                                              <!-- {{ inDay.startTime }} -  {{(new Date(inDay.startTime).getHours()+inDay.unitHour+2)+':00'}} -->
+                                              <div :id="'show-q'+i"
+                                                class="bg-white rounded box-shadow p-2 border text-muted show-q d-none" 
+                                                :style="{ position: 'absolute', marginTop: '-38px', marginLeft: '81px',boxShadow: '4px 4px 6px #6b6b6b;'}"
+                                              >
+                                              <p class=" mb-1 font-weight-bold d-flex">
+                                                {{fDateThai(dateSelect)}}
+                                              </p>
+                                              <div v-for="(inDay, x) in listWorks" :key="x">
+                                                <div class="d-flex" v-if="new Date(inDay.dateSelect).getDate() === day">
+                                                  {{ inDay.startTime }} - {{ (new Date(new Date().toLocaleDateString('en-US', { timeZone: 'Asia/Bangkok' }) + ' ' + inDay.startTime).getHours() + (parseInt(inDay.unitHour) || 0) + 2)+(2) + ':00' }}
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <!-- เพิ่มเงื่อนไขนี้เพื่อให้แสดง "มีคิว" แค่ครั้งเดียว -->
+                                            
+                                              <!-- {{ new Date().toLocaleDateString('en-US', { timeZone: 'Asia/Bangkok' }) }}  -->
                                           </div>
                                       </div>
+                                      <div v-if="listWorks.length > 0"   :class="{'text-white  bg-warning rounded py-1': thisDay != day , 'text-white ': thisDay === day,}"> 
+                                        <span class="text-white">● </span> มีคิว
+                                            </div>
                                       <div v-if="dateSelect.length==0 && new Date(year, month - 1, day).getMonth() === month - 1">
                                           {{ day > 0 ? day : '' }}
                                       </div>
@@ -242,6 +259,7 @@
                         </tr>
                       </tbody>
                     </table>
+                    
                   </div>
                 </div>
                 <div class="border">
@@ -870,6 +888,8 @@ const thaiMonths = {
 export default {
   data() {
     return {
+      showDiv: false,
+      divPosition: { top: 0, left: 0 },
       stepOne: true,
       stepTwo: false,
       selectPackage: '',
@@ -1009,6 +1029,17 @@ export default {
     // this.generateTimes(); // เรียกฟังก์ชัน generateTimes() เมื่อ component ถูกสร้าง
   },
   methods: {
+    handleClick(event) {
+      // ตั้งค่าตำแหน่งของ divPosition ด้วยตำแหน่งที่คลิก
+      // this.divPosition.top = event.clientY;
+      // this.divPosition.left = event.clientX;
+      // เปิดการแสดง div
+      this.showDiv = false;
+      setTimeout(() => {
+        this.showDiv = true;
+      }, 20);
+      
+    },
     isDateSelected(day) {
         // ตรวจสอบว่า this.dateSelect เป็น array และมีค่าใน array หรือไม่
         // console.log('return',Array.isArray(this.dateSelect) && this.dateSelect.some(item => new Date(item.dateSelect).getHours() === day));
@@ -1109,6 +1140,7 @@ export default {
     maidAuto(time) {
       this.showActive = true;
       this.openMaid = false;
+      this.showDiv = false;
       this.dataBookMaids ='';
     },
     setTime(time) {
@@ -1275,7 +1307,10 @@ export default {
       }
 
     },
-
+    hideDiv() {
+      this.showDiv = false;
+      $(".show-q").addClass('d-none');
+    },
     timeIn(date) {
       const dateObject = new Date(`2000-01-01T${date}`);
       const hours = dateObject.getHours();
@@ -1304,6 +1339,7 @@ export default {
     bookMaid: async function (data) {
       this.openMaid = false;
       this.openModal = false;
+      this.showDiv = false;
       this.dataBookMaids = data;
       this.maidListWork(data.id);
     },
@@ -1725,6 +1761,18 @@ export default {
         return formattedListWorks.includes(formattedDay);
     },
     handleDayClick(day, i) {
+      // this.handleClick();
+        if($("#show-q"+i).hasClass('d-none')){
+          setTimeout(() => {
+            $("#show-q"+i).removeClass('d-none');
+          }, 20);
+         
+        }else{
+          setTimeout(() => {
+            $("#show-q"+i).addClass('d-bock');
+          }, 20);
+          
+        }
         if (day > 0 && !this.isDateInListWork(day)) {
             this.selectDay(day, i);
         }

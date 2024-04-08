@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row mb-5 d-flex align-items-center justify-content-center">
+    <!-- <div class="row mb-5 d-flex align-items-center justify-content-center">
       <div class="col-12 my-4 pb-2"></div>
       <div class="col-12 col-lg-10 col-sm-10 ">
         <h4 class="mx-4 mx-md-0">โปรโมชั่น</h4>
@@ -10,7 +10,6 @@
               <div class="card shadow py-4 px-2">
                 <div class="text-center h-200">
                   <img :src="item.imageUrl" alt="No Image" :title="'Promotion '+item.name" class="text-muted"  style="height:120px">
-                  <!-- <img :src="item.img" width="120" alt="maid"> -->
                   <div class="text-center border-bottom py-2 font-weight-bold numbers">{{ item.name }}
                   </div>
                 </div>
@@ -19,8 +18,6 @@
           </div>
         </div>
       </div>
-
-      <!-- modal -->
       <div v-if="openLocation" class="modal fade show d-block bg-modal">
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content rounded-2">
@@ -45,7 +42,18 @@
           </div>
         </div>
       </div>
+    </div> -->
+    
+    <div>
+        <img :src="dataPromotion.imageUrl" class="w-100" alt="">
+        <div class="row d-flex justify-content-center">
+          <div class="col-12 col-md-10 col-lg-8">
+            <div class="w-100 p-4" v-html="dataPromotion.description">
+            </div>
+          </div>
+        </div>
     </div>
+
   </div>
 </template>
 
@@ -109,7 +117,7 @@ export default {
         await axios
           .request(config)
           .then((response) => {
-            this.dataPromotion = response.data;
+            this.dataPromotion = response.data[0];
             this.dataPromotionForSearch = response.data;
           })
           .catch((error) => {

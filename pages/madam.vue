@@ -1,6 +1,11 @@
 <template>
   <div class="container">
-    <div class="py-5 m-4">
+    <div class="py-5 m-4 vh-100" v-if="dataMaids.length == 0 || !dataMaids">
+      <div class="col-12 text-center my-5">
+        ข้อมูลแม่บ้าน
+      </div>
+    </div>
+    <div class="py-5 m-4"  v-else>
       <div class="row d-flex justify-content-center">
         <div class="col-12 text-center">
           <h4 class="font-weight-bold mb-4">แม่บ้าน</h4>

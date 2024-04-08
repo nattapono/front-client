@@ -1,43 +1,21 @@
 <template>
   <div>
     <div class="row mb-5 d-flex align-items-center justify-content-center">
-        <div class="col-12 my-4 pb-2"></div>
-        <div class="col-12 col-lg-6 col-sm-6 ">
-          <h4>บริการ</h4>      
+
+        <div class="col-12 col-lg-10 col-sm-10 my-4 pb-2">
+          <h4 class="mx-4 mx-md-0">บริการ</h4>      
           <div class="row  mt-2">
-            
+            <div class="col-12">
+              <Package />
+            </div>
           </div>
         </div>
     </div>
-
-      <!-- modal -->
-      <div v-if="openLocation" class="modal fade show d-block bg-modal">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content rounded-2">
-            <div class="modal-header text-white bg-danger py-2 ">
-              <h6 class="modal-title" id="exampleModalLongTitle">{{ textTitle }}</h6>
-              <button type="button" class="close text-white btn text-xl" @click="openLocation =false" style="font-size: 33px;line-height: 0;">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div>
-
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" @click="openLocation =false">ปิด</button>
-              <button type="button" class="btn btn-primary" v-if="isRegister" @click="handleRegister()">{{ textTitle }}</button>
-              <button type="button" class="btn btn-primary" v-else @click="handleLogin()">{{ textTitle }}</button>
-            </div>
-          </div>
-        </div>
-      </div>
   </div>
 </template>
 
 <script>
-
+    import Package from "../components/package.vue";
 export default {
   data() {
     return {
