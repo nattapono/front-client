@@ -1,21 +1,24 @@
 <template>
-    <div class="row d-flex align-items-top justify-content-center vh-100">
+    <div class="row d-flex align-items-top justify-content-center mb-5">
         <div class="col-12 col-md-10 my-4">
             <div class="card mx-3">
                 <div class="row d-flex align-items-top justify-content-start p-3">
                     <div class="col-12 col-md-4 p-2 text-center">
                         <div class="w-100 border rounded" v-if="maidProfile.img">
-                            <img :src="maidProfile.img" width="100" alt="maid">
+                            <img :src="maidProfile.img" class="w-100" alt="maid">
                         </div>
                         <div class="w-100 text-center  border rounded py-2" v-else>
                             <img src="@/public/assets/images/maid.png" width="100" alt="maid">
                         </div>
                         <input type="file" ref="upImg" class="d-none" @change="handleFileUpload">
-                        <button class="btn btn-outline-danger btn-sm my-2 w-100" @click="uploadImage">อัพรูปโปรไฟล์</button>
+                        <button class="btn btn-outline-danger btn-sm my-2 w-100"
+                            @click="uploadImage">อัพรูปโปรไฟล์</button>
                         <span class="text-success" v-if="uploadStatus">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
-                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                                <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-check-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                <path
+                                    d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
                             </svg>
                             อัพโหลดสำเร็จ
                         </span>
@@ -30,19 +33,16 @@
                                 <div v-for="(item, i) in bankData" :key="i" v-else>
                                     <div v-if="maidProfile.bank_type == item.id"
                                         class="d-flex align-items-center justify-content-start">
-                                        <img :src="item.img" :alt="item.shortname"
-                                            class="rounded me-2" width="35">
+                                        <img :src="item.img" :alt="item.shortname" class="rounded me-2" width="35">
                                         <div class="text-dark pb-0"> ธนาคาร{{ item.name }}</div>
                                     </div>
                                 </div>
                             </button>
-                            <div class="border p-2" style="height:250px; overflow:scroll"
-                                v-if="listSt == true">
+                            <div class="border p-2" style="overflow:scroll" v-if="listSt == true">
                                 <div v-for="(item, i) in bankData" :key="i">
                                     <div class="d-flex align-items-center justify-content-start my-2 list-show"
                                         @click="chooseBankEdit(item.id)">
-                                        <img :src="item.img" :alt="item.shortname"
-                                            class="rounded me-2" width="35">
+                                        <img :src="item.img" :alt="item.shortname" class="rounded me-2" width="35">
                                         <div class="text-dark pb-0">ธนาคาร: {{ item.name }}
                                         </div>
                                     </div>
@@ -63,26 +63,30 @@
                             <div class="d-flex align-content-center my-3">
                                 <div class="w-100">
                                     <label for="">เลขที่บัญชี</label>
-                                    <input type="text" class="form-control"
-                                        v-model="maidProfile.bank_number">
+                                    <input type="text" class="form-control" maxlength="10" v-model="maidProfile.bank_number">
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6 p-3">
+                            <div class="col-12 p-3">
+                                <div class="border p-2 rounded-2 mb-2 bg-gray-200">
+                                    <label for="">ข้อความแนะนำตัว</label>
+                                    <textarea name="" id="" cols="30" rows="3" v-model="maidProfile.myDesc"
+                                        placeholder="ข้อความแนะนำตัว" class="form-control"></textarea>
+                                </div>
                                 <div class="border p-2 rounded-2">
                                     <label for="">เปลี่ยนรหัสผ่าน</label>
-                                    <input type="text" v-model="pass" class="form-control">
+                                    <input type="text" v-model="pass" placeholder="เปลี่ยนรหัสผ่าน"
+                                        class="form-control">
                                 </div>
                             </div>
                         </div>
-                        <div v-else  class="row">
+                        <div v-else class="row">
                             <div class="col-6">
                                 <div v-if="!maidProfile.bank_type">
                                     <p class="text-danger">กรุณาเพิ่มข้อมูลธนาคาร</p>
                                 </div>
                                 <div v-for="(item, i) in bankData" :key="i">
                                     <div v-if="maidProfile.bank_type == item.id">
-                                        <img :src="item.img" :alt="item.shortname" class="around"
-                                            width="85">
+                                        <img :src="item.img" :alt="item.shortname" class="around" width="85">
                                         <p class="text-dark">ธนาคาร: {{ item.name }}</p>
                                     </div>
                                 </div>
@@ -90,192 +94,322 @@
                                 <p>เลขที่บัญชี: {{ maidProfile.bank_number }}</p>
                             </div>
                             <div class="col-12 col-md-6 p-3">
+                                <div class="border p-2 rounded-2 mb-2  bg-gray-200">
+                                    <label for="">ข้อความแนะนำตัว</label>
+                                    <div class="tex-white text-small" v-if="maidProfile.myDesc">{{ maidProfile.myDesc }}
+                                    </div>
+                                    <div class="tex-white text-small" v-else>{{ maidProfile.myDesc }}</div>
+                                </div>
                                 <div class="border p-2 rounded-2">
                                     <label for="">เปลี่ยนรหัสผ่าน</label>
-                                    <input readonly type="text" v-model="pass" class="form-control">
+                                    <input readonly type="text" v-model="pass" placeholder="เปลี่ยนรหัสผ่าน"
+                                        class="form-control">
                                 </div>
                             </div>
                         </div>
                         <div class="col-12">
-                                <div class="col-8"  v-if="!edit"> 
-                                    <button class="btn btn-primary" v-if="!maidProfile.bank_type" @click="editBank">เพิ่มข้อมูล</button>
-                                    <button class="btn btn-primary" v-else @click="editBank">แก้ไข</button>
-                                </div>
-
-                                <div class="col-8" v-else>
-                                    <button class="btn btn-danger me-2" @click="edit=false">ปิด</button>
-                                    <button class="btn btn-success" @click="saveEdit">แก้ไข</button>
-                                </div>
+                            <div class="col-8" v-if="!edit">
+                                <button class="btn btn-primary" v-if="!maidProfile.bank_type"
+                                    @click="editBank">เพิ่มข้อมูล</button>
+                                <button class="btn btn-primary" v-else @click="editBank">แก้ไข</button>
                             </div>
+
+                            <div class="col-8" v-else>
+                                <button class="btn btn-danger me-2" @click="edit = false">ปิด</button>
+                                <button class="btn btn-success" @click="saveEdit">แก้ไข</button>
+                            </div>
+                        </div>
                     </div>
-                    
+
                 </div>
             </div>
-            <div class="card mx-3 my-3 ">
+            <div class="card mx-3 my-3 p-0">
+                <h4 class="bg-warning p-2 text-white">ประวัติรายได้</h4>
                 <div class="row pb-5 d-flex align-items-center justify-content-center">
-                    <div class="col-12 col-lg-10 col-md-10 px-4 px-md-0 d-none d-md-block">
-                        <h4>ประวัติการทำงาน</h4>
-                        <div class="table-responsive mt-2">
-                        <table class="table rounded-4" style="min-height: 350px;">
-                            <thead>
-                            <tr>
-                                <th></th>
-                                <th>ชื่อแม่บ้าน</th>
-                                <th>บริการ</th>
-                                <th>อาคาร</th>
-                                <th>ที่อยู่</th>
-                                <th>เวลาที่จอง</th>
-                                <th>สลิป</th>
-                                <th>สถานะ</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td colspan="7" v-if="dataHistory.length == 0" class="text-center py-5 text-muted">
-                                <div class="py-4 mb-5">
-                                    - No Data -
-                                </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                            <tbody v-for="(booking, i) in dataHistory.listWork" :key="booking.bookId" >
-                            <tr v-if="i>= start && i < (limit)">
-                                <td>{{ i + 1 }}</td>
-                                <td>{{ booking.fname }} {{ booking.lname }}</td>
-                                <td>{{ booking.hasClean }}</td>
-                                <td>{{ booking.workBuilding }}</td>
-                                <td style="width:300px" class="small text-muted">{{ booking.showAddress }}</td>
-                                <td class="text-primary">วันที่:{{ formatDateThai(booking.dateSelect) }} <small
-                                    class="text-muted">เวลา:</small>{{ booking.startTime }}
-                                </td>
-                                <td>
-                                <button class="btn btn-outline-info" @click="openSlip(booking)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-file-text-fill" viewBox="0 0 16 16">
-                                    <path
-                                        d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1m-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5M5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1m0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1" />
-                                    </svg>
-                                </button>
-                                </td>
-                                <td>
-                                <div v-if="booking.isActive == 2" class="text-warning text-nowrap">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-hourglass-split" viewBox="0 0 16 16">
-                                    <path
-                                        d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z" />
-                                    </svg> รอชำระเงิน
-                                </div>
-                                <div v-if="booking.isActive>2" class="text-success text-nowrap">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-check2-circle" viewBox="0 0 16 16">
-                                    <path
-                                        d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0" />
-                                    <path
-                                        d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
-                                    </svg> ชำระแล้ว
-                                </div>
-                                <div v-if="booking.receipt" class="d-none"><img :src="booking.receipt" alt="" width="80"></div>
-                                <p v-if="booking.isActive == 2">
-                                    <button class="btn btn-sm btn-outline-info py-0" @click="toPay">ชำระเงิน</button>
-                                </p>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        </div>
-                        <div class="text-right d-flex justify-content-between " id="slide-page">
-                            <div class="text-left" id="str-lmt">
-                            หน้า {{ dataStrLmt + 1 }}
-                            </div>
-                            <ul class="pagination pagination-rounded justify-content-end mb-2">
-                            <li class="page-item" @click="fetchPageData((strlmt - 1))">
-                                <a class="page-link" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item" :class="{ active: strlmt == 0 }" @click="fetchPageData(0)">
-                                <a class="page-link">1</a>
-                            </li>
-                            <li class="page-item" :class="{ active: strlmt == 1 }" v-if="total" @click="fetchPageData(1)">
-                                <a class="page-link">2</a>
-                            </li>
-                            <li class="page-item" :class="{ active: item == strlmt }" v-if="pagetotal > 1"
-                                v-for="item in pagination(strlmt, pagetotal)" @click="fetchPageData(item)">
-                                <a class="page-link" v-if="item > 0">{{ item + 1 }}</a>
-                                <a class="page-link" v-else>{{ item }}</a>
-                            </li>
-                            <li class="page-item" @click="fetchPageData((strlmt + 1))">
-                                <a class="page-link" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                            </ul>
+                    <div class="col-12 col-lg-10 col-md-10 px-0 px-md-0 d-none d-md-block">
+                        <div class="table-responsive mt-2  px-0">
+                            <table class="table rounded-4" style="min-height: 350px;">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>วันที่</th>
+                                        <th>ยอด</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>สลิป</th>
+                                        <th>สถานะ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="7" v-if="dataHistory.length == 0"
+                                            class="text-center py-5 text-muted">
+                                            <div class="py-4 mb-5">
+                                                - No Data -
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody v-for="(booking, i) in dataHistory" :key="booking.id">
+                                    <tr v-if="i >= start && i < (limit)">
+                                        <td></td>
+                                        <td class="text-muted text-nowrap">{{ formatDateThai(booking.create_at) }} </td>
+                                        <td class="text-primary text-nowrap">{{booking.amount}}</td>
+                                        <td></td>
+                                        <td style="width:300px" class="small text-muted"></td>
+                                        <td @click="openSlip(booking)" >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-file-text-fill text-info"
+                                                viewBox="0 0 16 16">
+                                                <path
+                                                    d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1m-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5M5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1m0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1" />
+                                            </svg>
+                                        </td>
+                                        <td class="text-success text-nowrap">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0" />
+                                                <path
+                                                    d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
+                                            </svg> ได้รับแล้ว
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div class="col-12 col-lg-10 col-md-10 px-4 px-md-0 d-block d-md-none">
-                        <h4>ประวัติการทำงาน</h4>
-                        <div class="border rounded-3 bg-white box-shadow p-2 my-2 " style="height:85px;" v-for="(booking, i) in dataHistory.listWork" :key="i" @click="openSlip(booking)">
-                        <div class="d-flex align-items-center justify-content-between" v-if="i>= start && i < (limit)">
-                            <div class="text-primary w-50 px-2">
-                            <h5> วันที่:{{ formatDateThai(booking.dateSelect) }} <span class="text-muted">เวลา:</span>{{ booking.startTime }}</h5>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between w-50 px-2">
-                            <div class="me-2">
-                                <!-- <button class="btn btn-outline-info" @click="openSlip(booking)">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    class="bi bi-file-text-fill" viewBox="0 0 16 16">
-                                    <path
-                                    d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1m-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5M5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1m0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1" />
-                                </svg>
-                                </button> -->
-                            </div>
-                            
-                            
-                            <div v-if="booking.isActive==4" class="text-success text-nowrap">
-                                <h5><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-check2-circle" viewBox="0 0 16 16">
-                                <path
-                                    d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0" />
-                                <path
-                                    d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
-                                </svg>ทำงานสำเร็จ</h5>
-                            </div>
+                        <div colspan="7" v-if="dataHistory.length == 0" class="text-center py-5 text-muted">
+                            <div class="py-4 mb-5">
+                                - No Data -
                             </div>
                         </div>
+                        <div class="border rounded-3 bg-white box-shadow p-2 my-2 " v-else style="height:85px;"
+                            v-for="(booking, i) in dataHistory" :key="booking.id">
+                            <div class="d-flex align-items-center justify-content-between"
+                                v-if="i >= start && i < (limit)">
+                                <div class="text-primary w-50 px-2">
+                                    <h5> วันที่:{{ formatDateThai(booking.create_at) }} <span
+                                            class="text-muted">ยอด:</span>{{accordingSection.amount}}</h5>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between w-50 px-2">
+                                    <div class="me-2">
+                                        <button class="btn btn-outline-info" @click="openSlip(booking)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                fill="currentColor" class="bi bi-file-text-fill" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1m-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5M5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1m0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1" />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+
+                                    <div class="text-success text-nowrap">
+                                        <h5><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0" />
+                                                <path
+                                                    d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
+                                            </svg> ได้รับแล้ว</h5>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-right d-flex justify-content-between " id="slide-page" v-if="dataHistory.length>10">
+                    </div>
+
+                    <div class="col-12 col-lg-10 col-md-10 px-4">
+                        <div class="text-right d-flex justify-content-between " id="slide-page"
+                            v-if="dataHistory.length > 10">
                             <div class="text-left" id="str-lmt">
-                            หน้า {{ dataStrLmt + 1 }}
+                                หน้า {{ dataStrLmt + 1 }}
                             </div>
                             <ul class="pagination pagination-rounded justify-content-end mb-2">
-                            <li class="page-item" @click="fetchPageData((strlmt - 1))">
-                                <a class="page-link" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item" :class="{ active: strlmt == 0 }" @click="fetchPageData(0)">
-                                <a class="page-link">1</a>
-                            </li>
-                            <li class="page-item" :class="{ active: strlmt == 1 }" v-if="total" @click="fetchPageData(1)">
-                                <a class="page-link">2</a>
-                            </li>
-                            <li class="page-item" :class="{ active: item == strlmt }" v-if="pagetotal > 1"
-                                v-for="item in pagination(strlmt, pagetotal)" @click="fetchPageData(item)">
-                                <a class="page-link" v-if="item > 0">{{ item + 1 }}</a>
-                                <a class="page-link" v-else>{{ item }}</a>
-                            </li>
-                            <li class="page-item" @click="fetchPageData((strlmt + 1))">
-                                <a class="page-link" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
+                                <li class="page-item" @click="fetchPageData((strlmt - 1))">
+                                    <a class="page-link" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item" :class="{ active: strlmt == 0 }" @click="fetchPageData(0)">
+                                    <a class="page-link">1</a>
+                                </li>
+                                <li class="page-item" :class="{ active: strlmt == 1 }" v-if="total"
+                                    @click="fetchPageData(1)">
+                                    <a class="page-link">2</a>
+                                </li>
+                                <li class="page-item" :class="{ active: item == strlmt }" v-if="pagetotal > 1"
+                                    v-for="item in pagination(strlmt, pagetotal)" @click="fetchPageData(item)">
+                                    <a class="page-link" v-if="item > 0">{{ item + 1 }}</a>
+                                    <a class="page-link" v-else>{{ item }}</a>
+                                </li>
+                                <li class="page-item" @click="fetchPageData((strlmt + 1))">
+                                    <a class="page-link me-0" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
+        <div v-if="opSm" class="modal fade show d-block bg-modal text-small">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content rounded-2">
+                    <div class="modal-header text-white bg-danger py-2 ">
+                        <h4 class="modal-title" id="exampleModalLongTitle">หนังสือรับรองการหักภาษี ณ ที่จ่าย</h4>
+                        <button type="button" class="close text-white btn text-xl" @click="opSm = false"
+                            style="font-size: 33px;line-height: 0;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="according-section" style="font-family:sans-serif;">
+                        <div class="text-center text-small according-section" style="letter-spacing: 1px;font-size:8px;">
+                            <div class="text-primary" style="font-family:sans-serif;">แบบฟอร์มหนังสือรับรองการหักภาษี ณ ที่จ่าย</div>
+                            <div style="font-family:sans-serif;">ตามมาตรา 50 ทวิ แหล่งประมวลรัษฎากร</div>
+                            <div class="mb-2 d-flex justify-content-between" style="font-family:sans-serif;"><span style="font-family:sans-serif;">ลำดับที่ .....   ในแบบ   แบบยื่น   ภงด.3   (บุคคลธรรมดา)</span> เลขที่     {{accordingSection.id.toString().padStart(6, '0') }}</div>
+                            <div class="p-2 w-100" style="border-right: solid 0.05rem #000;border-left: solid 0.05rem #000; border-bottom: solid 0.05rem #000; border-top: solid 0.07rem #000;">
+                                <div class="d-flex justify-content-between" style="font-family:sans-serif;"><span style="font-family:sans-serif;">ผู้มีหน้าที่หักภาษี ณ ที่จ่าย:</span> <span style="font-family:sans-serif;">เลขประจําตัวผู้เสียภาษี</span> <span style="font-family:sans-serif;">0105555172337</span> สํานักงานใหญ่  </div>
+                                <div  class="row d-flex justify-content-center">
+                                    <div  style="font-family:sans-serif;text-align-last:left" class="col-2 text-left ps-4">ชื่อ  </div>
+                                    <div class="col-10 d-flex justify-content-start ps-0"   style="font-family:sans-serif;text-align-last:left" >
+                                        {{ dataSetting.bname }}
+                                    </div>
+                                </div>
+                                <div  class="row">
+                                    <div style="font-family:sans-serif;font-family:sans-serif;text-align-last:left" class="col-2 ps-4">ที่อยู่  </div>
+                                    <div class="col-10 d-flex justify-content-start ps-0"  style="font-family:sans-serif;text-align: justify;">
+                                        {{ dataSetting.baddress }}
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between" style="font-family:sans-serif;"><span style="font-family:sans-serif;">ผู้ถูกหักภาษี ณ ที่จ่าย:</span> <span style="font-family:sans-serif;">เลขประจําตัวผู้เสียภาษี</span> <span style="font-family:sans-serif;">{{ profile.ppCard }}</span> สํานักงานใหญ่  </div>
+                                <div  class="row d-flex justify-content-center">
+                                    <div  style="font-family:sans-serif;text-align-last:left" class="col-2 text-left ps-4">ชื่อ  </div>
+                                    <div class="col-10 d-flex justify-content-start ps-0"   style="font-family:sans-serif;text-align-last:left" >
+                                        {{ profile.fullname }}
+                                    </div>
+                                </div>
+                                <div  class="row">
+                                    <div  style="font-family:sans-serif;text-align-last:left" class="col-2 ps-4">ที่อยู่  </div>
+                                    <div class="col-10 d-flex justify-content-start ps-0"  style="font-family:sans-serif;text-align: justify;">
+                                        {{ profile.address }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-1" style="border: solid 0.05rem #000;">
+                                <div class="row d-flex justify-content-between px-2">
+                                    <div class="col-6 ps-4"  style="font-family:sans-serif;text-align-last: justify;">ประเภทเงินได้พึงประเมินที่จ่าย:<br> <spa class="text-primary" style="font-family:sans-serif;">1.ค้างจ่าย</spa></div>
+                                    <div style="font-family:sans-serif;" class="col-2  px-0">วัน เดือนปี<br>ภาษี ที่จ่าย</div>
+                                    <div style="font-family:sans-serif;" class="col-2">จำนวนเงินที่จ่าย</div>
+                                    <div style="font-family:sans-serif;" class="col-2 px-0">ภาษีที่หัก<br>และนำส่งไว้</div>
+                                </div>
+                            </div>
+                            <div class="text-left py-1"   style="font-family:sans-serif;border: solid 0.05rem #000;font-weight:100">
+                                <div class="d-flex d-flex justify-content-center w-100">
+                                    <div class="row d-flex justify-content-between w-100 px-1">
+                                        <div class="col-6 text-left px-0"  style="font-family:sans-serif;text-align: left;">1.เงินเดือน ค่าจ้าง เบี้ยเลี้ยง โบนัสฯลฯ ตาม ม.40(1):</div>
+                                        <div style="font-family:sans-serif;" class="col-2 px-0">{{ fDateThai(accordingSection.create_at) }}</div>
+                                        <div style="font-family:sans-serif;" class="col-2">
+                                            {{ accordingSection.amount }}
+                                        </div>
+                                        <div class="col-2 px-1"  style="font-family:sans-serif;text-align-last: right;">{{parseFloat(accordingSection.vat).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1,")}}</div>
+                                    </div>
+                                </div>
+                                <div class=" w-100">
+                                    <div class="row d-flex justify-content-between w-100 px-3">
+                                        <div class="col-6 text-left px-0"  style="font-family:sans-serif;text-align: left;">2.ค่าธรรมเนียม ค่านายหน้า ฯลฯ ตามมาตรา 40(2)</div>
+                                    </div>
+                                    <div class="row d-flex justify-content-between w-100 px-3">
+                                        <div class="col-6 text-left px-0"  style="font-family:sans-serif;text-align: left;">3.ค่าแห่งลิขสิทธิ์ ฯลฯ ตามมาตรา 40(3)</div>
+                                    </div>
+                                    <div class="row d-flex justify-content-between w-100 px-3">
+                                        <div class="col-12 text-left px-0"  style="font-family:sans-serif;text-align: left;">4.(ก) ค่าดอกเบี้ย ฯลฯ ตามมาตรา 40(4)(ก)</div>
+                                        <div class="col-12 text-left px-2"  style="font-family:sans-serif;text-align: left;">(ข) เงินปันผล เงินส่วนแบ่งกําไร ฯลฯ ตาม ม.40(4)(ข)</div>
+                                        <div class="col-12 text-left px-4"  style="font-family:sans-serif;text-align: left;">(1) กรณีผู้ได้รับเงินปันผลได้รับเครดิตภาษี โดยจ่ายจาก</div>
+                                        <div class="col-12 text-left px-5"  style="font-family:sans-serif;text-align: left;">
+                                            กําไรสุทธิของกิจการที่ต้องเสียภาษีเงินได้นิติบุคคลในอัตราดังนี้<br/>
+                                            (1.1) อัตราร้อยละ 30 ของกําไรสุทธิ<br/>
+                                            (1.2) อัตราร้อยละ 25 ของกําไรสุทธิ<br/>
+                                            (1.3) อัตราร้อยละ 20 ของกําไรสุทธิ<br/>
+                                            (1.4) อัตราอื่นๆ(ระบุ).....ของกําไรสุทธิ
+                                        </div>
+                                        <div class="col-12 text-left px-4"  style="font-family:sans-serif;text-align: left;">(2) กรณีผู้ได้รับเงินปันผลไม่ได้รับเครดิตภาษี เนื่องจากจ่าย</div>
+                                        <div class="col-12 text-left px-5"  style="font-family:sans-serif;text-align: left;">
+                                            (2.1) กําไรสุทธิของกิจการที่ได้รับยกเว้นภาษี<br/>
+                                            (2.2) เงินปันผลหรือเงินส่วนแบ่งของกําไรที่ได้รับยกเว้น <br/>
+                                            <div style="font-family:sans-serif;" class=" px-3">ไม่ต้องนํามารวมคํานวณเป็นรายได้เพื่อเสียภาษ</div>
+                                            <div style="font-family:sans-serif;" class=" px-3">เงินได้นิติบุคคล</div>
+                                            (2.3) กําไรสุทธิส่วนที่ได้หักผลขาดทุนสุทธิยกมาไม่เกิน 5 ปี
+                                            <div style="font-family:sans-serif;" class=" px-3">ก่อนรอบระยะเวลาบัญชีปีปัจจุบัน</div>
+                                            (2.4) กําไรที่รับรู้ทางบัญชีโดยวิธีส่วนได้เสีย 
+                                            <div style="font-family:sans-serif;" class=" px-3">(equity method) </div>
+                                            (2.5) อื่นๆ (ระบุ)
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex justify-content-between w-100 px-3">
+                                        <div class="col-12 text-left px-0 text-nowrap"  style="font-family:sans-serif;text-align: left;">
+                                            5.การจ่ายเงินได้ที่ต้องหักภาษี ณ ที่จ่ายตามคําสั่งกรมสรรพากรที่ออกตาม 
+                                            <div style="font-family:sans-serif;" class="ms-2"> มาตรา 3เตรส (ระบุ) </div>
+                                            <div style="font-family:sans-serif;" class="ms-2 text-nowrap"> (เช่น รางวัล ส่วนลดหรือประโยชนะใดๆ เนื่องจากการส่งเสริมการขาย</div>
+                                            <div style="font-family:sans-serif;" class="ms-2 text-nowrap"> รางวัลในการประกวด การแข่งขัน การชิงโชค ค่าแสดงของนักแสดง</div>
+                                            <div style="font-family:sans-serif;" class="ms-2 text-nowrap"> สาธารณะ ค่าขนส่ง ค่าบริการ ค่าเบี้ยประกันวินาศภัย ฯลฯ)</div>
+                                        </div>
+                                        <div class="col-12 text-left px-0 text-nowrap"  style="font-family:sans-serif;text-align: left;">6.อื่นๆ (ระบุ)</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-1" style="border: solid 0.05rem #000;">
+                                <div class="d-flex d-flex justify-content-center w-100">
+                                    <div class="row d-flex justify-content-between w-100 px-1">
+                                        <div class="col-8 text-left px-3"  style="font-family:sans-serif;text-align: right;">รวมเงินที่จ่ายและภาษีที่หักนําส่ง</div>
+                                        <div style="font-family:sans-serif;" class="col-2"> {{parseFloat(accordingSection.totalAmount).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1,")}}</div>
+                                        <div class="col-2 px-1"  style="font-family:sans-serif;text-align-last: right;"> {{parseFloat(accordingSection.vat).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g,"$1,")}}</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex d-flex justify-content-center w-100">
+                                    <div class="row d-flex justify-content-between w-100 p-1">
+                                        <div class="col-3 px-0 text-left"  style="font-family:sans-serif;text-align: left;">รวมเงินภาษีที่หักนําส่ง</div>
+                                        <div class="col-3 px-0" style="font-family:sans-serif;">(ห้าร้อยสี่สิบบาทถ้วน).</div>
+                                        <div class="col-6 px-1" style="text-align-last: right;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-1" style="border: solid 0.05rem #000;">
+                                <div class="row d-flex justify-content-between w-100 px-4">
+                                    <div class="col-4 px-0 text-center" style="font-family:sans-serif;">ผู้จ่ายเงิน</div>
+                                    <div class="col-4 px-0" style="font-family:sans-serif;text-align: justify;">[ x ]   หักภาษี ณ ที่จ่าย</div>
+                                    <div class="col-4 px-1" style="font-family:sans-serif;text-align: justify;">[    ]   ออกให้ตลอดไป </div>
+                                </div>
+                                <div class="row d-flex justify-content-between w-100 px-4">
+                                    <div class="col-4 px-0 text-left" style="text-align: left;"></div>
+                                    <div class="col-4 px-0"  style="font-family:sans-serif;text-align: justify;">[    ]   ออกภาษีให้ครั้งเดียว</div>
+                                    <div class="col-4 px-1"  style="font-family:sans-serif;text-align: justify;">[    ]   อื่นๆ   (ระบุ) ..............</div>
+                                </div>
+                            </div>
+                            <div class="py-1"  style="border: solid 0.05rem #000;">
+                                <div class="row d-flex justify-content-between w-100 px-4">
+                                    <div class="col-12 px-0 mb-3 text-left"  style="font-family:sans-serif;text-align: left;">ขอรับรองว่าข้อความและตัวเลขดังกล่าวถูกต้องตรงกับความเป็นจริงทุกประการ</div>
+                                    <div class="col-6 pe-0 ps-0 ps-md-5"  style="font-family:sans-serif;text-align: left;">ผู้มีหน้าที่หักภาษี ณ.ที่จ่าย<br/>วันเดือนปี ที่ออกหนังสือรับรองฯ</div>
+                                    <div class="col-3 px-0 text-center"  style="font-family:sans-serif;letter-spacing: 2px;">..........................<br/>{{ fDateThai(accordingSection.create_at) }}</div>
+                                    <div class="col-3 px-1 text-center" style="font-family:sans-serif;">ประทับตรา<br/>นิติบุคคล</div>
+                                    <img src="@/public/assets/images/linecent.png" alt="logo" class="linecent">
+                                    <img src="@/public/assets/images/pratab.png" alt="logo" style="width:100px;position:absolute;right:20px">
+                                    
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="opSm = false">ปิด</button>
+                        <button type="button" class="btn btn-primary" @click="downloadAsImage()"> ดาวน์โหลด</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -284,7 +418,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { format } from 'date-fns';
 import { th } from 'date-fns/locale';
-// import { GoogleMap, Marker, InfoWindow } from "vue3-google-map";
+import html2canvas from 'html2canvas';
 export default {
     data() {
         return {
@@ -293,43 +427,29 @@ export default {
             maidProfile: '',
             imageData: '',
             dataHistory: '',
-            selectBank:'',
-            edit:false,
-            listSt:false,
-            uploadStatus:false,
+            selectBank: '',
+            myDesc: '',
+            opSm: false,
+            edit: false,
+            listSt: false,
+            uploadStatus: false,
             apiBase: import.meta.env.VITE_AGENT_BASE_URL,
             bankData: [
-                { "img": "https://www.logolynx.com/images/logolynx/ac/acc6db2f0532b74dff3f2525adbc56a3.jpeg", "id": "1", "shortname": "kbank", "name": "กสิกรไทย" },
-                { "img": "https://media-exp1.licdn.com/dms/image/C510BAQElNZUFumis3Q/company-logo_200_200/0/1519912092504?e=2159024400&v=beta&t=UXn2iHDhq4cwYLoRjYxo3FgGkjJR3ekhlnDo-dw5KB4", "id": "2", "shortname": "scb", "name": "ไทยพาณิชย์" },
-                { "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXMiwU15ngT63kAECxWfVQUvzjkOsbB_ujb3VAlr1VZYThd1EQ_JxFNCTVC7TwuREYBb8&usqp=CAU", "id": "3", "shortname": "bbl", "name": "กรุงเทพ" },
-                { "img": "https://upload.wikimedia.org/wikipedia/en/thumb/f/f0/Krung_Thai_Bank_logo.svg/220px-Krung_Thai_Bank_logo.svg.png", "id": "4", "shortname": "ktb", "name": "กรุงไทย" },
-                { "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGqrt4IpIhN4sOmI3du7EJiFmB50Z5sTHzd7TxmSDjLn1KF0pL38fjOZPa7vn3NJJqIkU&usqp=CAU", "id": "5", "shortname": "bay", "name": "กรุงศรีอยุธยา" },
-                { "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJ0qwsNsBRVA1r0DkIg3DoYNfpRGrua_FQkIVSkM09LBJJOwKMT7NSIQugWZtHGq_hd_s&usqp=CAU", "id": "6", "shortname": "gsb", "name": "ออมสิน" },
-                { "img": "https://media.glassdoor.com/sqll/11462/united-overseas-bank-squarelogo-1464075746597.png", "id": "7", "shortname": "uob", "name": "ยูโอบี" },
-                { "img": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAz1BMVEX///9ucHHW3CdJv8f1g2gbhcP7xRKcn5P2kyCOQJlnaWpqbG2Sk5Sbm5yrrK1gYmPMzc27u7u0tLXd3d3v7+/Fxcb/yADe4mLe3gpDxsr7h2Tag3sAhcdcka3euU6XnZe9m3X6khX5vIez4OTLsNDa30hgxcyaWaPU2xLr7qr2kHlBksn7yjymqZ73nkSJM5T6x72oyOL946f7zamJiotSVVbh5XXg4TrdkIlwnbX/zS/hv2TEpYT6wpT3fV7v8bvtx8S5zdjv3rTg0cL838l6JC6TAAAB0UlEQVR4nO3aV1PbQBSAUZweyWCDE1JwCqmkN0jvyf//TXnzyFf7sOv1TBCc86x7Zz+9abQbGwAAAAAAAAAAQLHpdseVtW6bZQ7NVhnKdzhpFibT2m3j7rarmUPb3aGt2iP0z9SOFprqws3utuzCpjOksJzCMgqTFFZSWEZhksJKCssoTFJYSWEZhUkKKyksozBJYSWFZRQmKayksIzCJIWVFJZRmDTYwlEzydOMhlq4CoUrUFhGoUKFq1BYRuEJK2wytUMtbKazPFvtQAsnubdVB/ttoXBBYSWFZRQmKayksIzCJIWVFJZRmKSwksIyCpMUVlJYRmGSwkqnq7Dd3MmWfhnHvXDU5v5qaCabyW3HvjBfq1Bhh8JKChUuU5iksNLJLzzMvMgbjZPbxp0njnILd446U+svBAAAAAAAhuL9w+jDo57HPU+jj8+iT5+fB19eRF9fRt/WXnjt4Exw/Wx043LPzXPB3vz8svmt3QvLdm/fuRjc3b+0bP/e+gtjoEKFChUqVKhQoUKFChUqVKhQoUKFChUqVKhQ4f8qPIgSha96vkd78yivMFp/4Y8nPfd7HvS8jn6+iX69jX5Poz/vor9rLwQAAAAAAAAAgFPgH6e2FfsAGvSxAAAAAElFTkSuQmCC", "id": "8", "shortname": "lhb", "name": "แลนด์&เฮ้าส์" },
-                { "img": "https://marketsavvy.co/wp-content/uploads/2020/04/GHlogo-300x300.jpg", "id": "9", "shortname": "ghb", "name": "อาคารสงเคราะห์" },
-                { "img": "https://i.pinimg.com/originals/06/70/69/067069fcbe69567ec81b0240996c0632.png", "id": "11", "shortname": "ibank", "name": "อิสลามแห่งประเทศไทย" },
-                { "img": "https://upload.wikimedia.org/wikipedia/en/f/f8/Tisco_logo.png", "id": "12", "shortname": "tisco", "name": "ทิสโก้" },
-                { "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJZHdAC3gRb5lGbO8Op2Qqui2LRh1mMRtgOk9SGkMigvTHDYyNZjl70oGDxN_IddXSpXM&usqp=CAU", "id": "13", "shortname": "kk", "name": "เกียรตินาคิน" },
-                { "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrs-WPHU6UjzNTDQILwK1x0WvRP0Un5eATlEaUb-llTIbrFUXEXGeO-HxooJoyhyKdE2A&usqp=CAU", "id": "14", "shortname": "baac", "name": "ธกส." },
-                { "img": "http://www.logotaglines.com/wp-content/uploads/2016/11/JPMorgan-Chase-Co-Logo-487x365.jpg", "id": "15", "shortname": "jpm", "name": "เจพีมอร์แกนเชส " },
-                { "img": "https://www.jobtopgun.com/content/filejobtopgun/logo_com_job/j3651.gif?_=13", "id": "16", "shortname": "ttb", "name": "ทหารไทยธนชาต" },
-                { "img": "https://i.pinimg.com/originals/f0/52/4a/f0524a1937ff5b1e03c6c92ad014d821.png", "id": "17", "shortname": "tcrb", "name": "ไทยเครดิต" },
-                { "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPIvcD_NGgZzOu6QDrP_yFwaa1-GOuNtfwLLTLL9D3b40CveggydAII0ZudwhZqxwbdSc&usqp=CAU", "id": "18", "shortname": "citi", "name": "ซิตี้แบ้งค์" },
-                { "img": "data:image/jpeg;base64,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", "id": "19", "shortname": "smbc", "name": "ซูมิโตโมมิตซุย แบงกิ้ง" },
-                { "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRveApa65w_dnKgmRo2HrkL0lwLAxzQC5b9vYsNf3K8zmb8Pjq6rebYMOtCdqL8FKqP--U&usqp=CAU", "id": "20", "shortname": "cimb", "name": "ซีไอเอ็มบีไทย" },
-                { "img": "https://1.bp.blogspot.com/-22UW_ctLnWo/XBzuZkP0RXI/AAAAAAAAAd0/rzpg3S5XQtswJoJ3cTWDYdHnqpQlOzYbgCK4BGAYYCw/s1600/Bank%2BMEGA%2B%255Bsiklogo.blogspot.com%255D.png", "id": "21", "shortname": "mega", "name": "เมกะสากลพาณิชย์" },
-            ],
+                { 
+                    "img": "https://www.logolynx.com/images/logolynx/ac/acc6db2f0532b74dff3f2525adbc56a3.jpeg", "id": "1", "shortname": "kbank", "name": "กสิกรไทย" },
+                ],
             dataStrLmt: 0,
             pagetotal: 0,
             total: 0,
             strlmt: 0,
-            start:0,
-            limit:5,
+            start: 0,
+            limit: 5,
+            dataSetting:'',
+            accordingSection:''
         }
     },
     mounted() {
-        this.profile = JSON.parse(localStorage.getItem("Maid"));
+        this.profile = JSON.parse(sessionStorage.getItem("X-Maid"));
         if (this.profile) {
             this.getProfile();
             this.getHistory();
@@ -338,9 +458,38 @@ export default {
         }
     },
     methods: {
+        downloadAsImage() {
+            const element = document.getElementById('according-section'); // เปลี่ยนเป็น ID ของ HTML ที่ต้องการสร้างภาพ
+            Swal.fire({
+                position: "top-center",
+                icon: "rerequest",
+                title: 'ดาวน์โหลดแบบฟอร์มหนังสือรับรองการหักภาษี ณ ที่จ่าย',
+                showConfirmButton: true,
+            }).then(() => {
+                html2canvas(element).then(canvas => {
+                const imgData = canvas.toDataURL('image/jpeg');
+                const a = document.createElement('a');
+                a.href = imgData;
+                const filename = 'madam-clean-according-section-' + this.reDateThai(new Date());
+                a.download = filename + '.jpg'; // ชื่อไฟล์ที่ต้องการให้ดาวน์โหลด
+                a.click();
+                });
+            });
+        },
         formatDateThai(date) {
             return format(new Date(date), 'd MMM yy', { locale: th });
         },
+        fDateThai(date) {
+            const formattedDate = format(new Date(date), 'dd/MM/yy', { locale: th });
+            const year = parseInt(formattedDate.slice(-2), 10) + 43; // เอาสองหลักสุดท้ายของปีและเพิ่ม 543 เพื่อแปลงเป็น พ.ศ.
+            return formattedDate.slice(0, -2) + year; // ตัด 'YY' และเปลี่ยนเป็น พ.ศ.
+        },
+        reDateThai(date) {
+            const formattedDate = format(new Date(date), 'dd/MM/yyyy', { locale: th });
+            const year = parseInt(formattedDate.slice(-2), 10) + 543; // เอาสองหลักสุดท้ายของปีและเพิ่ม 543 เพื่อแปลงเป็น พ.ศ.
+            return formattedDate.slice(0, -3) + year; // ตัด 'YY' และเปลี่ยนเป็น พ.ศ.
+        },
+
         chooseBankEdit(data) {
             this.maidProfile.bank_type = data;
             this.listSt = false;
@@ -359,33 +508,33 @@ export default {
             const reader = new FileReader();
             let base64Image = ''; // เริ่มต้นด้วยค่าว่าง
             reader.onload = (e) => {
-            const img = new Image();
-            img.src = e.target.result;
+                const img = new Image();
+                img.src = e.target.result;
 
-            img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
 
-            const MAX_WIDTH = 300; // กำหนดความกว้างสูงสุด
-            const MAX_HEIGHT = MAX_WIDTH * (img.height / img.width);
+                    const MAX_WIDTH = 300; // กำหนดความกว้างสูงสุด
+                    const MAX_HEIGHT = MAX_WIDTH * (img.height / img.width);
 
-            canvas.width = MAX_WIDTH;
-            canvas.height = MAX_HEIGHT;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = MAX_HEIGHT;
 
-            // ปรับขนาดรูปภาพ
-            ctx.drawImage(img, 0, 0, MAX_WIDTH, MAX_HEIGHT);
+                    // ปรับขนาดรูปภาพ
+                    ctx.drawImage(img, 0, 0, MAX_WIDTH, MAX_HEIGHT);
 
-            // สร้าง base64 URL จาก Canvas
-            const base64Image = canvas.toDataURL('image/jpeg');
+                    // สร้าง base64 URL จาก Canvas
+                    const base64Image = canvas.toDataURL('image/jpeg');
 
-            // กำหนดค่าให้กับ imageData และ imageUrl
-            this.maidProfile.img = base64Image; 
-                if(base64Image){
+                    // กำหนดค่าให้กับ imageData และ imageUrl
+                    this.maidProfile.img = base64Image;
+                    if (base64Image) {
                         this.upImgProfile();
                     }
+                };
             };
-        };
-            
+
             reader.readAsDataURL(file);
 
         },
@@ -397,13 +546,13 @@ export default {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    data:{img:this.maidProfile.img}
+                    data: { img: this.maidProfile.img }
                 };
 
                 await axios
                     .request(config)
                     .then((response) => {
-                        this.uploadStatus=true;
+                        this.uploadStatus = true;
                     })
                     .catch((error) => {
                         console.log(error);
@@ -414,22 +563,15 @@ export default {
             }
         },
         openSlip(data) {
-            this.getProfile();
-            // this.fetchPayWait();
-            
+            this.accordingSection = data;
             this.opSm = true;
-            this.dataSlip = data;
-            if(this.dataSlip.hasTool==='1'){
-                this.toolPirce = this.dataSetting.hasTool;
-            }else{
-                this.toolPirce = 0;
-            }
+            this.getSetting();
         },
         getHistory: async function () {
             try {
                 let config = {
                     method: "get",
-                    url: this.apiBase + "/maids-history/" + this.profile.maid_id,
+                    url: this.apiBase + "/pay-week/" + this.profile.maid_id,
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -478,11 +620,11 @@ export default {
                 console.error(error);
             }
         },
-        editBank(){
+        editBank() {
             this.getProfile();
-            this.edit=true;
+            this.edit = true;
         },
-        saveEdit:async function(){
+        saveEdit: async function () {
             try {
                 let config = {
                     method: "put",
@@ -491,18 +633,42 @@ export default {
                         "Content-Type": "application/json",
                     },
                     data: {
-                        bank_number:this.maidProfile.bank_number,
-                        fname:this.maidProfile.fname,
-                        lname:this.maidProfile.lname,
-                        bank_type:this.maidProfile.bank_type,
-                        pass:this.pass,
+                        bank_number: this.maidProfile.bank_number,
+                        fname: this.maidProfile.fname,
+                        lname: this.maidProfile.lname,
+                        bank_type: this.maidProfile.bank_type,
+                        myDesc: this.maidProfile.myDesc,
+                        pass: this.pass,
                     }
                 };
                 await axios
                     .request(config)
                     .then((response) => {
                         this.getProfile();
-                        this.edit=false;
+                        this.edit = false;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        getSetting: async function () {
+            try {
+                let config = {
+                    method: "get",
+                    url: this.apiBase + "/patrol",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                };
+
+                await axios
+                    .request(config)
+                    .then((response) => {
+                        this.dataSetting = response.data;
                     })
                     .catch((error) => {
                         console.log(error);
@@ -513,69 +679,77 @@ export default {
             }
         },
         fetchPageData: async function (str) {
-      if (str == '...' || this.strlmt == str) {
-        return false;
-      }
-      if (str > this.pagetotal) {
-        str = this.pagetotal;
-        return false;
-      } else if (str < 0 || str == -1) {
-        return false;
-      }
-      // this.dataMaids = '';
-      this.strlmt = str;
-      if (str < 0 || str == -1) {
-        str = 0;
-      }
-      // var choices = document.getElementById("producttypesale").value;
-      this.strlmt = str;
-      this.dataStrLmt = str;
-      
-
-      if((str * 5)<this.dataBook.length ){
-        this.start = str * 5;
-        this.limit = str * 5 + 5;
-      }
-
-    },
-    pagination: function (c, m) {
-      var current = c,
-        last = m,
-        delta = 2,
-        left = current - delta,
-        right = current + delta + 1,
-        range = [],
-        rangeWithDots = [],
-        l;
-
-      range.push(1)
-      if (last > 1) {
-        for (let i = c - delta; i <= c + delta; i++) {
-          if (i >= left && i < right && i < m && i > 1) {
-            range.push(i);
-          }
-        }
-        range.push(m);
-
-        for (let i of range) {
-          if (l) {
-            if (i - l === 2) {
-              rangeWithDots.push(l + 1);
-            } else if (i - l !== 1) {
-              rangeWithDots.push('...');
+            if (str == '...' || this.strlmt == str) {
+                return false;
             }
-          }
-          rangeWithDots.push(i);
-          l = i;
-        }
-      }
-      return rangeWithDots;
-    },
+            if (str > this.pagetotal) {
+                str = this.pagetotal;
+                return false;
+            } else if (str < 0 || str == -1) {
+                return false;
+            }
+            // this.dataMaids = '';
+            this.strlmt = str;
+            if (str < 0 || str == -1) {
+                str = 0;
+            }
+            // var choices = document.getElementById("producttypesale").value;
+            this.strlmt = str;
+            this.dataStrLmt = str;
+
+
+            if ((str * 5) < this.dataBook.length) {
+                this.start = str * 5;
+                this.limit = str * 5 + 5;
+            }
+
+        },
+        pagination: function (c, m) {
+            var current = c,
+                last = m,
+                delta = 2,
+                left = current - delta,
+                right = current + delta + 1,
+                range = [],
+                rangeWithDots = [],
+                l;
+
+            range.push(1)
+            if (last > 1) {
+                for (let i = c - delta; i <= c + delta; i++) {
+                    if (i >= left && i < right && i < m && i > 1) {
+                        range.push(i);
+                    }
+                }
+                range.push(m);
+
+                for (let i of range) {
+                    if (l) {
+                        if (i - l === 2) {
+                            rangeWithDots.push(l + 1);
+                        } else if (i - l !== 1) {
+                            rangeWithDots.push('...');
+                        }
+                    }
+                    rangeWithDots.push(i);
+                    l = i;
+                }
+            }
+            return rangeWithDots;
+        },
     },
 }
 </script>
 
-<style>
+<style scoped>
+
+.modal-body.according-section,
+    .modal-body#according-section {
+        font-family: "Taviraj" , sans-serif;
+        font-weight: 100;
+        font-style: normal;
+    }
+
 .list-show {
     padding: 4px 8px;
 }
@@ -583,5 +757,17 @@ export default {
 .list-show:hover {
     background-color: #ccc;
     padding: 4px 8px;
+}
+
+@media (min-width: 768px) {
+    .linecent{
+        width:100px;position:absolute;right:33%;
+    }
+}
+@media (max-width: 480px) {
+    .linecent{
+        width:100px;position:absolute;right:30%;
+        margin-top:5px;
+    }
 }
 </style>

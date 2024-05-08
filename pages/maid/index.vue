@@ -1,8 +1,7 @@
 <template>
     <div class="row d-flex justify-content-center">
-            {{ maidProfile.status }}
         <div class="col-12 my-2 py-2 bg-warning d-flex align-items-center justify-content-center"
-            v-if="loading && maidProfile.status == 2" style="position: fixed;top: 52px;">
+            v-if="loading && maidProfile.status == 2" style="position: fixed;top: 52px;z-index: 2;">
 
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-exclamation-circle text-danger me-2" viewBox="0 0 16 16">
@@ -77,7 +76,7 @@
                 <div class="recentOrders px-2 px-md-4">
                     <div class="cardHeader">
                         <h2>ตารางงานทั้งหมด</h2>
-                        <button class="btn border" @click="openStatusFilter()">
+                        <button class="btn border d-none" @click="openStatusFilter()">
                             {{ textStatus }}
                         </button>
                         <div v-if="openStatus" class="border rounded bg-white py-2 px-0"
@@ -224,7 +223,7 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <tbody v-for="(items, i) in dataWork.data" :key="i"> <!-- รับแล้ว -->
+                        <tbody v-for="(items, i) in dataWork.data" :key="i"> <!-- รับแล้ว กำลังทำ -->
                             <tr v-if="items.isActive === 5 && items.imgWorkStart && !items.imgWorkEnd"
                                 class="border-bottom">
                                 <td class="px-0">
@@ -350,7 +349,7 @@
                             </tr>
                         </tbody>
                         <tbody v-for="(item, i) in dataWork.data" :key="i"> <!-- กำลังทำ -->
-                            <tr v-if="item.isActive === 5 && !item.imgWorkStart && !item.imgWorkEnd"
+                            <tr v-if="item.isActive == 5 && !item.imgWorkStart && !item.imgWorkEnd"
                                 class="border-bottom">
                                 <td class="px-0">
                                     <div class="pin-map">
@@ -384,9 +383,7 @@
                                         </div>
 
                                         <div class="mt-2 mt-md-0 text-nowrap ms-4">
-                                            <span class="status delivered px-2" v-if="item.isActive == 1">เสร็จแล้ว {{
-                0.00
-            }}</span>
+                                            <span class="status delivered px-2" v-if="item.isActive == 1">เสร็จแล้ว {{0.00}}</span>
                                             <span class="status pending px-2" v-if="item.isActive == 3"
                                                 @click="cfWork(item)">งานใหม่</span>
                                             <span class="status inProgress px-2 text-nowrap"
@@ -549,7 +546,7 @@
                                     <div
                                         class="mt-2 mt-md-0 text-nowrap d-flex align-content-center justify-content-end">
                                         <span class="status delivered px-2 pt-2"
-                                            v-if="item.imgWorkEnd && item.imgWorkStart" @click="cfWork(item)">
+                                            v-if="item.imgWorkEnd && item.imgWorkStart">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                 fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
                                                 <path
@@ -751,6 +748,7 @@ export default {
             amountSum: 0,
             dataMaid: [],
             dataWork: [],
+            dataWorkForSearch: [],
             textStatus: 'ทั้งหมด',
             uploadStatus: false,
             openStatus: false,
@@ -779,12 +777,12 @@ export default {
         }, 4800);
 
         this.getSetting();
-        this.authMaid = JSON.parse(localStorage.getItem("Maid"));
+        this.authMaid = JSON.parse(sessionStorage.getItem("X-Maid"));
         if (this.authMaid === undefined) {
-            localStorage.removeItem('Maid');
+            sessionStorage.removeItem('X-Maid');
         }
         if (!this.authMaid) {
-            localStorage.removeItem('Maid');
+            sessionStorage.removeItem('X-Maid');
             this.timeStatus = 2;
             this.loading = true;
         }else{
@@ -846,6 +844,11 @@ export default {
         filterStatus(data, text) {
             this.textStatus = text;
             this.openStatus = false;
+            if (data!==0) {
+                this.dataWork = this.dataWorkForSearch.filter(maid => maid.isActive == data);
+            } else {
+                this.workList(); // กรณีที่ไม่มีการค้นหา
+            }
         },
         cutName(name) {
             let nn = name.charAt(0);
@@ -867,7 +870,7 @@ export default {
             this.uploadStatus = false;
         },
         cfWork: async function (data) {
-            this.dataMaid = JSON.parse(localStorage.getItem("Maid"));
+            this.dataMaid = JSON.parse(sessionStorage.getItem("X-Maid"));
             
             Swal.fire({
                 position: "top-center",
@@ -944,8 +947,7 @@ export default {
             });
         },
         workList: async function () {
-            this.dataMaid = JSON.parse(localStorage.getItem("Maid"));
-            this.dataMaid.maid_id
+            this.dataMaid = JSON.parse(sessionStorage.getItem("X-Maid"));
             try {
                 let config = {
                     method: "get",
@@ -954,11 +956,11 @@ export default {
                         "Content-Type": "application/json",
                     },
                 };
-
                 await axios
                     .request(config)
                     .then((response) => {
                         response;
+                        this.dataWorkForSearch = Object.assign({}, response.data);
                         this.dataWork = Object.assign({}, response.data);
                         this.newQCount = response.data.newQCount;
                         this.hasQCount = response.data.hasQCount;

@@ -43,7 +43,6 @@
         </div>
       </div>
     </div> -->
-    
     <div>
         <img :src="dataPromotion.imageUrl" class="w-100" alt="">
         <div class="row d-flex justify-content-center">

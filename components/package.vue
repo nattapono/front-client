@@ -7,11 +7,13 @@
     </div>
     <div class="container">
       <div class="row d-flex justify-content-center">
-        <div class="col-12 col-md-3 col-lg-3 my-2 d-block " v-for="(item, index) in dataPackages" :key="index">
-          <div class="package card p-2 pb-4">
-            <div class=" h-200">
-              <div class="text-center border-bottom pb-2 font-weight-bold numbers font-weight-bold text-primary">{{ item.name }}</div>
-              <div class="row text-muted bg-gray-200">
+        <div class="col-12 col-md-4 col-lg-3 my-2 d-block " v-for="(item, index) in dataPackages" :key="index">
+          <div class="package card px-0 pb-4">
+            <div class="px-0 h-200">
+              <div class="text-center pb-2 numbers text-primary px-0">
+                <b>{{ item.name }}</b>
+              </div>
+              <div class="row text-muted bg-gray-200 border-top border-bottom mx-0">
                 <div class="col-6 text-center font-weight-bold">ชม.</div>
                 <div class="col-6 text-center font-weight-bold">ราคา</div>
               </div>
@@ -20,16 +22,33 @@
                 <div class="col-6 text-center">{{ data.amount }} บาท</div>
               </div>
               <div class="row p-2" v-if="item.items.length<3">
-                <div class="col-6 text-center py-2 mt-1"></div>
-                <div class="col-6 text-center py-2 mt-1"></div>
+                <div class="col-6 text-center"> </div>
+                <div class="col-6 text-center"> </div>
+              </div>
+              <div class="row p-2" v-if="item.items.length<4">
+                <div class="col-6 text-center"> </div>
+                <div class="col-6 text-center"> </div>
+                <div class="col-6 text-center"> </div>
+              </div>
+              <div class="row p-2" v-if="item.items.length<5">
+                <div class="col-6 text-center"> </div>
+                <div class="col-6 text-center"> </div>
+                <div class="col-6 text-center"> </div>
+                <div class="col-6 text-center"> </div>
+              </div>
+              <div class="row p-2" v-if="item.items.length<6">
+                <div class="col-6 text-center"></div>
+                <div class="col-6 text-center"></div>
+                <div class="col-6 text-center"></div>
+                <div class="col-6 text-center"></div>
+                <div class="col-6 text-center"></div>
               </div>
               <div class="iconBx text-center mt-4">
                 <ion-icon name="eye-outline"></ion-icon>
-                <button class="btn btn-primary rounded-2 px-5" @click="packageSelect(item)">เลือกบริการ</button>
+                <button class="btn btn-primary rounded-2" @click="packageSelect(item)">เลือกบริการ</button>
               </div>
             </div>
           </div>
-  
         </div>
       </div>
     </div>
@@ -45,33 +64,6 @@ export default {
   data() {
     return {
       dataPackages:'',
-      listPackages: [
-        {
-          'id': 1, 'name': 'Package-1', 'type': [
-            { 'hour': 2, 'amount': 500 },
-            { 'hour': 3, 'amount': 700 },
-            { 'hour': 4, 'amount': 900 },
-            { 'hour': 5, 'amount': 1100 },
-            { 'hour': 6, 'amount': 1200 },
-            { 'hour': 7, 'amount': 1400 },
-            { 'hour': 8, 'amount': 1600 },
-          ]
-        },
-        {
-          'id': 2, 'name': 'Package-2', 'type': [
-            { 'hour': 3, 'amount': 0 },
-            { 'hour': 4, 'amount': 0 },
-            { 'hour': 6, 'amount': 0 },
-          ]
-        },
-        {
-          'id': 3, 'name': 'Big Cleaning', 'type': [
-            { 'hour': 3, 'amount': 0 },
-            { 'hour': 4, 'amount': 0 },
-            { 'hour': 6, 'amount': 0 },
-          ]
-        }
-      ],
       apiBase: import.meta.env.VITE_AGENT_BASE_URL
     };
   },
@@ -82,13 +74,13 @@ export default {
     packageSelect: async function (item) {
       localStorage.setItem("bookingId", JSON.stringify(item.id));
       localStorage.setItem("hours-package", JSON.stringify(item));
-      window.location = 'booking';
+      // window.location=window.location.origin+'/booking?_t='+Date.now();
     },
     getPackage: async function () {
       try {
         let config = {
           method: "get",
-          url: this.apiBase + "/packages",
+          url: this.apiBase + "/package",
           headers: {
             "Content-Type": "application/json",
           },
@@ -118,4 +110,8 @@ export default {
   right: 0;
   bottom: 0;
   top: 0;
-}</style>
+}
+.bg-gray-200{
+  background-color: #efefef
+}
+</style>

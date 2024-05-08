@@ -4,7 +4,7 @@
             <div class="form-signin w-100 m-auto">
                 <form>
                     <div class="text-center">
-                        <img class="mb-4" src="/assets/images/maid.png" alt=""
+                        <img class="mb-4" :src="logo" alt=""
                             style="width:186px;height:186px;margin:0 auto;" />
                     </div>
                     <h1 class="h3 mb-3 fw-normal">Admin sign in</h1>
@@ -57,7 +57,9 @@ export default {
             selectedDate: new Date(),
             formattedDate: '',
             openLocation: false,
-            apiBase: import.meta.env.VITE_AGENT_BASE_URL
+            apiBase: import.meta.env.VITE_AGENT_BASE_URL,
+            logo:'',
+            web_name:''
         }
     },
 
@@ -65,7 +67,7 @@ export default {
 
     },
     mounted() {
-
+        this.fetchLogo();
         const currentDate = new Date();
 
         // ดึงค่าเดือนปัจจุบัน
@@ -75,6 +77,31 @@ export default {
         this.currentMonth = currentMonth;
     },
     methods: {
+        fetchLogo: async function () {
+            try {
+                let config = {
+                    method: "get",
+                    url: this.apiBase + "/logo",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                };
+
+                await axios
+                    .request(config)
+                    .then((response) => {
+                        this.logo = response.data.logo;
+                        this.web_name = response.data.web_name;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+
+            } catch (error) {
+                console.error(error);
+            }
+
+        },
         getLogin: async function(){
             if (this.username == '') {
                 this.userErr = 'กรุณากรอกชื่อเข้าใช้งาน';

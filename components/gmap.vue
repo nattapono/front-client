@@ -111,8 +111,6 @@ export default defineComponent({
 
                     showAddress.value = response.data.results[0].formatted_address;
                     document.getElementById('show-address').innerHTML = showAddress.value;
-
-                    console.log('showAddress',showAddress.value);
                 } else {
                     console.error('Error occurred while fetching address:', response.data.error_message);
                 }

@@ -17,8 +17,8 @@
     import Sidebar from "./sidebar";
 </script>
 <style>
-@import "../public/assets/css/style.css";
-@import "@/public/assets/css/bootstrap.min.css";
+@import "../public/assets/css/style.0.0.1.css";
+@import "@/public/assets/css/bootstrap.0.0.1.min.css";
 
 
  @media (max-width: 768px) {

@@ -6,9 +6,14 @@ export default {
         head: {
             charset: 'utf-8',
             viewport: 'width=device-width,initial-scale=1,user-scalable=0',
-            title: "madam clean ",
+            title: "madam clean",
             meta: [
-                { name: "description" }
+                { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=0' },
+                { name: 'บริการแม่บ้านออนไลน์ ง่ายๆ สำหรับคุณ', content: 'บริการแม่บ้านออนไลน์ ง่ายๆ สำหรับคุณ' },
+                { 'http-equiv':"X-UA-Compatible", content:"IE=edge" },
+                { 'http-equiv': 'Cache-Control', content: 'no-cache, no-store, must-revalidate' },
+                { 'http-equiv': 'Pragma', content: 'no-cache' },
+                { 'http-equiv': 'Expires', content: '0' },
             ],
             link: [
                 {
@@ -24,10 +29,6 @@ export default {
                 },
                 {
                     src:"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js",
-                    type: "text/javascript",
-                },
-                {
-                    src: "./assets/js/bootstrap.bundle.min.js",
                     type: "text/javascript",
                 },
             ]

@@ -1,8 +1,8 @@
 <template>
     <div>
         <Branner />
-        <Package />
-        <slideCourse />
+        <imageMenu />
+        <slideShowcase />
         <Madam />
     </div>
 </template>
@@ -10,14 +10,15 @@
     import Branner from "../components/branner.vue";
     import Package from "../components/package.vue";
     import Madam from "../components/madam.vue";
-    import slideCourse from "../components/slideCourse.vue";
+    import slideShowcase from "../components/slideShowcase.vue";
+    import imageMenu from "../components/image-menu.vue";
     import axios from 'axios';
     import swal from 'sweetalert';
     useHead({
         title:"[แม่บ้านออนไลน์]",
         meta:[
             {
-                name:"description",
+                name:"บริการแม่บ้านออนไลน์ ง่ายๆ สำหรับคุณ",
                 content:"บริการแม่บ้านออนไลน์ ง่ายๆ สำหรับคุณ"
             }
         ]
@@ -30,13 +31,11 @@
             };
         },
         mounted(){
-            this.getGameList();
+          
         },
         methods:{
-            getGameList: async function () {}
-                
+           
         }
-        
     };
 
 </script>

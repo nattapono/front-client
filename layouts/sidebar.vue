@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="topbar px-md-5 bg-danger d-flex justify-content-between">
-      <div class="text-white text-1xl align-items-center d-flex justify-content-between">
-        <img src="@/public/assets/images/logomdc.png" width="45" alt="">
-        <span class="d-none d-md-block">MadamClean</span>
-      </div>
+      <nuxt-link :to="pathOrigin" class="text-white text-1xl align-items-center d-flex justify-content-between">
+        <img :src="logo" width="45" alt="" class="me-2" style="border-radius: 50%;">
+        <span class="d-none d-md-block">{{ web_name }}</span>
+      </nuxt-link>
       <div class="align-items-center d-flex">
         <div v-if="token">
         <nuxt-link to="/maid/" class="text-white" :class="{ 'active': $route.name === 'maid' }">หน้าหลัก</nuxt-link>
@@ -17,7 +17,7 @@
           <div class="user ms-2 border text-center text-white bg-danger text-uppercase" style="width:38px; height:38px;" v-if="authMaid.img">
             <img :src="authMaid.img" alt="">
           </div>
-          <div class="user ms-2 border text-center text-white bg-danger text-uppercase" v-else>{{ shotName }}</div>
+          <div class="user border text-center text-white bg-danger text-uppercase" style="min-width:27px;" v-else>{{ shotName }}</div>
         </div>
         
         <div class="" v-else>
@@ -42,19 +42,26 @@ import axios from "axios";
 export default {
   data() {
     return {
+      pathOrigin:'',
       authMaid: "",
       token: "",
       shotName: "",
       loading: false,
       brandName: "madam-clean",
       currentMenu: 'slot',
+      logo:'',
+      web_name:'',
       apiBase: import.meta.env.VITE_AGENT_BASE_URL,
     };
   },
   mounted() {
-    this.authMaid = JSON.parse(localStorage.getItem("Maid"));
-
-    if (this.authMaid) {
+    this.fetchLogo();
+    
+    this.pathOrigin=window.location.origin;
+    this.authMaid = JSON.parse(sessionStorage.getItem("X-Maid"));
+    
+    console.log('this.authMaid',this.authMaid);
+    if (this.authMaid && this.authMaid !== 'undefined' && this.authMaid !== undefined) {
       this.updateAuth();
       this.token = this.authMaid.token;
       let nn = this.authMaid.fullname.charAt(0);
@@ -68,33 +75,63 @@ export default {
         this.loading = true;
       }
     } else {
-      this.$router.push('/maid/sign-in');
+      // this.lockOut();
+      if(this.$route.name !== '/maid-sign-in'){
+        this.$router.push('/maid/sign-in');
+        // window.location = '/maid/sign-in';
+      }
       this.loading = true;
     }
   },
 
   methods: {
-    updateAuth: async function () {
-      try {
+    fetchLogo: async function () {
+            try {
                 let config = {
                     method: "get",
-                    url: this.apiBase + "/maid-auth/"+this.authMaid.maid_id,
+                    url: this.apiBase + "/logo",
                     headers: {
                         "Content-Type": "application/json",
                     },
                 };
+
                 await axios
                     .request(config)
                     .then((response) => {
-                        localStorage.setItem("Maid", JSON.stringify(response.data.dataMaid));
+                        this.logo = response.data.logo;
+                        this.web_name = response.data.web_name;
                     })
                     .catch((error) => {
-                        console.log('error',error)
+                        console.log(error);
                     });
 
             } catch (error) {
                 console.error(error);
             }
+
+        },
+    updateAuth: async function () {
+      try {
+          let config = {
+              method: "get",
+              url: this.apiBase + "/maid-auth/"+this.authMaid.maid_id,
+              headers: {
+                  "Content-Type": "application/json",
+              },
+          };
+          await axios
+              .request(config)
+              .then((response) => {
+                sessionStorage.setItem("X-Maid", JSON.stringify(response.data.dataMaid));
+              })
+              .catch((error) => {
+                // this.lockOut();
+                  console.log('error',error)
+              });
+
+      } catch (error) {
+          console.error(error);
+      }
     },
     swichMenu(name) {
       console.log(name);
@@ -104,7 +141,7 @@ export default {
     lockOut(){
       this.authMaid  = '';
       this.token  = '';
-      localStorage.removeItem('Maid');
+      sessionStorage.removeItem('X-Maid');
       this.$router.push('/maid/sign-in');
     }
 
@@ -133,7 +170,6 @@ export default {
 }
 
 ul {
-  list-style-type: none;
   padding: 0;
 }
 

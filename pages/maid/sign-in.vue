@@ -266,7 +266,7 @@ export default {
                         .request(config)
                         .then((response) => {
                             if (response.data.success) {
-                                localStorage.setItem("Maid", JSON.stringify(response.data.dataMaid));
+                                sessionStorage.setItem("X-Maid", JSON.stringify(response.data.dataMaid));
                                 Swal.fire({
                                     position: "top-center",
                                     icon: "success",
@@ -342,7 +342,9 @@ export default {
                         .request(config)
                         .then((response) => {
                             if (response.data.success) {
-                                localStorage.setItem("Maid", JSON.stringify(response.data.dataMaid));
+                                localStorage.removeItem('Profile');
+                                sessionStorage.setItem("X-Maid", JSON.stringify(response.data.dataMaid));
+
                                 Swal.fire({
                                     position: "top-center",
                                     icon: "success",
@@ -350,7 +352,7 @@ export default {
                                     showConfirmButton: false,
                                 }).then(() => {
                                     this.$router.push('/maid');
-                                    window.location = '/maid';
+
                                 });
                                 setTimeout(() => {
                                     window.location = '/maid';

@@ -19,7 +19,7 @@
                                             <div class="elementor-element elementor-element-398e6bc5 elementor-widget elementor-widget-text-editor"
                                                 data-id="398e6bc5" data-element_type="widget"
                                                 data-widget_type="text-editor.default">
-                                                <div class="elementor-widget-container mt-2" v-html="dataCookie">
+                                                <div class="elementor-widget-container mt-2" v-html="dataPrivacy">
                                                 </div>
                                             </div>
                                         </div>
@@ -39,21 +39,19 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            dataCookie: [],
+            dataPrivacy: [],
             apiBase : import.meta.env.VITE_AGENT_BASE_URL
         };
     },
     mounted(){
-        this.getCookie();
-        const ipAddress = window.location.hostname;
-        console.log('ipAddress',ipAddress);
+        this.getPrivacy();
     },
     methods:{
-        getCookie: async function () {
+        getPrivacy: async function () {
             try {
                 let config = {
                 method: "get",
-                url: this.apiBase + "/cookie",
+                url: this.apiBase + "/privacy",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -62,7 +60,7 @@ export default {
                 await axios
                 .request(config)
                 .then((response) => {
-                    this.dataCookie = response.data.cookie;
+                    this.dataPrivacy = response.data.privacy;
                 })
                 .catch((error) => {
                     console.log(error);

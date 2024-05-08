@@ -1,7 +1,7 @@
 <template>
   <div @click="hideDiv">
     <div class="row mb-5 d-flex align-items-center justify-content-center"  v-if="!checkBooking && loading">
-      <div class="col-12 my-2 py-2 d-flex align-items-top justify-content-center vh-60">
+      <div class="col-12 my-2 py-2 d-flex align-items-center justify-content-center  vh-80">
         <div class="border rounded mt-5 m-2 p-4 w-50 text-center d-flex align-items-center justify-content-center" style="height:200px">
           ยังไม่ถึงเวลาทำการ<br />
          เปิดเวลา: {{ timeIn(dataSetting.timeIn)}}น.
@@ -33,9 +33,6 @@
             <div class="form-group">
               <label for="label">สถานที่ *</label>
               <div class="d-flex align-items-center justify-content-start">
-                
-                <input type="text" ref="location" :value="showAddress" class="form-control d-none"
-                  placeholder="กรุณาเลือกสถานที่่" @click="pinLocation()">
                 <input type="text" ref="location" :value="showAddress" class="form-control"
                   placeholder="กรุณาเลือกสถานที่่" @click="pinLocation()">
                 <button class="btn btn-sm border mx-2 p-2" @click="pinLocation()">
@@ -228,7 +225,9 @@
                               >
                                   <div v-if="isDateSelected(day)">
                                       <div v-for="(inDay, x) in listWorks" :key="x">
-                                          <div v-if="inDay.dateSelect && new Date(inDay.dateSelect).getDate() === day && new Date(inDay.dateSelect).getMonth() === month - 1" >
+                                          <div v-if="inDay.dateSelect && new Date(inDay.dateSelect).getDate() === day && new Date(inDay.dateSelect).getMonth() === month - 1" 
+                                             
+                                          >
                                               <div :id="'show-q'+i"
                                                 class="bg-white rounded box-shadow p-2 border text-muted show-q d-none" 
                                                 :style="{ position: 'absolute', marginTop: '-38px', marginLeft: '81px',boxShadow: '4px 4px 6px #6b6b6b;'}"
@@ -242,6 +241,9 @@
                                                 </div>
                                               </div>
                                             </div>
+                                            <!-- เพิ่มเงื่อนไขนี้เพื่อให้แสดง "มีคิว" แค่ครั้งเดียว -->
+                                            
+                                              <!-- {{ new Date().toLocaleDateString('en-US', { timeZone: 'Asia/Bangkok' }) }}  -->
                                           </div>
                                       </div>
                                       <div v-if="listWorks.length > 0"   :class="{'text-white  bg-warning rounded py-1': thisDay != day , 'text-white ': thisDay === day,}"> 
@@ -313,7 +315,7 @@
                 border-bottom:solid 1px #dee2e6;
                 overflow:scroll;
               ">
-              <div class="p-2">แพ็คเกจ {{ hours.name }} <nuxt-link class="text-primary" @click="openPack()"><u>เลือกแพ็คเกจอื่น</u></nuxt-link></div>
+              <div class="p-2">แพ็คเกจ {{ hours.name }} <nuxt-link class="text-primary" to="/service"><u>เลือกแพ็คเกจอื่น</u></nuxt-link></div>
                 <div class="cursor-pointer div-time text-left ps-4" v-for="(item, i) in hours.items" :key="i"
                   @click="setHour(item.hour, item.amount)">{{ item.hour }} ชั่วโมง {{ item.amount }} บาท</div>
               </div>
@@ -410,7 +412,7 @@
           <div class="col-12 col-lg-8 col-sm-8 col-md-10 border px-4 my-4 mx-lg-0">
             <div class="row">
               <div class="col-4 text-left">
-                <img src="@/public/assets/images/messageImage_1710223947120.jpg" alt="logo" class="p-2 w-100">
+                <img src="@/public/assets/images/maid.png" alt="logo" class="p-2 w-100">
               </div>
               <div class="col-8 text-lef pt-2">
                 <small class="text-muted" style="font-size:12px;">
@@ -439,11 +441,11 @@
                   <table class="table border" style="min-height:250px;">
                     <tbody>
                       <tr>
-                        <th style="font-family:sans-serif;">ลำดับ</th>
-                        <th style="font-family:sans-serif;">รายละเอียด</th>
-                        <th style="text-align:center;font-family:sans-serif;">วันที่ชำระค่าบริการ</th>
-                        <th style="text-align:center;font-family:sans-serif;">วันที่เข้าดำเนินการ</th>
-                        <th style="font-family:sans-serif;">จำนวนเงิน</th>
+                        <th>ลำดับ</th>
+                        <th>รายละเอียด</th>
+                        <th>วันที่เอกสาร</th>
+                        <th>ครบกำหนด</th>
+                        <th>จำนวนเงิน</th>
                       </tr>
                     </tbody>
                     <tbody>
@@ -460,17 +462,17 @@
                         </td>
                         <td class="mx-0 px-0">
                           <div class="mx-0 px-2 text-nowrap"  v-if="payWait.booking_create_at">
-                            {{ tfDateThai(payWait.booking_create_at) }}
+                            {{ fDateThai(payWait.booking_create_at) }}
                           </div>
                         </td>
                         <td class="mx-0 px-0">
                           <div class="mx-0 px-2 text-nowrap"  v-if="payWait.dateSelect">
-                            {{ tfDateThai(payWait.dateSelect) }}
+                            {{ fDateThai(payWait.dateSelect) }}
                           </div>
                         </td>
                         <td class="mx-0 px-0">
                           <div class="mx-0 px-2 text-nowrap">
-                            {{ parseFloat(payWait.amountPrice).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
+                            {{ payWait.amountPrice.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}
                           </div>
                         </td>
                       </tr>
@@ -483,7 +485,7 @@
                         </td>
                         <td></td>
                         <td></td>
-                        <td>{{ parseFloat(toolPirce).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}</td>
+                        <td>{{ toolPirce.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}</td>
                       </tr>
                       <tr>
                         <td></td>
@@ -522,13 +524,13 @@
                         <td></td>
                         <td></td>
                         <td colspan="2">
-                          <div class="border-0 px-2 d-flex justify-content-between">ราคารวม: <b>{{parseFloat(payWait.amountPrice + toolPirce).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}</b></div>
+                          <div class="border-0 px-2 d-flex justify-content-between">ราคารวม: <b>{{(payWait.amountPrice + toolPirce).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") }}</b></div>
                         </td>
                       </tr>
                       <tr>
                         <td></td>
                         <td class="px-2 d-flex justify-content-between border-0">
-                          <div v-if="dataPromotion && dataPromotion.unit!='no'">{{ dataPromotion.name }}</div>
+                          <div v-if="dataPromotion">{{ dataPromotion.name }}</div>
                         </td>
                         <td></td>
                         <td colspan="2">
@@ -647,68 +649,10 @@
 
     </div>
     <!-- modal -->
-    <div v-if="selectPack" class="modal fade show d-block bg-modal">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content rounded-2">
-          <div class="modal-header text-white bg-danger py-2 ">
-            <h6 class="modal-title" id="exampleModalLongTitle">{{ 'เลือกแพ็คเกจ' }}</h6>
-            <button type="button" class="close text-white btn text-xl" @click="selectPack = false"
-              style="font-size: 33px;line-height: 0;">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="row d-flex justify-content-center text-small">
-              <div class="col-12 col-md-4 my-2 d-block " v-for="(item, index) in dataPackages" :key="index">
-                <div class="package card px-0 pb-4">
-                  <div class="px-0 h-200">
-                    <div class="text-center pb-2 numbers text-primary px-0">
-                      <b>{{ item.name }}</b>
-                    </div>
-                    <div class="row text-muted bg-gray-200 border-top border-bottom mx-0">
-                      <div class="col-4 text-center font-weight-bold">ชม.</div>
-                      <div class="col-8 text-center font-weight-bold">ราคา</div>
-                    </div>
-                    <div class="row p-2" v-for="(data, idx) in item.items" :key="idx">
-                      <div class="col-5 text-center">{{ data.hour }} ชม.</div>
-                      <div class="col-7 text-center">{{ data.amount }} บาท</div>
-                    </div>
-                    <div class="row" v-if="item.items.length<3">
-                      <div class="col-6 text-center"> </div>
-                      <div class="col-6 text-center"></div>
-                    </div>
-                    <div class="row" v-if="item.items.length<4">
-                      <div class="col-6 text-center"> </div>
-                      <div class="col-6 text-center"> </div>
-                      <div class="col-6 text-center"> </div>
-                    </div>
-                    <div class="row" v-if="item.items.length<5">
-                      <div class="col-6 text-center"> </div>
-                      <div class="col-6 text-center"> </div>
-                      <div class="col-6 text-center"> </div>
-                    </div>
-                    
-                    <div class="iconBx text-center mt-3">
-                      <ion-icon name="eye-outline"></ion-icon>
-                      <button class="btn btn-primary rounded-2 py-1" @click="packageSelect(item)">เลือกบริการ</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" @click="openLocation = false">ปิด</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- modal -->
     <div v-if="openLocation" class="modal fade show d-block bg-modal">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content rounded-2">
-          <div class="modal-header text-white bg-danger py-2 ">
+          <div class="modal-header text-white bg-info py-2 ">
             <h6 class="modal-title" id="exampleModalLongTitle">{{ textTitle }}</h6>
             <button type="button" class="close text-white btn text-xl" @click="openLocation = false"
               style="font-size: 33px;line-height: 0;">
@@ -733,7 +677,7 @@
     <div v-if="openModal" class="modal fade show d-block bg-modal">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content rounded-2">
-          <div class="modal-header text-white bg-danger py-2 ">
+          <div class="modal-header text-white bg-info py-2 ">
             <h6 class="modal-title" id="exampleModalLongTitle">{{ textTitle }}</h6>
             <button type="button" class="close text-white btn text-xl" @click="openModal = false"
               style="font-size: 33px;line-height: 0;">
@@ -923,10 +867,9 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import swal from 'sweetalert';
 import { format, addDays } from 'date-fns';
-import Package from "../components/package.vue";
 import { th } from 'date-fns/locale';
-import gmap from "../components/gmap"
-import eventBus from '../components/event-bus.js';
+import gmap from "../../components/gmap"
+import eventBus from '../../components/event-bus.js';
 const thaiMonths = {
   1: 'มกราคม',
   2: 'กุมภาพันธ์',
@@ -946,7 +889,6 @@ export default {
     return {
       showDiv: false,
       divPosition: { top: 0, left: 0 },
-      selectPack: false,
       stepOne: true,
       stepTwo: false,
       selectPackage: '',
@@ -1002,7 +944,7 @@ export default {
       showActive: false,
       openMaid: false,
       openModal: false,
-      apiBase: import.meta.env.VITE_AGENT_BASE_URL,
+      apiBase: import.meta.env.VITE_BASE_URL,
       gmKey: import.meta.env.VITE_YOUR_GOOGLE_MAPS_API_KEY,
       dataMaids: '',
       dataBookMaids: '',
@@ -1033,8 +975,8 @@ export default {
       listWorks:'',
       checkBooking:false,
       loading:false,
-      dataReceipt:'',
-      dataPackages:''
+      dataReceipt:''
+      
     }
   },
   computed: {
@@ -1063,65 +1005,30 @@ export default {
     }
   },
   mounted() {
-
-      this.getPromotion();
-      this.getSetting();
-      this.fetchPayWait();
-      const currentDate = new Date();
-      const currentMonth = currentDate.getMonth();
-      this.currentMonth = currentMonth;
-      let bbid = localStorage.getItem("bookingId");
-      if(bbid==="0"){
-        localStorage.setItem("bookingId", 4);
-        this.selectPackage = 4;
-      }else{
-        this.selectPackage = localStorage.getItem("bookingId");
-      }
-
-      if (localStorage.getItem("hours-package")) {
-        this.hours = JSON.parse(localStorage.getItem("hours-package"));
-        console.log(this.hours);
-      }else{
-        this.getPackage();
-      }
-
+    this.getPromotion();
+    this.getSetting();
+    this.fetchPayWait();
+    
+    // เช็คว่าเวลาปัจจุบันเป็น 00:00:00 หรือไม่
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    this.currentMonth = currentMonth;
+    if (localStorage.getItem("bookingId")) {
+      this.selectPackage = localStorage.getItem("bookingId");
+      console.log(this.selectPackage);
+    }
+    if (localStorage.getItem("hours-package")) {
+      this.hours = JSON.parse(localStorage.getItem("hours-package"));
+      console.log(this.hours);
+    }else{
+      this.getPackage();
+    }
   },
   created() {
     // this.fetchData();
     // this.generateTimes(); // เรียกฟังก์ชัน generateTimes() เมื่อ component ถูกสร้าง
   },
   methods: {
-    openPack(){
-      this.getPackageAll();
-      this.selectPack = true;
-    },
-    packageSelect(item) {
-      this.selectPackage = item.id;
-      this.getPackageId(item.id);
-    },
-    getPackageAll: async function () {
-      try {
-        let config = {
-          method: "get",
-          url: this.apiBase + "/package",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        };
-
-        await axios
-          .request(config)
-          .then((response) => {
-            this.dataPackages = response.data;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-
-      } catch (error) {
-        console.error(error);
-      }
-    },
     fetchData() {
       setTimeout(() => {
         const url = window.location.origin+'/booking?_t='+Date.now();
@@ -1144,7 +1051,8 @@ export default {
     isDateSelected(day) {
         // ตรวจสอบว่า this.dateSelect เป็น array และมีค่าใน array หรือไม่
         // console.log('return',Array.isArray(this.dateSelect) && this.dateSelect.some(item => new Date(item.dateSelect).getHours() === day));
-        return Array.isArray(this.dateSelect) && this.dateSelect.some(item => new Date(item.dateSelect).getHours() === day);
+
+        return Array.isArray(this.listWorks) && this.listWorks.some(item => new Date(item.dateSelect).getDate() === day);
     },
     selectHour(){
       this.openDivHour = true;
@@ -1178,7 +1086,7 @@ export default {
         });
         return false;
       }
-      this.profile = JSON.parse(sessionStorage.getItem("Profile"));
+      this.profile = JSON.parse(localStorage.getItem("Profile"));
       try {
         let config = {
           method: "put",
@@ -1214,31 +1122,6 @@ export default {
       }
 
     },
-    getPackageId: async function (id) {
-      try {
-        let config = {
-          method: "get",
-          url: this.apiBase + "/get-packages/"+id,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        };
-
-        await axios
-          .request(config)
-          .then((response) => {
-            this.hours = response.data;
-            this.thisPackage=response.data;
-            this.selectPack = false;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-
-      } catch (error) {
-        console.error(error);
-      }
-    },
     getPackage: async function () {
       try {
         let config = {
@@ -1265,22 +1148,6 @@ export default {
     },
     fDateThai(date) {
       return format(new Date(date), ' d MMM yy', { locale: th });
-    },
-    tfDateThai(date) {
-      // const newDate = addDays(new Date(date), -1); // ลด 1 วัน
-      
-        const currentDate = new Date(date).getDate();
-        const thaiMonthNames = [
-            "ม.ค.", "ก.พ.", "มี.ค.",
-            "เม.ย.", "พ.ค.", "มิ.ย.",
-            "ก.ค.", "ส.ค.", "ก.ย.",
-            "ต.ค.", "พ.ย.", "ธ.ค."
-        ];
-        const currentMonth = thaiMonthNames[new Date(date).getMonth()]; // ใช้ชื่อเดือนไทยแทน
-        const thaiYear = new Date(date).getFullYear() + 543; // แปลงปีเป็น พ.ศ.
-        const currentYear = thaiYear.toString().slice(2); // ใช้เฉพาะสองตัวอักษรของปี
-
-        return `${currentDate} ${currentMonth} ${currentYear}`;
     },
     thaiYearFormat(date) {
       const newDate = addDays(new Date(date), 1); // เพิ่ม 1 วัน
@@ -1380,7 +1247,7 @@ export default {
           url: this.apiBase + "/send-slip/" + this.payWait.bookId,
           headers: {
             "Content-Type": "application/json",
-            "Authorization": sessionStorage.getItem("Profile").token
+            "Authorization": localStorage.getItem("Profile").token
           },
           data: { receipt: this.imageUrl }
         };
@@ -1523,7 +1390,7 @@ export default {
         return distance;
     },
     pinLocation() {
-      const auth = JSON.parse(sessionStorage.getItem("Profile"));
+      const auth = JSON.parse(localStorage.getItem("Profile"));
       if (!auth || auth == '') {
         swal({
           position: "top-center",
@@ -1574,7 +1441,7 @@ export default {
       this.maidListWork(data.id);
     },
     handleBooking: async function () {
-      const auth = JSON.parse(sessionStorage.getItem("Profile"));
+      const auth = JSON.parse(localStorage.getItem("Profile"));
       if (!auth || auth == '') {
         swal({
           position: "top-center",
@@ -1655,13 +1522,6 @@ export default {
       } else {
         maidId = this.dataBookMaids.id;
       }
-      const dateObject = new Date(this.dateSelect);
-      const nowDate = new Date();
-
-      if (dateObject > nowDate) {
-        dateObject.setDate(dateObject.getDate() + 1);
-      }
-      const currentDate = new Date(dateObject).toISOString().split('T')[0] + ' ' + this.selectStartTime + ':00';
       const dataBooking = {
         maid_id: maidId,
         hasPetCat: this.hasPetCat,
@@ -1670,7 +1530,7 @@ export default {
         hasTool: this.hasTool,
         workBuilding: this.workBuilding,
         orthorBuilding: this.orthorBuilding,
-        dateSelect: currentDate.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }),
+        convertedDate: this.dateSelect,
         showAddress: this.showAddress,
         address: this.addressAt,
         description: this.description,
@@ -1682,13 +1542,14 @@ export default {
         unitHour: this.selectStartHour,
         price: this.selectStartAmount,
         concentData: this.concentData
-      };
+      }
       try {
         let config = {
           method: "post",
           url: this.apiBase + "/booking",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": localStorage.getItem("Profile").token
           },
           data: dataBooking
         };
@@ -1703,20 +1564,14 @@ export default {
               html: 'ทำการจองบริการแม่บ้านเรียบร้อย<br><br>โปรดทำรายการชำระเงินขั้นตอนต่อไป',
               showConfirmButton: false,
             });
-            window.scrollTo(0, 0);
             this.fetchBank();
             this.fetchPayWait();
             this.stepOne = false;
             this.stepTwo = true;
             // localStorage.removeItem('bookingId');
+            
           })
           .catch((error) => {
-            swal({
-              position: "top-center",
-              icon: "error",
-              title: response.data.message,
-              showConfirmButton: false,
-            });
             console.log(error);
           });
 
@@ -1724,7 +1579,6 @@ export default {
         console.error(error);
       }
     },
-
     getMaid: async function () {
       this.openMaid = true;
       try {
@@ -1800,18 +1654,19 @@ export default {
                       const currentTime = new Date();
                       const dateObject = new Date(`2000-01-01T${this.dataSetting.timeIn}`);
                       const hours = dateObject.getHours();
-                      const minutes = dateObject.getMinutes();
-                      const timer = currentTime.getHours()+currentTime.getMinutes();
-                     
-                      if (timer > (hours+minutes)) {
-                        // เปิดจอง
-                        this.checkBooking=true;
-                        this.loading=true;
-                      } else {
-                        // ปิดจอง
+                      if (currentTime.getHours() === 0 || currentTime.getHours()< hours) {
+                        // กระทำเมื่อเวลาปัจจุบันเป็น 00:00:00 หรือมากกว่า
                         this.checkBooking=false;
                         this.loading=true;
                         localStorage.removeItem('checkIn');
+                        // console.log('เวลาปัจจุบันคือ 00:00:00 หรือมากกว่า');
+                      } else {
+                        // กระทำเมื่อเวลาปัจจุบันไม่ได้เป็น 00:00:00
+                        this.checkBooking=true;
+                        this.loading=true;
+                        // console.log('getHours',currentTime.getHours('H'));
+                        // console.log('getMinutes',currentTime.getMinutes());
+                        // console.log('getSeconds',currentTime.getSeconds());
                       }
                     }
                 })
@@ -1824,7 +1679,7 @@ export default {
         }
     },
     fetchPayWait: async function () {
-      const profile = JSON.parse(sessionStorage.getItem("Profile"));
+      const profile = JSON.parse(localStorage.getItem("Profile"));
       try {
         let config = {
           method: "get",
@@ -1846,13 +1701,13 @@ export default {
               if(this.dataPromotion){
                 // <!-- ราคารวมส่วนลดแล้ว -->
                 if(this.dataPromotion.unit=='percent'){
-                  this.total_promotion_amount =parseFloat((this.payWait.amountPrice * this.dataPromotion.amount) / 100);
-                  this._amount  = parseFloat((this.payWait.amountPrice)-((this.payWait.amountPrice * this.dataPromotion.amount) / 100)+this.toolPirce);
-                  this.total_vat = parseFloat((this.payWait.amountPrice-(this.payWait.amountPrice * this.dataPromotion.amount / 100)+this.toolPirce)* (this.dataSetting.eTax) / 100);
+                  this.total_promotion_amount =parseFloat((this.payWait.amountPrice * this.dataPromotion.amount) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                  this._amount  = parseFloat((this.payWait.amountPrice)-((this.payWait.amountPrice * this.dataPromotion.amount) / 100)+this.toolPirce).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                  this.total_vat = parseFloat((this.payWait.amountPrice-(this.payWait.amountPrice * this.dataPromotion.amount / 100)+this.toolPirce)* (this.dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
                 }else{
-                  this.total_promotion_amount =parseFloat(this.dataPromotion.amount).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");//ส่วนลดทีเป็นจำนวนบาท
-                  this._amount  = parseFloat((this.payWait.amountPrice-this.dataPromotion.amount)+this.toolPirce);
-                  this.total_vat = parseFloat((parseFloat(this._amount)*this.dataSetting.eTax)/100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                  this.total_promotion_amount =parseFloat(this.dataPromotion.amount).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                  this._amount  = parseFloat((this.payWait.amountPrice-this.dataPromotion.amount)+this.toolPirce).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                  this.total_vat = parseFloat((this._amount*this.dataSetting.eTax) / 100).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
                 }
                 this.amount_total = parseFloat(this.total_vat)+parseFloat(this._amount);
                 let at = parseFloat(this.total_vat)+parseFloat(this._amount);
@@ -1952,7 +1807,7 @@ export default {
       }
     },
     fetchBank: async function () {
-      const profile = JSON.parse(sessionStorage.getItem("Profile"));
+      const profile = JSON.parse(localStorage.getItem("Profile"));
       try {
         let config = {
           method: "get",
@@ -1989,6 +1844,8 @@ export default {
                 return dateString === workDate;
             });
         }
+      } else {
+          console.error('Date In List Work is not defined or not an array');
       }
     },
     isDateSelect(day) {
@@ -2149,8 +2006,5 @@ table.border td {
 
 td .bg-gray{
   background-color: #dee2e6;
-}
-.vh-60 {
-    height: 60vh;
 }
 </style>

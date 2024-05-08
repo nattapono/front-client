@@ -1,15 +1,17 @@
 <template>
-  <div class="topbar px-md-5 bg-danger d-flex justify-content-between" :class="{'d-none':$route.name==maid}" @click="handleBodyClick">
-    <div class="text-white text-1xl align-items-center d-flex justify-content-between">
-      <img src="@/public/assets/images/logomdc.png" width="45" alt="">
-      <span class="d-none d-md-block">Madam-Clean</span>
+  <div  class="topbar px-md-5 bg-danger d-flex justify-content-between" :class="{'d-none':$route.name==maid}" @click="handleBodyClick">
+    <div>
+      <nuxt-link :to="pathOrigin" class="text-white text-1xl align-items-center d-flex justify-content-between">
+        <img :src="logo" width="45" alt="" class="me-3" style="border-radius: 50%;">
+        <span class="d-none d-md-block">{{ web_name }}</span>
+      </nuxt-link>
     </div>
     <div class="align-items-center d-none d-md-flex" v-if="loading">
-      <nuxt-link class="text-white" :to="pathOrigin" :class="{ 'active': $route.name === '' }">หน้าแรก</nuxt-link>
-      <nuxt-link class="text-white" :to="pathOrigin+'/booking'" @click="packageSelect(0)" :class="{ 'active': $route.name === 'booking' }">จองแม่บ้าน</nuxt-link>
-      <!-- <nuxt-link class="text-white" to="madam" :class="{ 'active': $route.name === 'madam' }">แม่บ้าน</nuxt-link> -->
+      <nuxt-link class="text-white text-nowrap" :to="pathOrigin" :class="{ 'active': $route.name === 'index' }">หน้าแรก</nuxt-link>
+      <nuxt-link class="text-white text-nowrap" @click="packageSelect(4)" :class="{ 'active': $route.name === 'booking' }">จองแม่บ้าน</nuxt-link>
+      <!-- <nuxt-link class="text-white text-nowrap" to="madam" :class="{ 'active': $route.name === 'madam' }">แม่บ้าน</nuxt-link> -->
       <div>
-        <nuxt-link class=" text-white" to="/madam" :class="{ 'active': $route.name === 'madam' || isMadamDropdownOpen }"
+        <nuxt-link class="text-nowrap text-white" to="/madam" :class="{ 'active': $route.name === 'madam' || isMadamDropdownOpen }"
           @click="toggleMadamDropdown">แม่บ้าน</nuxt-link>
         <div v-if="isMadamDropdownOpen" class="text-center mx-2 mb-0" style="margin-top: 0px;z-index: 2;position: absolute;">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -26,20 +28,20 @@
           </div>
         </div>
       </div>
-      <nuxt-link class="text-white" :to="pathOrigin+'/service'" :class="{ 'active': $route.name === 'service' }">บริการ</nuxt-link>
-      <nuxt-link class="text-white" :to="pathOrigin+'/promotion'" :class="{ 'active': $route.name === 'promotion' }">โปรโมชั่น</nuxt-link>
-      <nuxt-link class="text-white" :to="pathOrigin+'/about'" :class="{ 'active': $route.name === 'about' }">เกี่ยวกับเรา</nuxt-link>
+      <nuxt-link class="text-white text-nowrap" :to="pathOrigin+'/service'" :class="{ 'active': $route.name === 'service' }">บริการ</nuxt-link>
+      <!-- <nuxt-link class="text-white text-nowrap" :to="pathOrigin+'/promotion'" :class="{ 'active': $route.name === 'promotion' }">โปรโมชั่น</nuxt-link> -->
+      <nuxt-link class="text-white text-nowrap" :to="pathOrigin+'/about'" :class="{ 'active': $route.name === 'about' }">เกี่ยวกับเรา</nuxt-link>
 
       <div class="d-flex align-items-center justify-content-between btn btn-sm px-3 text-white ms-2"
         style="background:rgba(0,0,0,0.2); border-radius:10px;" @click="openToggle" v-if="profile">
-        <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ profile.fullname }}</div>
+        <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;width: 56px;">{{ profile.fullname }}</div>
         <div class="user ms-2 border text-center text-white bg-danger text-uppercase">{{ shotName }}</div>
       </div>
       <div class="" v-else>
-        <button class="btn btn-sm text-muted bg-white ms-3" @click="logIn">เข้าสู่ระบบ</button>
+        <button class="btn btn-sm text-muted bg-white ms-3 text-nowrap" @click="logIn">เข้าสู่ระบบ</button>
       </div>
     </div>
-    <div class="w-50 d-flex d-md-none align-items-center justify-content-between me-3" v-if="loading">
+    <div class="w-50 d-flex d-md-none align-items-center justify-content-end me-3" v-if="loading">
       <div class="d-flex d-md-none">
         <button class="btn" @click="toggleMenu">
           <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
@@ -53,7 +55,7 @@
         <div class="">
           <div class="d-flex align-items-center justify-content-between btn btn-sm px-3 text-white ms-2"
             style="background:rgba(0,0,0,0.2); border-radius:10px;" @click="openToggle" v-if="profile">
-            <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ profile.fullname }}</div>
+            <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;width:56px;">{{ profile.fullname }}</div>
             <div
               class=" ms-2 border justify-content-center text-white bg-danger text-uppercase d-flex align-items-center"
               style="border-radius:50%;width:30px;height:30px;font-size: 20px;">{{ shotName }}</div>
@@ -75,13 +77,14 @@
         ออกจากระบบ
       </div>
     </div>
-    <div v-if="showMenu" class="mobile-menu bg-danger px-2 pt-4"
-      style="position:absolute; margin-top:326px;left: 0;right: 0;z-index:2;">
-      <p><nuxt-link @click="showMenu = false" class="text-white" to=""
+    <div v-if="showMenu" class="mobile-menu border-top bg-danger px-2 pt-4"
+      style="position:absolute; margin-top:280px;left: 0;right: 0;z-index:2;">
+      <p><nuxt-link @click="showMenu = false" class="text-white" :to="pathOrigin"
           :class="{ 'active': $route.name === '/' }">หน้าแรก</nuxt-link></p>
       <p>
-        <nuxt-link class="text-white"  :to="pathOrigin+'/booking'" :class="{ 'active': $route.name === 'booking' }">จองแม่บ้าน</nuxt-link></p>
-      <p><div>
+        <nuxt-link class="text-white"  :to="pathOrigin+'/booking?_t='+Date.now()" :class="{ 'active': $route.name === 'booking' }">จองแม่บ้าน</nuxt-link></p>
+      <p>
+      <div>
         <nuxt-link class="ho text-white" to="/madam"
           :class="{ 'active': $route.name === 'madam' || isMadamDropdownOpen }"
           @click="toggleMadamDropdown">แม่บ้าน</nuxt-link>
@@ -102,8 +105,8 @@
       </div></p>
       <p><nuxt-link @click="showMenu = false" class="text-white" :to="pathOrigin+'/service'"
           :class="{ 'active': $route.name === 'service' }">บริการ</nuxt-link></p>
-      <p><nuxt-link @click="showMenu = false" class="text-white" :to="pathOrigin+'/promotion'"
-          :class="{ 'active': $route.name === 'promotion' }">โปรโมชั่น</nuxt-link></p>
+      <!-- <p><nuxt-link @click="showMenu = false" class="text-white" :to="pathOrigin+'/promotion'"
+          :class="{ 'active': $route.name === 'promotion' }">โปรโมชั่น</nuxt-link></p> -->
       <p><nuxt-link @click="showMenu = false" class="text-white" :to="pathOrigin+'/about'"
           :class="{ 'active': $route.name === 'about' }">เกี่ยวกับเรา</nuxt-link></p>
     </div>
@@ -346,6 +349,8 @@ export default {
       mcfpassError: '',
       muserErr: '',
       mpassErr: '',
+      logo:'',
+      web_name:'',
       dataRegister:{
         mfname:'',
         mlname:'',
@@ -374,47 +379,59 @@ export default {
       showMenu: false,
       apiBase: import.meta.env.VITE_AGENT_BASE_URL,
       isMadamDropdownOpen: false,
-      pathOrigin:''
+      pathOrigin:'',
     };
   },
   mounted() {
-    this.pathOrigin = window.location.origin;
-    this.profile = JSON.parse(localStorage.getItem("Profile"));
-    if (this.profile) {
-      this.auth = this.profile.token;
-      let nn = this.profile.fullname.charAt(0);
-      if (this.profile.fullname) {
-        if (nn == 'เ' || nn == 'โ' || nn == 'ไ' || nn == 'ใ') {
-          this.shotName = this.profile.fullname.charAt(1);
-        } else {
-          this.shotName = this.profile.fullname.charAt(0);
-        }
+      this.updateUrl();
+      this.fetchLogo();
+      this.pathOrigin = window.location.origin;
+      setTimeout(() => {
         this.loading = true;
-      this.routers =  this.$route.name;
+      }, 800);
+      const profileDataString = sessionStorage.getItem("Profile");
+      if (profileDataString === null) {
+          this.auth = '';
+          this.profile = '';
+        
+      }else{
+        this.profile = JSON.parse(sessionStorage.getItem("Profile"));
+
+        if (this.profile && this.profile !== "undefined") {
+          
+          this.auth = this.profile.token;
+
+          let nn = this.profile.fullname.charAt(0);
+          if (this.profile.fullname) {
+            if (nn == 'เ' || nn == 'โ' || nn == 'ไ' || nn == 'ใ') {
+              this.shotName = this.profile.fullname.charAt(1);
+            } else {
+              this.shotName = this.profile.fullname.charAt(0);
+            }
+            this.loading = true;
+            this.routers =  this.$route.name;
+            // this.updateAuth();
+          }
+        }
       }
-    }else{
-      this.loading = true;
-    }
-    
-    // this.admin = JSON.parse(localStorage.getItem("Maid"));
-    // if (this.admin) {
-    //   this.auth = this.admin.token;
-    //   if (this.admin.user) {
-    //     this.shotName = this.admin.user.charAt(0);
-    //     this.loading = true;
-    //     // if(this.routers=='sign-in'){
-    //     //   window.location = '/';
-    //     //   this.loading = true;
-    //     // }
-    //   }
-    // } else {
-    //   this.loading = true;
-    //   if(this.routers=='maid'){
-    //     window.location = 'sign-in';
-    //   }
-    // }
-  
-    document.body.addEventListener('click', this.handleClick);
+      if(this.$route.name === 'booking'){
+        const _t = this.$route.query._t;
+        if (!_t) {
+          this.$router.replace({ 
+            path: '/booking', 
+            query: { _t: Date.now() } 
+          });
+          console.log('_t does not exist');
+        }
+      }
+      
+      document.body.addEventListener('click', this.handleClick);
+
+      console.log('this.$route.name',this.$route.name);
+      if(this.$route.name !== 'loading' && this.$route.name !== 'booking'){
+        localStorage.removeItem('frist');
+      }
+
   },
   beforeDestroy() {
     document.body.removeEventListener('click', this.handleClick);
@@ -427,6 +444,51 @@ export default {
       // }, 20);
       
     },
+    updateUrl(){
+      const urlParams = new URLSearchParams(window.location.search);
+      const timestampParam = urlParams.get('_t');
+
+      if (timestampParam) {
+        const timestampFromURL = parseInt(timestampParam, 10);
+        const currentTimestamp = Date.now();
+
+        // แปลง timestamp ให้เป็นระดับนาที
+        const urlMinute = Math.floor(timestampFromURL / (1000 * 60));
+        const currentMinute = Math.floor(currentTimestamp / (1000 * 60));
+
+        if (currentMinute !== urlMinute) {
+            const newURL = new URL(window.location.href);
+
+            // อัพเดตพารามิเตอร์ _t เป็น timestamp ปัจจุบัน
+            newURL.searchParams.set('_t', currentTimestamp);
+
+            window.location.href = newURL.toString();
+        }
+      }
+    },
+    updateAuth: async function () {
+      try {
+          let config = {
+              method: "get",
+              url: this.apiBase + "/profile-auth/"+this.profile.member_id,
+              headers: {
+                  "Content-Type": "application/json",
+              },
+          };
+          await axios
+              .request(config)
+              .then((response) => {
+                sessionStorage.setItem("Profile", JSON.stringify(response.data.dataMaid));
+              })
+              .catch((error) => {
+                this.logOut();
+                console.log('error',error)
+              });
+
+      } catch (error) {
+          console.error(error);
+      }
+    },
     toggleMadamDropdown() {
       this.isMadamDropdownOpen = !this.isMadamDropdownOpen;
     },
@@ -436,7 +498,7 @@ export default {
     packageSelect: async function (id) {
       localStorage.setItem("bookingId", JSON.stringify(id));
       localStorage.removeItem('hours-package');
-      window.location = 'booking';
+      window.location=window.location.origin+'/booking?_t='+Date.now();
       this.showMenu = false;
     },
     toggleMenu() {
@@ -468,8 +530,10 @@ export default {
       this.textTitle = 'เข้าสู่ระบบ';
       this.auth = '';
       this.profile = '';
-      localStorage.removeItem('Profile');
-      
+      sessionStorage.removeItem('Profile');
+      setTimeout(() => {
+        window.location=window.location.origin;
+      }, 400);
     },
     rePass() {
       this.isLogin = false;
@@ -500,104 +564,130 @@ export default {
                 /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             );
     },
+    fetchLogo: async function () {
+        try {
+            let config = {
+                method: "get",
+                url: this.apiBase + "/logo",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            };
+
+            await axios
+                .request(config)
+                .then((response) => {
+                    this.logo = response.data.logo;
+                    this.web_name = response.data.web_name;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+        } catch (error) {
+            console.error(error);
+        }
+
+    },
     handleRepass: async function(){
-            if (this.memail == '') {
-                this.memailError = '';
-                setTimeout(() => {
-                    this.memailError = 'กรุณากรอกอีเมลเข้าใช้งาน';
-                }, 20);
-                this.$refs.memail.focus();
-                return false;
-            } else if (this.mpass == '') {
-                this.mpassError = '';
-                setTimeout(() => {
-                    this.mpassError = 'กรุณากรอกรหัสผ่าน';
-                }, 20);
-                
-                this.memailError = '';
-                this.$refs.mpass.focus();
-                return false;
-            } else if (this.cfpass == '') {
-                this.mcfpassError = '';
-                setTimeout(() => {
-                    this.mcfpassError = 'กรุณากรอกรหัสผ่าน';
-                }, 20);
-                
-                this.mpassError = '';
-                this.memailError = '';
-                this.$refs.mcfpass.focus();
-            } else if (this.mcfpass != this.mpass) {
-                this.mcfpassError = '';
-                setTimeout(() => {
-                    this.mcfpassError = 'ยืนยันรหัสผ่านไม่ถูกต้อง';
-                }, 20);
-                
-                this.mpassError = '';
-                this.memailError = '';
-                this.$refs.mcfpass.focus();
-            } else {
-                this.muserError = '';
-                this.mpassError = '';
-                this.mcfpassError = '';
-                this.proGress = 10;
-                setTimeout(() => {
-                    this.proGress = 100;
-                }, 1000);
-                try {
-                    let config = {
-                        method: "post",
-                        url: this.apiBase + "/member-repass",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        data: {
-                            email: this.memail,
-                            pass: this.mcfpass
-                        }
-                    };
+        if (this.memail == '') {
+            this.memailError = '';
+            setTimeout(() => {
+                this.memailError = 'กรุณากรอกอีเมลเข้าใช้งาน';
+            }, 20);
+            this.$refs.memail.focus();
+            return false;
+        } else if (this.mpass == '') {
+            this.mpassError = '';
+            setTimeout(() => {
+                this.mpassError = 'กรุณากรอกรหัสผ่าน';
+            }, 20);
+            
+            this.memailError = '';
+            this.$refs.mpass.focus();
+            return false;
+        } else if (this.cfpass == '') {
+            this.mcfpassError = '';
+            setTimeout(() => {
+                this.mcfpassError = 'กรุณากรอกรหัสผ่าน';
+            }, 20);
+            
+            this.mpassError = '';
+            this.memailError = '';
+            this.$refs.mcfpass.focus();
+        } else if (this.mcfpass != this.mpass) {
+            this.mcfpassError = '';
+            setTimeout(() => {
+                this.mcfpassError = 'ยืนยันรหัสผ่านไม่ถูกต้อง';
+            }, 20);
+            
+            this.mpassError = '';
+            this.memailError = '';
+            this.$refs.mcfpass.focus();
+        } else {
+            this.muserError = '';
+            this.mpassError = '';
+            this.mcfpassError = '';
+            this.proGress = 10;
+            setTimeout(() => {
+                this.proGress = 100;
+            }, 1000);
+            try {
+                let config = {
+                    method: "post",
+                    url: this.apiBase + "/member-repass",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    data: {
+                        email: this.memail,
+                        pass: this.mcfpass
+                    }
+                };
 
-                    await axios
-                        .request(config)
-                        .then((response) => {
-                            if (response.data.success) {
-                              localStorage.setItem("Profile", JSON.stringify(response.data.member));
-                              swal({
+                await axios
+                    .request(config)
+                    .then((response) => {
+                        if (response.data.success) {
+                          sessionStorage.removeItem('X-Maid');
+                          sessionStorage.setItem("Profile", JSON.stringify(response.data.member));
+                          swal({
+                            position: "top-center",
+                            icon: "success",
+                            title: response.data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                          });
+                          setTimeout(() => {
+                            window.location.reload();
+                          }, 1500);
+                        } else {
+                            swal({
                                 position: "top-center",
-                                icon: "success",
+                                icon: "error",
                                 title: response.data.message,
-                                showConfirmButton: false,
-                                timer: 1500
-                              });
-                              setTimeout(() => {
-                                window.location.reload();
-                              }, 1500);
-                            } else {
-                                swal({
-                                    position: "top-center",
-                                    icon: "error",
-                                    title: response.data.message,
-                                    showConfirmButton: true,
-                                });
-                                
-                                this.passError = '-';
-                                setTimeout(() => {
-                                    this.passError = response.data.message;
-                                }, 20);
-                                setTimeout(() => {
-                                    this.proGress= 0;
-                                }, 1400);
-                                return false;
-                            }
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        });
+                                showConfirmButton: true,
+                            });
+                            
+                            this.passError = '-';
+                            setTimeout(() => {
+                                this.passError = response.data.message;
+                            }, 20);
+                            setTimeout(() => {
+                                this.proGress= 0;
+                            }, 1400);
+                            return false;
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
 
-                } catch (error) {
-                    console.error(error);
-                }
+            } catch (error) {
+                console.error(error);
             }
-        },
+        }
+    },
     handleRegister: async function () {
       let chkphone = String(this.dataRegister.mphone.substring(2, 0));
       const chkEmail = this.validateEmail(this.dataRegister.email);
@@ -738,7 +828,7 @@ export default {
             .request(config)
             .then((response) => {
               if (response.data.success) {
-                localStorage.setItem("Profile", JSON.stringify(response.data.member));
+                sessionStorage.setItem("Profile", JSON.stringify(response.data.member));
                 swal({
                   position: "top-center",
                   icon: "success",
@@ -810,7 +900,7 @@ export default {
             .request(config)
             .then((response) => {
               if (response.data.success) {
-                localStorage.setItem("Profile", JSON.stringify(response.data.member));
+                sessionStorage.setItem("Profile", JSON.stringify(response.data.member));
                 swal({
                   position: "top-center",
                   icon: "success",
@@ -818,9 +908,11 @@ export default {
                   showConfirmButton: false,
                   timer: 1500
                 });
-                setTimeout(() => {
-                  window.location.reload();
-                }, 1500);
+                this.setAuth();
+                
+                // setTimeout(() => {
+                //   window.location.reload();
+                // }, 1500);
               } else {
                 swal({
                   position: "top-center",
@@ -843,6 +935,26 @@ export default {
         } catch (error) {
           console.error(error);
         }
+      }
+    },
+    setAuth(){
+      this.isModalOpen = false;
+      this.isLogin = false;
+      this.profile = JSON.parse(sessionStorage.getItem("Profile"));
+      if (this.profile) {
+        this.auth = this.profile.token;
+        let nn = this.profile.fullname.charAt(0);
+        if (this.profile.fullname) {
+          if (nn == 'เ' || nn == 'โ' || nn == 'ไ' || nn == 'ใ') {
+            this.shotName = this.profile.fullname.charAt(1);
+          } else {
+            this.shotName = this.profile.fullname.charAt(0);
+          }
+          this.loading = true;
+          this.routers =  this.$route.name;
+        }
+      }else{
+        this.loading = true;
       }
     }
   }
@@ -876,7 +988,9 @@ a.router-link-active {
   color: #fff;
   text-decoration: none;
 }
-
+.active{
+  border-bottom: solid 2px #fff;
+}
 a.router-link-active:hover {
   color: #fb0404;
   text-decoration: none;

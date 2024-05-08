@@ -249,7 +249,7 @@
                                     <div class="form-check mx-4">
                                         <input type="radio" name="lname" id="concentYes"
                                             class="form-check-input" v-model="personalDataConsent" value="1">
-                                        <label class="form-check-label" for="concentYes">ยินยิม</label>
+                                        <label class="form-check-label" for="concentYes">ยินยอม</label>
                                     </div>
                                     <div class="form-check mx-4">
                                         <input type="radio" name="lname" id="concentNo" class="form-check-input"
